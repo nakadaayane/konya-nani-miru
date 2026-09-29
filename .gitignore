@@ -1,0 +1,5 @@
+# 手元だけで使うもの（Claude の Artifact 用の非公開版・取得キャッシュ）
+data/
+out/
+fetch.log
+__pycache__/

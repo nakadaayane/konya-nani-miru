@@ -1,0 +1,19 @@
+# 今夜なに観る？
+
+Filmarks で「観たい」に入れた映画と、U-NEXT・Prime Video の人気作／今話題の映画を、上映時間・配信サービス・評価で絞り込んで今夜の1本を選ぶページです。
+
+- 毎朝6時ごろ（日本時間）に GitHub Actions が Filmarks の公開ページを読み直して、GitHub Pages を更新します。
+- 観た作品（Mark済み）はおすすめから外しています。
+- ポスター画像は Filmarks の画像をそのまま表示しています。あらすじ・詳しい情報は各作品の Filmarks ページでご覧ください。
+- 配信状況と評価は取得時点のものです。
+
+## ファイル
+
+| ファイル | 役割 |
+|---|---|
+| `update.py` | Filmarks から取得して `site/`（公開版）を作る。`--public` なしだと手元用の `out/` を作る |
+| `template.html` | ページ本体 |
+| `site/` | GitHub Pages で公開しているもの（Actions が毎日書き換える） |
+| `.github/workflows/update.yml` | 毎日の自動更新 |
+
+手動で更新したいときは、Actions タブの「毎日の更新」→「Run workflow」を押します。

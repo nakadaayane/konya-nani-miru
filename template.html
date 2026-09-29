@@ -1,0 +1,546 @@
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>今夜なに観る？</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&text=%E4%BB%8A%E5%A4%9C%E3%81%AA%E3%81%AB%E8%A6%B3%E3%82%8B%EF%BC%9F0123456789%E5%88%86%E6%99%82%E9%96%93%E6%9C%AC&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#EDF0EE; --surface:#F8FAF9; --ink:#18201E; --muted:#5B6764; --faint:#8A9592;
+  --line:#D5DCD9; --accent:#0E6B66; --accent-ink:#FFFFFF; --accent-soft:#D3E8E5;
+  --star:#A86B12; --theater:#8A3B5C; --theater-soft:#F1DDE6; --pick:#E6B34A;
+  --display:"Dela Gothic One","Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+  --mono:"DM Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#111615; --surface:#1A2120; --ink:#E4EBE9; --muted:#9AA7A3; --faint:#6E7B78;
+    --line:#2C3533; --accent:#53C0B6; --accent-ink:#0B1413; --accent-soft:#1F3A37;
+    --star:#E0A84A; --theater:#E08AAE; --theater-soft:#3A2330; --pick:#E6B34A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#111615; --surface:#1A2120; --ink:#E4EBE9; --muted:#9AA7A3; --faint:#6E7B78;
+  --line:#2C3533; --accent:#53C0B6; --accent-ink:#0B1413; --accent-soft:#1F3A37;
+  --star:#E0A84A; --theater:#E08AAE; --theater-soft:#3A2330; --pick:#E6B34A;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.6;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- header ---------- */
+.hero{display:grid;grid-template-columns:1fr minmax(260px,380px);gap:24px;align-items:end;padding-bottom:20px;border-bottom:1px solid var(--line)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,6vw,52px);line-height:1.1;margin:0;letter-spacing:.01em;text-wrap:balance}
+.lede{margin:10px 0 0;color:var(--muted)}
+.lede b{color:var(--ink);font-weight:700}
+.stamp{display:block;font-size:12px;color:var(--faint);margin-top:4px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.hist{display:grid;gap:6px}
+.hist-cap{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.hist-bars{display:grid;grid-template-columns:repeat(15,1fr);align-items:end;gap:3px;height:72px;border-bottom:1px solid var(--line)}
+.hist-bars span{display:block;background:var(--line);border-radius:2px 2px 0 0;min-height:2px;transition:background .15s}
+.hist-bars span.on{background:var(--accent)}
+.hist-ticks{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;font-family:var(--mono);font-size:10px;color:var(--faint)}
+.hist-ticks span{white-space:nowrap}
+
+/* ---------- controls ---------- */
+.controls{display:grid;gap:14px;padding-block:18px;border-bottom:1px solid var(--line)}
+.ctl{display:grid;grid-template-columns:7.5em 1fr;gap:10px;align-items:start}
+.ctl>label,.ctl>.lbl{font-size:12px;font-weight:700;color:var(--muted);padding-top:6px;letter-spacing:.04em}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13px;line-height:1.5;white-space:nowrap}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip small{font-family:var(--mono);font-size:11px;opacity:.7;margin-left:4px}
+.chip:disabled{opacity:.45;cursor:default}
+.hint{font-size:12px;color:var(--muted)}
+.row-inline{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+input[type="time"],input[type="search"],select{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:13px}
+input[type="search"]{width:min(100%,320px)}
+.switch{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
+.switch input{accent-color:var(--accent);width:16px;height:16px}
+.more{background:none;border:0;color:var(--accent);cursor:pointer;font-size:13px;padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- toolbar ---------- */
+.toolbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding-block:10px;border-bottom:1px solid var(--line)}
+.count{font-size:13px;color:var(--muted)}
+.count b{font-family:var(--mono);font-size:18px;color:var(--ink);font-weight:500}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--accent);background:var(--surface);color:var(--accent);border-radius:6px;padding:5px 12px;cursor:pointer;font-size:13px;font-weight:700}
+.btn.solid{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border-color:var(--line);color:var(--muted);font-weight:500}
+
+.picked{margin-top:14px;padding:12px 14px;border:1px solid var(--pick);border-radius:8px;background:var(--surface);display:flex;gap:10px;flex-wrap:wrap;align-items:baseline}
+.picked b{font-size:15px}
+
+/* ---------- list ---------- */
+.band{display:flex;align-items:baseline;gap:10px;margin:26px 0 6px;font-size:13px;color:var(--muted)}
+.band h2{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);margin:0}
+.band::after{content:"";flex:1;border-bottom:1px dashed var(--line);transform:translateY(-4px)}
+.list{display:grid}
+.movie{display:grid;grid-template-columns:64px minmax(0,1fr) 170px;grid-template-areas:"poster main rt";gap:4px 16px;padding:14px 0;border-bottom:1px solid var(--line);scroll-margin-top:80px}
+.movie.hl{background:linear-gradient(90deg,color-mix(in srgb,var(--pick) 22%,transparent),transparent 70%);border-radius:8px}
+.poster{grid-area:poster;display:block;width:64px;aspect-ratio:5/7;max-width:100%;border-radius:4px;overflow:hidden;background:var(--line)}
+.poster img{width:100%;height:100%;object-fit:cover;display:block}
+.main{grid-area:main;min-width:0;display:grid;gap:3px;align-content:start}
+.t{margin:0;font-size:16px;font-weight:700;line-height:1.4;text-wrap:balance}
+.t a{text-decoration:none}
+.t a:hover{text-decoration:underline;text-underline-offset:3px}
+.meta{margin:0;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.people{margin:0;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.people b{font-weight:500;color:var(--ink)}
+.vod{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.v{font-size:11px;line-height:1.4;padding:2px 7px;border-radius:4px;border:1px solid var(--line);color:var(--muted);text-decoration:none;white-space:nowrap}
+.v.svod{border-color:var(--accent);color:var(--accent);font-weight:700}
+.v.mine{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.v.theater{border-color:var(--theater);color:var(--theater);background:var(--theater-soft)}
+.v.none{border-style:dashed}
+.badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px}
+.b{font-size:11px;line-height:1.4;padding:1px 7px;border-radius:999px;white-space:nowrap}
+.b.clip{background:var(--accent-soft);color:var(--ink);font-weight:700}
+.b.rank{border:1px solid var(--line);color:var(--muted);font-family:var(--mono);font-size:10.5px}
+.b.rank b{color:var(--star);font-weight:500}
+.b.seen{border:1px dashed var(--faint);color:var(--muted)}
+.v:hover{border-color:var(--ink)}
+details{margin-top:4px;font-size:13px}
+summary{cursor:pointer;color:var(--accent);font-size:12px;width:max-content}
+details p{margin:6px 0 0;max-width:65ch;color:var(--ink)}
+.links{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px}
+.links a{color:var(--accent)}
+.rt{grid-area:rt;display:grid;gap:4px;align-content:start;justify-items:end;text-align:right}
+.min{font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1}
+.min b{font-family:var(--display);font-weight:400;font-size:26px;color:var(--ink);letter-spacing:.02em}
+.bar{width:100%;height:6px;border-radius:3px;background:
+  linear-gradient(90deg,transparent calc(25% - 1px),var(--bg) calc(25% - 1px) 25%,transparent 25%),
+  linear-gradient(90deg,transparent calc(37.5% - 1px),var(--bg) calc(37.5% - 1px) 37.5%,transparent 37.5%),
+  linear-gradient(90deg,transparent calc(50% - 1px),var(--bg) calc(50% - 1px) 50%,transparent 50%),
+  linear-gradient(90deg,transparent calc(62.5% - 1px),var(--bg) calc(62.5% - 1px) 62.5%,transparent 62.5%),
+  var(--line);position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:3px}
+.end{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.end.late{color:var(--theater)}
+.score{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.score .s{color:var(--star);font-size:14px;font-weight:500}
+.empty{padding:48px 0;text-align:center;color:var(--muted)}
+.foot{margin-top:32px;font-size:12px;color:var(--faint)}
+
+@media (max-width:720px){
+  .hero{grid-template-columns:1fr}
+  .ctl{grid-template-columns:1fr;gap:4px}
+  .ctl>label,.ctl>.lbl{padding-top:0}
+  .movie{grid-template-columns:56px minmax(0,1fr);grid-template-areas:"poster main" "poster rt";gap:6px 12px}
+  .poster{width:56px}
+  .rt{grid-template-columns:auto 1fr auto;grid-auto-flow:column;align-items:center;justify-items:start;text-align:left;gap:10px}
+  .rt .bar{min-width:40px}
+  .rt .score{grid-column:1 / -1;grid-row:2}
+  .min b{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <h1>今夜なに観る？</h1>
+      <p class="lede" id="lede"></p>
+    </div>
+    <figure class="hist" aria-label="観たい映画の上映時間の分布" style="margin:0">
+      <figcaption class="hist-cap"><span>上映時間の分布（10分きざみ）</span><span id="histNote"></span></figcaption>
+      <div class="hist-bars" id="histBars"></div>
+      <div class="hist-ticks" id="histTicks"></div>
+    </figure>
+  </header>
+
+  <section class="controls" aria-label="絞り込み">
+    <div class="ctl">
+      <span class="lbl">リスト</span>
+      <div>
+        <div class="chips" id="pool"></div>
+        <p class="hint" id="poolHint" style="margin:6px 0 0"></p>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="lbl">観る場所</span>
+      <div class="chips" id="where"></div>
+    </div>
+    <div class="ctl" id="svcRow">
+      <span class="lbl">契約中の配信</span>
+      <div>
+        <div class="chips" id="services"></div>
+        <div class="row-inline" style="margin-top:8px">
+          <label class="switch"><input type="checkbox" id="svodOnly"> 見放題だけ（レンタル・購入を除く）</label>
+          <span class="hint" id="svcHint">選んだサービスは次回も覚えています</span>
+        </div>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="lbl">使える時間</span>
+      <div>
+        <div class="chips" id="runtime"></div>
+        <div class="row-inline" style="margin-top:8px">
+          <label class="switch" for="start">観はじめる時刻</label>
+          <input type="time" id="start" step="300">
+          <button class="more" id="nowBtn" type="button">今から</button>
+          <span class="hint" id="rtHint"></span>
+        </div>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="lbl">ジャンル</span>
+      <div class="chips" id="genres"></div>
+    </div>
+    <div class="ctl">
+      <span class="lbl">国・評価</span>
+      <div class="row-inline">
+        <select id="country" aria-label="製作国"></select>
+        <select id="minScore" aria-label="評価">
+          <option value="0">評価：こだわらない</option>
+          <option value="3.5">★3.5以上</option>
+          <option value="3.8">★3.8以上</option>
+          <option value="4">★4.0以上</option>
+        </select>
+        <input type="search" id="q" placeholder="タイトル・監督・出演者で検索">
+      </div>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <div class="count" id="count"></div>
+    <div class="tools">
+      <select id="sort" aria-label="並び順">
+        <option value="runtime-asc">上映時間が短い順</option>
+        <option value="runtime-desc">上映時間が長い順</option>
+        <option value="score-desc">評価が高い順</option>
+        <option value="clips-desc">観たい人が多い順</option>
+        <option value="rank-asc">ランキングの順位順</option>
+        <option value="year-desc">新しい作品から</option>
+        <option value="year-asc">古い作品から</option>
+        <option value="order-asc">観たいに入れた新しい順</option>
+        <option value="order-desc">観たいに入れた古い順</option>
+        <option value="title-asc">タイトル順</option>
+      </select>
+      <button class="btn solid" id="pickBtn" type="button">おまかせで1本</button>
+      <button class="btn ghost" id="resetBtn" type="button">条件をリセット</button>
+    </div>
+  </div>
+  <div id="picked"></div>
+
+  <main id="list"></main>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const TODAY = new Date().toISOString().slice(0,10);
+const KEY = "konya-nani-miru-v2";
+const POOL_OPTS = [
+  {id:"clip", label:"観たい"},
+  {id:"pick", label:"観たい以外のおすすめ"},
+  {id:"all", label:"ぜんぶ"},
+];
+const RUNTIME_OPTS = [
+  {id:"all", label:"こだわらない", min:0, max:Infinity},
+  {id:"90", label:"〜90分", min:0, max:90},
+  {id:"120", label:"〜2時間", min:0, max:120},
+  {id:"150", label:"〜2時間半", min:0, max:150},
+  {id:"long", label:"2時間半より長い", min:151, max:Infinity},
+];
+const WHERE_OPTS = [
+  {id:"home", label:"家で（配信あり）"},
+  {id:"theater", label:"映画館で上映中"},
+  {id:"all", label:"すべて"},
+];
+const DEFAULTS = {pool:"clip", where:"home", services:["U-NEXT","Prime Video"], svodOnly:false, runtime:"all", start:"", genres:[], country:"", minScore:0, q:"", sort:"runtime-asc"};
+let DATA = null, MOVIES = [], SERVICES = [], GENRES = [];
+let state = load();
+let pickedId = null;
+let showAllGenres = false;
+
+function load(){
+  try{ const s = JSON.parse(localStorage.getItem(KEY) || "{}"); return {...DEFAULTS, ...s, q:""}; }
+  catch(e){ return {...DEFAULTS}; }
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+/* ---------- derived ---------- */
+const isSvod = v => v.kinds.some(k => k.includes("見放題"));
+const inTheater = m => m.status === "上映中" || m.theaters > 0;
+const upcoming = m => m.release && m.release > TODAY;
+const bestRank = m => m.ranks && m.ranks.length ? Math.min(...m.ranks.map(r => r.rank)) : null;
+function countBy(list){ const c = new Map(); list.forEach(x => c.set(x,(c.get(x)||0)+1)); return [...c].sort((a,b)=>b[1]-a[1]); }
+
+function startMinutes(){
+  if(state.start){ const [h,mm] = state.start.split(":").map(Number); return h*60+mm; }
+  const d = new Date(); return Math.ceil((d.getHours()*60+d.getMinutes())/5)*5;
+}
+function hhmm(total){
+  const day = Math.floor(total/1440), t = ((total%1440)+1440)%1440;
+  return (day>0?"翌":"") + Math.floor(t/60) + ":" + String(t%60).padStart(2,"0");
+}
+function fmtLen(min){ const h = Math.floor(min/60), m = min%60; return h ? `${h}時間${m?m+"分":""}` : `${m}分`; }
+function fmtStamp(s){ const m = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2})/.exec(s || ""); return m ? `${Number(m[2])}月${Number(m[3])}日 ${m[4]}` : (s || ""); }
+
+function vodMatches(m){
+  let v = m.vod;
+  if(state.services.length) v = v.filter(x => state.services.includes(x.name));
+  if(state.svodOnly) v = v.filter(isSvod);
+  return v.length > 0;
+}
+/** skip: 件数を数えるとき、その条件だけ外して数えるためのキー */
+function passes(m, skip){
+  if(skip !== "pool" && state.pool !== "all" && m.source !== state.pool) return false;
+  if(skip !== "where"){
+    if(state.where === "home" && !vodMatches(m)) return false;
+    if(state.where === "theater" && !inTheater(m)) return false;
+  }
+  if(skip !== "runtime"){
+    const r = RUNTIME_OPTS.find(o => o.id === state.runtime) || RUNTIME_OPTS[0];
+    if(r.id !== "all" && (m.runtime == null || m.runtime < r.min || m.runtime > r.max)) return false;
+  }
+  if(skip !== "genre" && state.genres.length && !m.genres.some(g => state.genres.includes(g))) return false;
+  if(skip !== "country"){
+    if(state.country === "__jp" && !m.countries.includes("日本")) return false;
+    if(state.country === "__foreign" && (m.countries.includes("日本") || !m.countries.length)) return false;
+    if(state.country && !state.country.startsWith("__") && !m.countries.includes(state.country)) return false;
+  }
+  if(state.minScore && !(m.score >= state.minScore)) return false;
+  if(state.q){
+    const hay = [m.title, m.original, ...m.directors, ...m.cast].join(" ").toLowerCase();
+    if(!state.q.toLowerCase().split(/\s+/).filter(Boolean).every(w => hay.includes(w))) return false;
+  }
+  return true;
+}
+function countWith(key, value, skip){
+  const keep = state[key]; state[key] = value;
+  const n = MOVIES.filter(m => passes(m, skip)).length;
+  state[key] = keep; return n;
+}
+const nullLast = (a,b,f) => (a==null) - (b==null) || (a==null ? 0 : f(a,b));
+const SORTS = {
+  "runtime-asc": (a,b) => nullLast(a.runtime,b.runtime,(x,y)=>x-y) || (b.score||0)-(a.score||0),
+  "runtime-desc": (a,b) => nullLast(a.runtime,b.runtime,(x,y)=>y-x) || (b.score||0)-(a.score||0),
+  "score-desc": (a,b) => nullLast(a.score,b.score,(x,y)=>y-x) || (b.clips||0)-(a.clips||0),
+  "clips-desc": (a,b) => (b.clips||0)-(a.clips||0),
+  "rank-asc": (a,b) => nullLast(bestRank(a),bestRank(b),(x,y)=>x-y) || (b.score||0)-(a.score||0),
+  "year-desc": (a,b) => nullLast(a.release||a.year,b.release||b.year,(x,y)=>String(y).localeCompare(String(x))),
+  "year-asc": (a,b) => nullLast(a.release||a.year,b.release||b.year,(x,y)=>String(x).localeCompare(String(y))),
+  "order-asc": (a,b) => a.order-b.order,
+  "order-desc": (a,b) => b.order-a.order,
+  "title-asc": (a,b) => a.title.localeCompare(b.title,"ja"),
+};
+function band(m){
+  const r = m.runtime;
+  if(r == null) return "上映時間の登録なし";
+  if(r < 90) return "90分未満";
+  if(r < 120) return "90〜119分";
+  if(r < 150) return "2時間〜2時間29分";
+  return "2時間半以上";
+}
+
+/* ---------- controls ---------- */
+function chip(label, pressed, data, count, disabled){
+  return `<button type="button" class="chip" aria-pressed="${pressed}" ${data}${disabled?" disabled":""}>${esc(label)}${count!=null?`<small>${count}</small>`:""}</button>`;
+}
+function renderControls(){
+  $("pool").innerHTML = POOL_OPTS.map(o => chip(o.label, state.pool===o.id, `data-pool="${o.id}"`, countWith("pool", o.id))).join("");
+  const L = DATA.lists || {};
+  $("poolHint").textContent = state.pool === "clip"
+    ? "Filmarksで「観たい」に入れた作品です。"
+    : `観たい以外は、${Object.keys(L).map(k => k.replace("人気","")).filter(k => k !== "今話題").join("・")}の人気ランキング上位と、今話題の映画です。観た作品（${DATA.marks}本）と観たい作品は除いています。`;
+
+  $("where").innerHTML = WHERE_OPTS.map(o => chip(o.label, state.where===o.id, `data-where="${o.id}"`, countWith("where", o.id))).join("");
+  const home = state.where === "home";
+  $("svcRow").style.opacity = home ? "" : ".5";
+  $("services").innerHTML = SERVICES.map(([name]) => {
+    const n = MOVIES.filter(m => passes(m, "where") && m.vod.some(v => v.name === name && (!state.svodOnly || isSvod(v)))).length;
+    return chip(name, state.services.includes(name), `data-svc="${esc(name)}"`, n, !home);
+  }).join("");
+  $("svodOnly").checked = state.svodOnly; $("svodOnly").disabled = !home;
+  $("svcHint").textContent = state.services.length
+    ? `${state.services.join("・")}で観られる作品だけ表示中。選んだサービスは次回も覚えています`
+    : "何も選ばなければ、どこかで配信している作品をすべて表示します";
+
+  $("runtime").innerHTML = RUNTIME_OPTS.map(o => chip(o.label, state.runtime===o.id, `data-rt="${o.id}"`, countWith("runtime", o.id))).join("");
+  const s = startMinutes(), r = RUNTIME_OPTS.find(o => o.id === state.runtime);
+  $("start").value = hhmm(s).replace("翌","").padStart(5,"0");
+  $("rtHint").textContent = r && isFinite(r.max) && r.min === 0
+    ? `${hhmm(s)}に観はじめて ${hhmm(s + r.max)} までに終わる作品`
+    : `右端に「${hhmm(s)}に観はじめたら何時に終わるか」を出しています`;
+
+  const g = showAllGenres ? GENRES : GENRES.slice(0, 12);
+  $("genres").innerHTML = g.map(([name]) => {
+    const n = MOVIES.filter(m => m.genres.includes(name) && passes(m, "genre")).length;
+    return chip(name, state.genres.includes(name), `data-genre="${esc(name)}"`, n);
+  }).join("") + (GENRES.length > 12 ? `<button class="more" type="button" id="moreGenres">${showAllGenres ? "閉じる" : `ほか${GENRES.length-12}ジャンル`}</button>` : "");
+
+  const base = MOVIES.filter(m => passes(m, "country"));
+  const jp = base.filter(m => m.countries.includes("日本")).length;
+  $("country").innerHTML = `<option value="">国：すべて（${base.length}）</option><option value="__jp">日本の作品（${jp}）</option><option value="__foreign">日本以外（${base.length-jp}）</option>` +
+    countBy(base.flatMap(m => m.countries)).filter(([c]) => c !== "日本").slice(0, 15).map(([c,n]) => `<option value="${esc(c)}">${esc(c)}（${n}）</option>`).join("");
+  $("country").value = state.country;
+  if($("country").value !== state.country) $("country").value = "";
+  $("minScore").value = String(state.minScore);
+  $("sort").value = state.sort;
+  if($("q").value !== state.q) $("q").value = state.q;
+}
+
+/* ---------- header ---------- */
+function renderHeader(list){
+  const clips = MOVIES.filter(m => m.source === "clip");
+  const picks = MOVIES.length - clips.length;
+  const total = clips.reduce((s,m) => s + (m.runtime||0), 0);
+  $("lede").innerHTML = `Filmarksで「観たい」に入れた映画 <b class="num">${clips.length}</b>本（全部観ると <b>${Math.floor(total/60)}時間</b>）と、観たい以外のおすすめ <b class="num">${picks}</b>本。` +
+    `<span class="stamp">${esc(fmtStamp(DATA.fetched_at))} 更新・${esc(DATA.update_note || "")}</span>`;
+  const pool = MOVIES.filter(m => state.pool === "all" || m.source === state.pool);
+  const buckets = Array(15).fill(0), on = Array(15).fill(0);
+  const idx = r => r < 60 ? 0 : Math.min(14, Math.floor((r-60)/10)+1);
+  pool.forEach(m => { if(m.runtime != null) buckets[idx(m.runtime)]++; });
+  list.forEach(m => { if(m.runtime != null) on[idx(m.runtime)]++; });
+  const max = Math.max(1, ...buckets);
+  $("histBars").innerHTML = buckets.map((n,i) => {
+    const lo = i===0 ? "60分未満" : i===14 ? "190分以上" : `${60+(i-1)*10}〜${69+(i-1)*10}分`;
+    return `<span class="${on[i] ? "on" : ""}" style="height:${n/max*100}%" title="${lo}：${n}本（表示中 ${on[i]}本）"></span>`;
+  }).join("");
+  const ticks = {0:"〜59", 4:"90", 7:"120", 10:"150", 13:"180"};
+  $("histTicks").innerHTML = buckets.map((_,i) => `<span>${ticks[i] ?? ""}</span>`).join("");
+  $("histNote").textContent = `${POOL_OPTS.find(o => o.id === state.pool).label}・色つき＝いまの条件`;
+}
+
+/* ---------- list ---------- */
+function vodChips(m){
+  const mine = new Set(state.services);
+  const out = [];
+  if(inTheater(m)) out.push(`<a class="v theater" href="${esc(m.url)}/theaters" target="_blank" rel="noopener">映画館で上映中${m.theaters ? ` ${m.theaters}館` : ""}</a>`);
+  else if(upcoming(m)) out.push(`<span class="v theater">${esc(m.release.replace(/-/g,"/"))} 公開</span>`);
+  const vods = [...m.vod].sort((a,b) => (mine.has(b.name)-mine.has(a.name)) || (isSvod(b)-isSvod(a)));
+  vods.forEach(v => {
+    const cls = ["v", isSvod(v) ? "svod" : "", mine.has(v.name) && (!state.svodOnly || isSvod(v)) ? "mine" : ""].join(" ");
+    out.push(`<a class="${cls}" href="${esc(v.href)}" target="_blank" rel="noopener nofollow">${esc(v.name)} ${esc(v.kinds.join("・"))}</a>`);
+  });
+  if(!m.vod.length && !inTheater(m) && !upcoming(m)) out.push(`<span class="v none">配信なし</span>`);
+  return out.join("");
+}
+function badges(m){
+  const out = [];
+  if(m.source === "clip" && state.pool !== "clip") out.push(`<span class="b clip">観たい</span>`);
+  if(m.watched) out.push(`<span class="b seen">観た</span>`);
+  (m.ranks || []).forEach(r => out.push(`<span class="b rank">${esc(r.list)} <b>${r.rank}位</b></span>`));
+  return out.length ? `<div class="badges">${out.join("")}</div>` : "";
+}
+function row(m, start){
+  const pct = m.runtime ? Math.min(100, m.runtime/240*100) : 0;
+  const endMin = m.runtime ? start + m.runtime : null;
+  const meta = [m.original, m.year && `${m.year}年`, m.countries.join("・"), m.genres.join("・")].filter(Boolean).map(esc).join(" ／ ");
+  const people = [
+    m.directors.length ? `監督 <b>${esc(m.directors.join("、"))}</b>` : "",
+    m.cast.length ? `出演 ${esc(m.cast.slice(0,4).join("、"))}` : "",
+  ].filter(Boolean).join("　");
+  const links = [
+    `<a href="${esc(m.url)}" target="_blank" rel="noopener">${m.source === "pick" ? "Filmarksで開く（観たいに追加できます）" : "Filmarksで開く"}</a>`,
+    m.trailer ? `<a href="${esc(m.trailer)}" target="_blank" rel="noopener nofollow">予告編</a>` : "",
+    m.official ? `<a href="${esc(m.official)}" target="_blank" rel="noopener nofollow">公式サイト</a>` : "",
+    `<a href="${esc(m.url)}/vod" target="_blank" rel="noopener">配信サービスをすべて見る</a>`,
+  ].filter(Boolean).join("");
+  return `<article class="movie${m.id===pickedId?" hl":""}" id="m-${m.id}">
+    <a class="poster" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>
+    <div class="main">
+      ${badges(m)}
+      <h3 class="t"><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
+      <p class="meta">${meta}</p>
+      ${people ? `<p class="people">${people}</p>` : ""}
+      <div class="vod">${vodChips(m)}</div>
+      <details><summary>${m.synopsis ? "あらすじ・リンク" : "リンク（あらすじはFilmarksで）"}</summary>${m.synopsis ? `<p>${esc(m.synopsis)}</p>` : ""}<p class="links">${links}</p></details>
+    </div>
+    <div class="rt">
+      <div class="min">${m.runtime ? `<b>${m.runtime}</b>分` : "—"}</div>
+      <div class="bar" title="240分を100%とした長さ"><i style="width:${pct}%"></i></div>
+      <div class="end${endMin != null && endMin >= 1440 ? " late" : ""}">${endMin != null ? `${hhmm(start)} → ${hhmm(endMin)}` : "時間の登録なし"}</div>
+      <div class="score"><span class="s">★${m.score != null ? m.score.toFixed(1) : "—"}</span> 観たい ${(m.clips||0).toLocaleString()}人</div>
+    </div>
+  </article>`;
+}
+function render(){
+  const list = MOVIES.filter(m => passes(m)).sort(SORTS[state.sort] || SORTS["runtime-asc"]);
+  renderControls();
+  renderHeader(list);
+  const mins = list.reduce((s,m) => s + (m.runtime||0), 0);
+  $("count").innerHTML = `<b>${list.length}</b> 本表示中・合計 ${fmtLen(mins)}`;
+  const start = startMinutes();
+  if(!list.length){
+    $("list").innerHTML = `<p class="empty">この条件に合う作品はありません。「条件をリセット」で最初の状態に戻せます。</p>`;
+  } else if(state.sort.startsWith("runtime")){
+    let html = "", cur = null, buf = [];
+    const flush = () => { if(cur){ html += `<div class="band"><h2>${cur}</h2><span>${buf.length}本</span></div><div class="list">${buf.map(m=>row(m,start)).join("")}</div>`; } };
+    list.forEach(m => { const b = band(m); if(b !== cur){ flush(); cur = b; buf = []; } buf.push(m); });
+    flush();
+    $("list").innerHTML = html;
+  } else {
+    $("list").innerHTML = `<div class="list">${list.map(m=>row(m,start)).join("")}</div>`;
+  }
+  $("foot").textContent = `データ：Filmarks（${fmtStamp(DATA.fetched_at)} 時点）。配信状況と評価は取得時点のもので、最新の状況は各サービスでご確認ください。${DATA.failed.length ? `取得できなかった観たい作品：${DATA.failed.length}本。` : ""}`;
+  save();
+  return list;
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if(!b || !DATA) return;
+  if(b.dataset.pool){ state.pool = b.dataset.pool; }
+  else if(b.dataset.where){ state.where = b.dataset.where; }
+  else if(b.dataset.svc){ const s = b.dataset.svc; state.services = state.services.includes(s) ? state.services.filter(x=>x!==s) : [...state.services, s]; }
+  else if(b.dataset.rt){ state.runtime = b.dataset.rt; }
+  else if(b.dataset.genre){ const g = b.dataset.genre; state.genres = state.genres.includes(g) ? state.genres.filter(x=>x!==g) : [...state.genres, g]; }
+  else if(b.id === "moreGenres"){ showAllGenres = !showAllGenres; }
+  else if(b.id === "nowBtn"){ state.start = ""; }
+  else if(b.id === "resetBtn"){ state = {...DEFAULTS, pool: state.pool, services: state.services}; pickedId = null; $("picked").innerHTML = ""; }
+  else if(b.id === "pickBtn"){ pick(); return; }
+  else return;
+  render();
+});
+$("svodOnly").addEventListener("change", e => { state.svodOnly = e.target.checked; render(); });
+$("start").addEventListener("change", e => { state.start = e.target.value; render(); });
+$("country").addEventListener("change", e => { state.country = e.target.value; render(); });
+$("minScore").addEventListener("change", e => { state.minScore = Number(e.target.value); render(); });
+$("sort").addEventListener("change", e => { state.sort = e.target.value; render(); });
+let qTimer;
+$("q").addEventListener("input", e => { clearTimeout(qTimer); qTimer = setTimeout(() => { state.q = e.target.value.trim(); if(DATA) render(); }, 150); });
+
+function pick(){
+  const list = MOVIES.filter(m => passes(m));
+  if(!list.length){ $("picked").innerHTML = `<div class="picked">条件に合う作品がないので選べませんでした。条件をゆるめてからもう一度どうぞ。</div>`; return; }
+  const pool = list.filter(m => m.id !== pickedId);
+  const src = pool.length ? pool : list;
+  const m = src[Math.floor(Math.random() * src.length)];
+  pickedId = m.id;
+  const start = startMinutes();
+  $("picked").innerHTML = `<div class="picked"><span class="hint">おまかせの1本</span><b>${esc(m.title)}</b><span class="num">${m.runtime ? `${m.runtime}分・${hhmm(start)} → ${hhmm(start+m.runtime)}` : ""}</span><button class="more" type="button" id="pickBtn2">別のにする</button></div>`;
+  render();
+  $("pickBtn2").onclick = pick;
+  document.getElementById("m-" + m.id)?.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center"});
+}
+
+/* ---------- boot ---------- */
+$("list").innerHTML = `<p class="empty">作品データを読み込んでいます…</p>`;
+fetch("data.json", {cache: "no-cache"})
+  .then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+  .then(d => {
+    DATA = d; MOVIES = d.movies;
+    SERVICES = countBy(MOVIES.flatMap(m => [...new Set(m.vod.map(v => v.name))]));
+    GENRES = countBy(MOVIES.flatMap(m => m.genres));
+    state.services = state.services.filter(s => SERVICES.some(([n]) => n === s));
+    render();
+    setInterval(() => { if(!state.start) render(); }, 5 * 60 * 1000);
+  })
+  .catch(e => { $("list").innerHTML = `<p class="empty">作品データ（data.json）を読み込めませんでした：${esc(e.message)}。ページを再読み込みしてください。</p>`; });
+</script>
