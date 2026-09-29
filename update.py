@@ -19,7 +19,7 @@ import re
 import shutil
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
@@ -42,6 +42,7 @@ OUT = ROOT / "out"    # Claude の Artifact 用（非公開）
 SITE = ROOT / "site"  # GitHub Pages 用（公開）
 TEMPLATE = ROOT / "template.html"
 NOTE_PRIVATE = "その日最初にClaudeアプリを開いたときに自動で更新します"
+JST = timezone(timedelta(hours=9))  # GitHub Actions は世界標準時で動くので、日本時間を明示する
 NOTE_PUBLIC = "毎朝6時ごろに自動で更新しています"
 
 session = requests.Session()
@@ -404,7 +405,7 @@ def main():
 
     data = {
         "user": USER_ID,
-        "fetched_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "fetched_at": datetime.now(JST).strftime("%Y-%m-%d %H:%M"),
         "total": len(clip_ids),
         "marks": len(mark_ids),
         "lists": {k: len(v) for k, v in rankings.items()},
