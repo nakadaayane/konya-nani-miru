@@ -318,7 +318,7 @@ def build(public=False):
     for d in data["movies"]:
         src = d.pop("poster_src", None)
         if public:
-            d["poster"] = re.sub(r"/fitpad/\d+/\d+/", "/fitpad/240/336/", src) if src else None
+            d["poster"] = re.sub(r"/fitpad/\d+/\d+/", "/fitpad/300/420/", src) if src else None  # カード表示用に一回り大きく
             d["synopsis"] = ""
         else:
             p = POSTERS / f"{d['id']}.webp"
