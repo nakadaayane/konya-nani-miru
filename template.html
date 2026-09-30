@@ -153,8 +153,8 @@ details p{margin:6px 0 0;color:var(--ink)}
 .foot{margin:20px auto 0;max-width:62ch;text-align:center;font-size:12px;color:var(--faint)}
 
 /* イラスト */
-.hero-main{position:relative}
-.illo-pop{position:absolute;right:0;top:-8px;width:132px;transform:rotate(8deg)}
+.title-wrap{position:relative}
+.illo-pop{position:absolute;right:0;top:-6px;width:132px;transform:rotate(8deg)}  /* 「今夜」の行の右横。英字タイトルには重ねない */
 .illo-pop .illo,.illo-slot .illo{display:block;width:100%;height:auto}
 .illo-slot{margin-left:auto;width:112px;align-self:center;transform:rotate(-6deg)}
 .illo-slot.tilt{transform:rotate(7deg)}
@@ -250,7 +250,7 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
   .t{font-size:13.5px}
   .band h2{font-size:17px}
   .sticker{width:94px;height:94px;right:12px}
-  .illo-pop{width:84px;top:-14px}
+  .illo-pop{width:64px;top:-2px}
   .illo-slot{width:74px}
   .tab{font-size:14px;padding:8px 14px 9px 12px}
   .th-movies{padding:2px 12px 6px}
@@ -266,13 +266,12 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
 <div class="wrap">
   <header class="hero">
     <div class="hero-main">
-      <span class="illo-pop"><svg class="illo" viewBox="0 0 120 130" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+      <p class="en-label">WHAT TO WATCH TONIGHT</p>
+      <div class="title-wrap"><h1>今夜<br>なに観る？</h1><span class="illo-pop"><svg class="illo" viewBox="0 0 120 130" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
 <circle cx="34" cy="46" r="15" fill="#FFF6D6"/><circle cx="56" cy="31" r="17" fill="#FFF6D6"/><circle cx="81" cy="37" r="16" fill="#FFF6D6"/><circle cx="95" cy="55" r="13" fill="#FFF6D6"/><circle cx="23" cy="62" r="12" fill="#FFF6D6"/>
 <path d="M17 60 H103 L91 125 H29 Z" fill="#fff"/><path d="M38 60 H52 L50 125 H40 Z M68 60 H82 L79 125 H69 Z" fill="#FFA9C2"/>
 <circle cx="49" cy="88" r="3.6" fill="#141414"/><circle cx="71" cy="88" r="3.6" fill="#141414"/><path d="M52 99 Q60 106 68 99" fill="none"/>
-<circle cx="41" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/><circle cx="79" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/></g></svg></span>
-      <p class="en-label">WHAT TO WATCH TONIGHT</p>
-      <h1>今夜<br>なに観る？</h1>
+<circle cx="41" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/><circle cx="79" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/></g></svg></span></div>
       <p class="lede" id="lede"></p>
     </div>
     <figure class="hist" aria-label="上映時間の分布">
