@@ -125,6 +125,10 @@ input::placeholder{color:var(--faint)}
 .b.rank{border:1px solid var(--line);color:var(--muted);font-family:var(--board);font-size:10.5px}
 .b.rank b{color:var(--amber);font-weight:400}
 .b.seen{border:1px dashed var(--faint);color:var(--muted)}
+.b.award{border:1px solid rgba(240,180,76,.55);color:#F6D48E;background:linear-gradient(180deg,rgba(240,180,76,.16),rgba(240,180,76,.04))}
+.b.sim{background:var(--velvet-soft);color:var(--velvet-ink)}
+.more-wrap{display:flex;justify-content:center;margin-top:22px}
+.more-wrap .btn{padding:8px 22px;font-size:14px}
 details{margin-top:4px;font-size:13px}
 summary{cursor:pointer;color:var(--amber);font-size:12px;width:max-content}
 details p{margin:6px 0 0;max-width:65ch;color:var(--ink)}
@@ -200,6 +204,10 @@ details p{margin:6px 0 0;max-width:65ch;color:var(--ink)}
         <p class="hint" id="poolHint" style="margin:6px 0 0"></p>
       </div>
     </div>
+    <div class="ctl" id="kindRow">
+      <span class="lbl">おすすめの種類</span>
+      <div class="chips" id="kinds"></div>
+    </div>
     <div class="ctl">
       <span class="lbl">観る場所</span>
       <div class="chips" id="where"></div>
@@ -254,6 +262,7 @@ details p{margin:6px 0 0;max-width:65ch;color:var(--ink)}
         <option value="score-desc">評価が高い順</option>
         <option value="clips-desc">観たい人が多い順</option>
         <option value="rank-asc">ランキングの順位順</option>
+        <option value="similar-desc">観たいに似ている順</option>
         <option value="year-desc">新しい作品から</option>
         <option value="year-asc">古い作品から</option>
         <option value="order-asc">観たいに入れた新しい順</option>
@@ -267,6 +276,7 @@ details p{margin:6px 0 0;max-width:65ch;color:var(--ink)}
   <div id="picked"></div>
 
   <main id="list"></main>
+  <div class="more-wrap" id="moreWrap" hidden><button class="btn" type="button" id="moreBtn"></button></div>
   <div class="fin" id="fin" aria-hidden="true" hidden>終</div>
   <p class="foot" id="foot"></p>
 </div>
@@ -281,6 +291,13 @@ const POOL_OPTS = [
   {id:"pick", label:"観たい以外のおすすめ"},
   {id:"all", label:"ぜんぶ"},
 ];
+const KIND_OPTS = [
+  {id:"vod", label:"配信の人気作", test: m => m.ranks.some(r => r.list !== "今話題")},
+  {id:"trend", label:"今話題", test: m => m.ranks.some(r => r.list === "今話題")},
+  {id:"similar", label:"観たいに似ている", test: m => m.similar > 0},
+  {id:"award", label:"映画賞", test: m => (m.awards || []).length > 0},
+];
+const STEP = 100;  // 一度に表示する本数
 const RUNTIME_OPTS = [
   {id:"all", label:"こだわらない", min:0, max:Infinity},
   {id:"90", label:"〜90分", min:0, max:90},
@@ -293,11 +310,12 @@ const WHERE_OPTS = [
   {id:"theater", label:"映画館で上映中"},
   {id:"all", label:"すべて"},
 ];
-const DEFAULTS = {pool:"clip", where:"home", services:["U-NEXT","Prime Video"], svodOnly:false, runtime:"all", start:"", genres:[], country:"", minScore:0, q:"", sort:"runtime-asc"};
+const DEFAULTS = {kinds:[], pool:"clip", where:"home", services:["U-NEXT","Prime Video"], svodOnly:false, runtime:"all", start:"", genres:[], country:"", minScore:0, q:"", sort:"runtime-asc"};
 let DATA = null, MOVIES = [], SERVICES = [], GENRES = [];
 let state = load();
 let pickedId = null;
 let showAllGenres = false;
+let limit = STEP;
 
 function load(){
   try{ const s = JSON.parse(localStorage.getItem(KEY) || "{}"); return {...DEFAULTS, ...s, q:""}; }
@@ -332,6 +350,8 @@ function vodMatches(m){
 /** skip: 件数を数えるとき、その条件だけ外して数えるためのキー */
 function passes(m, skip){
   if(skip !== "pool" && state.pool !== "all" && m.source !== state.pool) return false;
+  if(skip !== "kind" && state.pool === "pick" && state.kinds.length &&
+     !KIND_OPTS.filter(k => state.kinds.includes(k.id)).some(k => k.test(m))) return false;
   if(skip !== "where"){
     if(state.where === "home" && !vodMatches(m)) return false;
     if(state.where === "theater" && !inTheater(m)) return false;
@@ -365,6 +385,7 @@ const SORTS = {
   "score-desc": (a,b) => nullLast(a.score,b.score,(x,y)=>y-x) || (b.clips||0)-(a.clips||0),
   "clips-desc": (a,b) => (b.clips||0)-(a.clips||0),
   "rank-asc": (a,b) => nullLast(bestRank(a),bestRank(b),(x,y)=>x-y) || (b.score||0)-(a.score||0),
+  "similar-desc": (a,b) => (b.similar||0)-(a.similar||0) || (b.score||0)-(a.score||0),
   "year-desc": (a,b) => nullLast(a.release||a.year,b.release||b.year,(x,y)=>String(y).localeCompare(String(x))),
   "year-asc": (a,b) => nullLast(a.release||a.year,b.release||b.year,(x,y)=>String(x).localeCompare(String(y))),
   "order-asc": (a,b) => a.order-b.order,
@@ -387,9 +408,15 @@ function chip(label, pressed, data, count, disabled){
 function renderControls(){
   $("pool").innerHTML = POOL_OPTS.map(o => chip(o.label, state.pool===o.id, `data-pool="${o.id}"`, countWith("pool", o.id))).join("");
   const L = DATA.lists || {};
+  const svc = Object.keys(L).filter(k => k !== "今話題").map(k => k.replace("人気","")).join("・");
   $("poolHint").textContent = state.pool === "clip"
     ? "Filmarksで「観たい」に入れた作品です。"
-    : `観たい以外は、${Object.keys(L).map(k => k.replace("人気","")).filter(k => k !== "今話題").join("・")}の人気ランキング上位と、今話題の映画です。観た作品（${DATA.marks}本）と観たい作品は除いています。`;
+    : `観たい以外は、${svc}の人気上位、今話題の映画、観たいに似ている作品（上位${DATA.similar_top || 0}本）、${(DATA.awards || []).join("・")}の受賞作です。観た作品（${DATA.marks}本）と観たい作品は除いています。`;
+  $("kindRow").hidden = state.pool !== "pick";
+  $("kinds").innerHTML = KIND_OPTS.map(k => {
+    const n = MOVIES.filter(m => passes(m, "kind") && k.test(m)).length;
+    return chip(k.label, state.kinds.includes(k.id), `data-kind="${k.id}"`, n);
+  }).join("");
 
   $("where").innerHTML = WHERE_OPTS.map(o => chip(o.label, state.where===o.id, `data-where="${o.id}"`, countWith("where", o.id))).join("");
   const home = state.where === "home";
@@ -472,6 +499,8 @@ function badges(m){
   const out = [];
   if(m.source === "clip" && state.pool !== "clip") out.push(`<span class="b clip">観たい</span>`);
   if(m.watched) out.push(`<span class="b seen">観た</span>`);
+  (m.awards || []).forEach(a => out.push(`<span class="b award">${esc(a)}</span>`));
+  if(m.similar) out.push(`<span class="b sim">観たい${m.similar}本に似ている</span>`);
   (m.ranks || []).forEach(r => out.push(`<span class="b rank">${esc(r.list)} <b>${r.rank}位</b></span>`));
   return out.length ? `<div class="badges">${out.join("")}</div>` : "";
 }
@@ -509,13 +538,18 @@ function row(m, start){
   </article>`;
 }
 function render(){
-  const list = MOVIES.filter(m => passes(m)).sort(SORTS[state.sort] || SORTS["runtime-asc"]);
+  let list = MOVIES.filter(m => passes(m)).sort(SORTS[state.sort] || SORTS["runtime-asc"]);
   renderControls();
   renderHeader(list);
   const mins = list.reduce((s,m) => s + (m.runtime||0), 0);
   $("count").innerHTML = `<b>${list.length}</b> 本表示中・合計 ${fmtLen(mins)}`;
   const start = startMinutes();
-  $("fin").hidden = !list.length;
+  const all = list;
+  list = list.slice(0, limit);
+  const rest = all.length - list.length;
+  $("moreWrap").hidden = !rest;
+  $("moreBtn").textContent = `もっと見る（あと${rest}本）`;
+  $("fin").hidden = !list.length || rest > 0;
   if(!list.length){
     $("list").innerHTML = `<p class="empty">この条件に合う作品はありません。「条件をリセット」で最初の状態に戻せます。</p>`;
   } else if(state.sort.startsWith("runtime")){
@@ -529,14 +563,17 @@ function render(){
   }
   $("foot").textContent = `データ：Filmarks（${fmtStamp(DATA.fetched_at)} 時点）。配信状況と評価は取得時点のもので、最新の状況は各サービスでご確認ください。${DATA.failed.length ? `取得できなかった観たい作品：${DATA.failed.length}本。` : ""}`;
   save();
-  return list;
+  return all;
 }
 
 /* ---------- events ---------- */
 document.addEventListener("click", e => {
   const b = e.target.closest("button");
   if(!b || !DATA) return;
+  if(b.id === "moreBtn"){ limit += STEP; render(); return; }
+  limit = STEP;  // 条件を変えたら先頭の100本から出し直す
   if(b.dataset.pool){ state.pool = b.dataset.pool; }
+  else if(b.dataset.kind){ const k = b.dataset.kind; state.kinds = state.kinds.includes(k) ? state.kinds.filter(x=>x!==k) : [...state.kinds, k]; }
   else if(b.dataset.where){ state.where = b.dataset.where; }
   else if(b.dataset.svc){ const s = b.dataset.svc; state.services = state.services.includes(s) ? state.services.filter(x=>x!==s) : [...state.services, s]; }
   else if(b.dataset.rt){ state.runtime = b.dataset.rt; }
@@ -548,13 +585,13 @@ document.addEventListener("click", e => {
   else return;
   render();
 });
-$("svodOnly").addEventListener("change", e => { state.svodOnly = e.target.checked; render(); });
-$("start").addEventListener("change", e => { state.start = e.target.value; render(); });
-$("country").addEventListener("change", e => { state.country = e.target.value; render(); });
-$("minScore").addEventListener("change", e => { state.minScore = Number(e.target.value); render(); });
-$("sort").addEventListener("change", e => { state.sort = e.target.value; render(); });
+$("svodOnly").addEventListener("change", e => { limit = STEP; state.svodOnly = e.target.checked; render(); });
+$("start").addEventListener("change", e => { limit = STEP; state.start = e.target.value; render(); });
+$("country").addEventListener("change", e => { limit = STEP; state.country = e.target.value; render(); });
+$("minScore").addEventListener("change", e => { limit = STEP; state.minScore = Number(e.target.value); render(); });
+$("sort").addEventListener("change", e => { limit = STEP; state.sort = e.target.value; render(); });
 let qTimer;
-$("q").addEventListener("input", e => { clearTimeout(qTimer); qTimer = setTimeout(() => { state.q = e.target.value.trim(); if(DATA) render(); }, 150); });
+$("q").addEventListener("input", e => { clearTimeout(qTimer); qTimer = setTimeout(() => { state.q = e.target.value.trim(); limit = STEP; if(DATA) render(); }, 150); });
 
 function pick(){
   const list = MOVIES.filter(m => passes(m));
@@ -563,6 +600,9 @@ function pick(){
   const src = pool.length ? pool : list;
   const m = src[Math.floor(Math.random() * src.length)];
   pickedId = m.id;
+  const sorted = list.sort(SORTS[state.sort] || SORTS["runtime-asc"]);
+  const pos = sorted.findIndex(x => x.id === m.id);
+  if(pos >= limit) limit = Math.ceil((pos + 1) / STEP) * STEP;
   const start = startMinutes();
   $("picked").innerHTML = `<div class="picked"><span class="hint">今夜の1本</span><b>${esc(m.title)}</b><span class="num">${m.runtime ? `${m.runtime}分・${hhmm(start)} → ${hhmm(start+m.runtime)}` : ""}</span><button class="more" type="button" id="pickBtn2">別のにする</button></div>`;
   render();

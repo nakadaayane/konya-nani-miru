@@ -30,10 +30,16 @@ USER_ID = "bsgjxnegvakdy"
 BASE = "https://filmarks.com"
 WAIT = 1.0  # 1リクエストごとの待ち秒数
 
-# 観たい以外のおすすめの取り先（1ページ36本）
+# 観たい以外のおすすめの取り先（一覧は1ページ36本）
 VOD_LISTS = {"U-NEXT": "unext", "Prime Video": "prime_video"}  # 契約中のサービスの人気ランキング
-VOD_PAGES = 3
-TREND_PAGES = 3
+VOD_PAGES = 10    # 上位360本
+TREND_PAGES = 10  # 今話題の上位360本
+AWARDS = {        # 映画賞の受賞作（人気順）: 表示名 -> Filmarks の賞ID
+    "アカデミー賞": 1, "日本アカデミー賞": 19,
+    "カンヌ国際映画祭": 42, "ヴェネチア国際映画祭": 44, "ベルリン国際映画祭": 43,
+}
+AWARD_PAGES = 2   # 各賞の上位72本
+SIMILAR_TOP = 100 # 観たい作品の「似ている作品」でよく挙がる上位何本を足すか
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data"
@@ -193,6 +199,11 @@ def parse_movie(mid, html):
         kinds = [txt(t) for t in a.select(".c2-list-vod__content-tag [class$='__text']")]
         vods.append({"name": name, "kinds": kinds, "href": a.get("href")})
     d["vod"] = vods
+
+    d["similar_ids"] = []
+    for sec in soup.select(".c2-works-collection-horizontal-scroll"):
+        if txt(sec.select_one("h3")) == "似ている作品":
+            d["similar_ids"] = movie_ids_in(sec, ".c2-works-card-m")
     return d
 
 
@@ -246,6 +257,7 @@ def parse_cassette(c):
     d["trailer"] = d["official"] = None
     btn = c.select_one("a.p-content-cassette__vod-button")
     kinds = [txt(x) for x in c.select(".c-vod-service-types__label")]
+    d["has_vod"] = bool(kinds)  # 見放題・レンタルなどの印。なければどこでも配信していない
     d["vod"] = [{"name": btn.get("data-gtm-info"), "kinds": kinds, "href": btn.get("href")}] if btn else []
     return d
 
@@ -345,17 +357,22 @@ def main():
     time.sleep(WAIT)
     mark_ids = set(paged_ids(f"/users/{USER_ID}", ".c-content-card", "観た"))
 
-    # 2. ランキング（観たい作品にも「U-NEXT人気 12位」などの印をつけるために先に読む）
+    # 2. ランキングと映画賞（観たい作品にも「U-NEXT人気 12位」などの印をつけるために先に読む）
     rankings = {}
     for name, slug in VOD_LISTS.items():
         rankings[f"{name}人気"] = fetch_ranking(f"/list/vod/{slug}", VOD_PAGES, f"{name}人気")
     rankings["今話題"] = fetch_ranking("/list/trend", TREND_PAGES, "今話題")
+    awards = {name: fetch_ranking(f"/list/award/{aid}", AWARD_PAGES, name) for name, aid in AWARDS.items()}
 
-    def ranks_of(mid):
-        return [{"list": k, "rank": v[mid][0]} for k, v in rankings.items() if mid in v]
+    def tags_of(mid):
+        return {
+            "ranks": [{"list": k, "rank": v[mid][0]} for k, v in rankings.items() if mid in v],
+            "awards": [k for k, v in awards.items() if mid in v],
+        }
 
-    # 3. 観たい作品は作品ページから全部の配信サービスを取る
+    # 3. 観たい作品は作品ページから全部の配信サービスと「似ている作品」を取る
     movies, failed = [], []
+    similar = {}  # 似ている作品ID -> 何本の観たい作品に挙がっているか
     for i, mid in enumerate(clip_ids, 1):
         time.sleep(WAIT)
         r = get(f"{BASE}/movies/{mid}")
@@ -367,7 +384,9 @@ def main():
         if d is None:
             failed.append(mid)
             continue
-        d.update(source="clip", order=i, ranks=ranks_of(mid), watched=mid in mark_ids)
+        for sid in d.pop("similar_ids"):
+            similar[sid] = similar.get(sid, 0) + 1
+        d.update(source="clip", order=i, watched=mid in mark_ids, **tags_of(mid))
         if not public:  # 公開版はポスターを複製しない
             fetch_poster(d)
         movies.append(d)
@@ -376,7 +395,7 @@ def main():
     # 4. 観たい以外のおすすめ（観た作品・観たい作品は除く）
     skip = set(clip_ids) | mark_ids
     picks = {}
-    for lst in rankings.values():
+    for lst in [*rankings.values(), *awards.values()]:
         for mid, (_, d) in lst.items():
             if mid in skip:
                 continue
@@ -385,23 +404,35 @@ def main():
             else:  # U-NEXT と Prime Video の両方に載っている作品は配信情報をまとめる
                 names = {v["name"] for v in picks[mid]["vod"]}
                 picks[mid]["vod"] += [v for v in d["vod"] if v["name"] not in names]
-    # 今話題にしか出てこない作品は、どこで配信しているか一覧からはわからないので作品ページを読む
-    vod_only_ids = {mid for k, v in rankings.items() if k != "今話題" for mid in v}
-    trend_only = [mid for mid in picks if mid not in vod_only_ids]
-    for j, mid in enumerate(trend_only, 1):
+                picks[mid]["has_vod"] = picks[mid].get("has_vod") or d.get("has_vod")
+    sim_top = [sid for sid, _ in sorted(similar.items(), key=lambda x: -x[1]) if sid not in skip][:SIMILAR_TOP]
+
+    # 配信ランキングに出てこない作品は、どこで配信しているか一覧からはわからないので作品ページを読む。
+    # ただし一覧で「配信の印」がない作品（映画館だけ・未配信）は読まない
+    vod_ids = {mid for k, v in rankings.items() if k != "今話題" for mid in v}
+    need = [mid for mid, d in picks.items() if mid not in vod_ids and d.get("has_vod")]
+    need += [sid for sid in sim_top if sid not in picks]
+    for j, mid in enumerate(need, 1):
         time.sleep(WAIT)
         r = get(f"{BASE}/movies/{mid}")
         try:
             if r is not None:
-                picks[mid] = parse_movie(mid, r.text)
+                d = parse_movie(mid, r.text)
+                d.pop("similar_ids", None)
+                picks[mid] = d
         except Exception as e:
             print(f"  parse error {mid}: {e}")
-        print(f"[今話題の作品ページ {j}/{len(trend_only)}] {picks[mid]['title']}")
+        if j % 25 == 0 or j == len(need):
+            print(f"[おすすめの作品ページ {j}/{len(need)}]")
     for n, (mid, d) in enumerate(picks.items(), 1):
-        d.update(source="pick", order=len(clip_ids) + n, ranks=ranks_of(mid), watched=False)
+        d.pop("has_vod", None)
+        d.update(source="pick", order=len(clip_ids) + n, watched=False,
+                 similar=similar.get(mid, 0) if mid in sim_top else 0, **tags_of(mid))
         if not public:  # 公開版はポスターを複製しない
             fetch_poster(d)
         movies.append(d)
+    for d in movies:
+        d.setdefault("similar", 0)
 
     data = {
         "user": USER_ID,
@@ -409,6 +440,8 @@ def main():
         "total": len(clip_ids),
         "marks": len(mark_ids),
         "lists": {k: len(v) for k, v in rankings.items()},
+        "awards": list(AWARDS),
+        "similar_top": len(sim_top),
         "failed": failed,
         "movies": movies,
     }
