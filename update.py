@@ -44,7 +44,7 @@ SIMILAR_TOP = 100 # 観たい作品の「似ている作品」でよく挙がる
 # 映画館（観たい作品のうち上映中のもの）
 ORIGIN = {"name": "大岡山駅", "lat": 35.607474, "lng": 139.685767}  # 近い順の基準
 PREFS = {13: "tokyo", 14: "kanagawa"}  # Filmarks の都道府県ID -> URLの名前
-SCHEDULE_DAYS = 3        # 今日・明日・あさって
+SCHEDULE_MAX_DAYS = 14   # 映画館が公開している最終日まで取る（念のため最長2週間）
 MAX_DISTANCE = 30000     # 大岡山から30kmまでの映画館
 FAV_THEATERS = ["109シネマズ二子玉川", "TOHOシネマズ 日比谷", "TOHOシネマズ 大井町"]  # よく行く映画館（イベントも取る）
 
@@ -328,17 +328,24 @@ def fetch_poster(d):
 def fetch_schedules(clips):
     """観たい作品のうち上映中（または近日公開）のものについて、大岡山から近い上映館と上映時刻を取る"""
     today = datetime.now(JST).date()
-    dates = [(today + timedelta(days=i)).isoformat() for i in range(SCHEDULE_DAYS)]
+    last = (today + timedelta(days=SCHEDULE_MAX_DAYS - 1)).isoformat()
     targets = [d for d in clips if d.get("status") == "上映中" or d.get("theaters")
-               or (d.get("status") == "公開予定" and d.get("release") and d["release"] <= dates[-1])]
-    theaters, shows, seen = {}, [], set()
+               or (d.get("status") == "公開予定" and d.get("release") and d["release"] <= last)]
+    theaters, shows, seen, fetched = {}, [], set(), set()
     for n, d in enumerate(targets, 1):
         for pid, slug in PREFS.items():
-            for date in dates:
+            # まず今日の分を読み、返ってくる「スケジュールが出ている最終日」まで1日ずつ読む
+            day, until = today, None
+            while True:
+                date = day.isoformat()
                 time.sleep(WAIT)
                 data = get_json(f"{BASE}/movies/{d['id']}/areas", {
                     "scheduleDate": date, "prefectureId": pid, "limit": 1000,
                     "latitude": ORIGIN["lat"], "longitude": ORIGIN["lng"]})
+                fetched.add(date)
+                if until is None:  # 公開前の作品で期間が返ってこないときは、公開日までは見ておく
+                    to = ((data or {}).get("schedulePeriodTo") or "")[:10]
+                    until = min(to or max(d.get("release") or date, date), last)
                 for area in (data or {}).get("areas", []):
                     for t in area.get("theaters", []):
                         dist = t.get("distance")
@@ -367,8 +374,11 @@ def fetch_schedules(clips):
                         if ends:
                             show["end"] = min(ends)[:10]
                         shows.append(show)
+                day += timedelta(days=1)
+                if day.isoformat() > until:
+                    break
         print(f"[上映館 {n}/{len(targets)}] {d['title']}")
-    return {"origin": ORIGIN, "dates": dates,
+    return {"origin": ORIGIN, "dates": sorted({x["date"] for x in shows} or fetched),
             "theaters": sorted(theaters.values(), key=lambda t: t["distance"]), "shows": shows}
 
 
