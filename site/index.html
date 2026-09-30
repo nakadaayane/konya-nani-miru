@@ -25,12 +25,40 @@
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
 html{background:var(--bg)}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.6}
-.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:32px 140px;overflow-x:clip}
+body{margin:0;color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.6;position:relative;
+  background:radial-gradient(circle at 1px 1px,rgba(20,20,20,.085) 1.1px,transparent 1.7px) 0 0/16px 16px,var(--bg)}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:70px 140px;overflow-x:clip}
 a{color:inherit}
 button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .num{font-family:var(--display);font-variant-numeric:tabular-nums}
+
+/* ---------- 映画館の舞台（飾り。文字の後ろに置き、押せないようにする） ---------- */
+.stage-deco{position:absolute;left:0;right:0;top:0;height:min(760px,100vh);overflow:hidden;pointer-events:none;z-index:0;
+  background:radial-gradient(60% 70% at 50% 0%,rgba(165,218,242,.55),transparent 70%)}
+.valance{position:absolute;left:0;top:0;display:block}
+.beam{position:absolute;bottom:-20px;width:190px;height:115%;transform-origin:50% 100%;opacity:.72;
+  clip-path:polygon(44% 100%,56% 100%,100% 0,0 0)}
+.beam-l{left:12%;background:linear-gradient(to top,rgba(226,255,50,.95),rgba(226,255,50,0) 88%);animation:sweepL 9s ease-in-out infinite alternate}
+.beam-r{right:12%;background:linear-gradient(to top,rgba(165,218,242,.95),rgba(165,218,242,0) 88%);animation:sweepR 9s ease-in-out -4.5s infinite alternate}
+@keyframes sweepL{from{transform:rotate(-30deg)}to{transform:rotate(12deg)}}
+@keyframes sweepR{from{transform:rotate(30deg)}to{transform:rotate(-12deg)}}
+.spark{position:absolute;height:auto;animation:twinkle 3.4s ease-in-out var(--d,0s) infinite}
+@keyframes twinkle{0%,100%{transform:scale(.55) rotate(0deg);opacity:.55}50%{transform:scale(1) rotate(25deg);opacity:1}}
+.drape{position:absolute;top:0;width:clamp(0px,calc((100vw - 1180px) / 2 - 8px),150px);height:560px;display:none;transform-origin:50% 0;animation:sway 6s ease-in-out infinite}
+.drape-l{left:0}
+.drape-r{right:0;transform:scaleX(-1);animation-name:swayR}
+@keyframes sway{0%,100%{transform:skewX(0deg)}50%{transform:skewX(1.6deg)}}
+@keyframes swayR{0%,100%{transform:scaleX(-1) skewX(0deg)}50%{transform:scaleX(-1) skewX(1.6deg)}}
+.filmstrip{display:none;position:fixed;top:0;bottom:0;width:38px;z-index:0;pointer-events:none;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='38' height='176'><rect width='38' height='176' fill='%23141414'/><rect x='4' y='7' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='28' y='7' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='4' y='29' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='28' y='29' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='4' y='51' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='28' y='51' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='4' y='73' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='28' y='73' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='4' y='95' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='28' y='95' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='4' y='117' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='28' y='117' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='4' y='139' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='28' y='139' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='4' y='161' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='28' y='161' width='6' height='8' rx='1.5' fill='%23E8E2DF'/><rect x='13' y='4' width='12' height='36' rx='2' fill='%236CCB9F'/><rect x='13' y='48' width='12' height='36' rx='2' fill='%23FFD84A'/><rect x='13' y='92' width='12' height='36' rx='2' fill='%23A5DAF2'/><rect x='13' y='136' width='12' height='36' rx='2' fill='%23FFA9C2'/></svg>") 0 0/38px 176px repeat-y;animation:film 12s linear infinite}
+.filmstrip.left{left:14px}
+.filmstrip.right{right:14px;animation-direction:reverse}
+@keyframes film{to{background-position:0 176px}}
+@media (min-width:1320px){.drape,.filmstrip{display:block}}
+@media (min-width:1320px) and (max-width:1420px){.filmstrip{display:none}}
+/* 英字の見出しに蛍光ペン */
+.sec-head .en,.news-head .en{background:linear-gradient(transparent 58%,var(--lime) 58% 90%,transparent 90%);padding-inline:4px;margin-left:-4px}
 
 /* ---------- 看板 ---------- */
 .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,360px);gap:28px;align-items:end}
@@ -302,6 +330,9 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
   .t{font-size:13.5px}
   .band h2{font-size:17px}
   .sticker{width:94px;height:94px;right:12px}
+  .wrap{padding-top:60px}
+  .beam{width:120px;opacity:.6}
+  .spark.extra{display:none}
   .illo-slot{width:74px}
   .tab{font-size:14px;padding:8px 14px 9px 12px}
   .th-movies{padding:2px 12px 6px}
@@ -314,6 +345,23 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 
+<div class="stage-deco" aria-hidden="true">
+  <div class="beam beam-l"></div><div class="beam beam-r"></div>
+  <svg class="spark" viewBox="0 0 40 40" style="left:5%;top:22%;width:30px;--d:0s" fill="#E2FF32"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:42%;top:6%;width:22px;--d:-1.2s" fill="#FFA9C2"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:58%;top:30%;width:26px;--d:-2.1s" fill="#A5DAF2"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:88%;top:12%;width:32px;--d:-.6s" fill="#FFD84A"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:94%;top:52%;width:20px;--d:-1.7s" fill="#6CCB9F"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark extra" viewBox="0 0 40 40" style="left:30%;top:58%;width:18px;--d:-2.6s" fill="#FFD84A"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark extra" viewBox="0 0 40 40" style="left:70%;top:70%;width:22px;--d:-.3s" fill="#E2FF32"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark extra" viewBox="0 0 40 40" style="left:12%;top:76%;width:24px;--d:-1.9s" fill="#A5DAF2"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg>
+  <svg class="drape drape-l" viewBox="0 0 140 560" preserveAspectRatio="none">
+<path d="M0 0 H140 C122 120 118 260 94 410 C86 462 96 516 122 560 H0 Z" fill="#E8332E" stroke="#141414" stroke-width="3" stroke-linejoin="round"/>
+<path d="M30 0 C34 180 30 360 20 560 M62 0 C70 170 66 340 54 560 M98 0 C104 140 96 290 82 470" fill="none" stroke="#B51F1B" stroke-width="7" stroke-linecap="round"/>
+<path d="M78 420 Q108 408 136 430" fill="none" stroke="#FFD84A" stroke-width="9" stroke-linecap="round"/><path d="M78 420 Q108 408 136 430" fill="none" stroke="#141414" stroke-width="2"/></svg>
+  <svg class="drape drape-r" viewBox="0 0 140 560" preserveAspectRatio="none">
+<path d="M0 0 H140 C122 120 118 260 94 410 C86 462 96 516 122 560 H0 Z" fill="#E8332E" stroke="#141414" stroke-width="3" stroke-linejoin="round"/>
+<path d="M30 0 C34 180 30 360 20 560 M62 0 C70 170 66 340 54 560 M98 0 C104 140 96 290 82 470" fill="none" stroke="#B51F1B" stroke-width="7" stroke-linecap="round"/>
+<path d="M78 420 Q108 408 136 430" fill="none" stroke="#FFD84A" stroke-width="9" stroke-linecap="round"/><path d="M78 420 Q108 408 136 430" fill="none" stroke="#141414" stroke-width="2"/></svg>
+  <svg class="valance" width="100%" height="42"><defs><pattern id="scallop" width="48" height="42" patternUnits="userSpaceOnUse">
+    <path d="M0 -2 H48 V14 A24 18 0 0 1 0 14 Z" fill="#E8332E" stroke="#141414" stroke-width="3"/>
+    <circle cx="24" cy="34" r="3.6" fill="#FFD84A" stroke="#141414" stroke-width="1.6"/></pattern></defs>
+    <rect width="100%" height="42" fill="url(#scallop)"/></svg>
+</div>
+<div class="filmstrip left" aria-hidden="true"></div><div class="filmstrip right" aria-hidden="true"></div>
 <div class="wrap">
   <header class="hero">
     <div class="hero-main">
