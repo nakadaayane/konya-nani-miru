@@ -5,188 +5,191 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Antique&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Old+Mincho:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
-/* 場内は暗いまま（映画館の見た目に固定するので、明るいテーマは用意しない） */
+/* 生成りのグレーに群青とライム、上映時間の帯ごとにポップな色。明るい見た目に固定する */
 :root{
-  color-scheme:dark;
-  --bg:#0D0A0B; --ticket:#191315; --ticket-2:#211A1C; --stub:#150F11; --field:#130E10;
-  --ink:#EFE6D6; --muted:#A99B8C; --faint:#716459; --line:#352A2B; --perf:#43363A;
-  --amber:#F0B44C; --amber-ink:#1B1206; --amber-soft:rgba(240,180,76,.13); --amber-glow:rgba(240,180,76,.38);
-  --velvet:#9A2A3A; --velvet-ink:#EB8E9A; --velvet-soft:rgba(154,42,58,.26);
-  --beam:rgba(214,228,255,.08);
-  --display:"Zen Antique","Hiragino Mincho ProN","Yu Mincho","YuMincho",serif;
-  --board:"DotGothic16",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  color-scheme:light;
+  --bg:#E8E2DF; --paper:#FFFFFF; --ink:#141414; --muted:#5F5955; --faint:#8C8580; --hair:#D6CECA;
+  --blue:#1E2BDC; --blue-soft:#E2E4FB; --lime:#E2FF32;
+  --mint:#6CCB9F; --sun:#FFD84A; --sky:#A5DAF2; --pink:#FFA9C2; --late:#C0245A;
+  --display:"Dela Gothic One","Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+  --mincho:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho","YuMincho",serif;
   --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
 html{background:var(--bg)}
-body{margin:0;color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.6;
-  background:radial-gradient(110% 55% at 50% -8%,var(--beam),transparent 60%) no-repeat,var(--bg)}
-/* フィルムの粒子感 */
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.05;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:28px 72px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:32px 140px;overflow-x:clip}
 a{color:inherit}
 button,input,select{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
-.num{font-family:var(--board);font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.num{font-family:var(--display);font-variant-numeric:tabular-nums}
 
 /* ---------- 看板 ---------- */
-.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,330px);gap:28px;align-items:center;padding-bottom:22px}
-.marquee{position:relative;padding:26px 30px 22px;border-radius:14px;
-  background:linear-gradient(180deg,#221719,#140E10);
-  box-shadow:0 0 0 1px #3B2C25,0 20px 44px rgba(0,0,0,.5),inset 0 0 60px rgba(240,180,76,.05)}
-.marquee::before{content:"";position:absolute;inset:8px;border-radius:9px;border:4px dotted var(--amber);
-  filter:drop-shadow(0 0 3px var(--amber-glow));pointer-events:none;opacity:.92;animation:bulbs 1.5s ease-out 1}
-@keyframes bulbs{0%{opacity:.18}25%{opacity:.95}35%{opacity:.35}55%{opacity:1}100%{opacity:.92}}
-.kicker{margin:0 0 6px;font-family:var(--board);font-size:12px;letter-spacing:.32em;color:var(--amber)}
-h1{font-family:var(--display);font-weight:400;font-size:clamp(38px,7vw,66px);line-height:1.08;margin:0;color:#F7ECD4;
-  letter-spacing:.04em;text-shadow:0 0 18px rgba(240,180,76,.28),0 2px 0 #000;text-wrap:balance}
-.lede{margin:12px 0 0;color:var(--muted);max-width:62ch}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,360px);gap:28px;align-items:end}
+.en-label{margin:0 0 12px;font-family:var(--display);font-size:13px;letter-spacing:.16em;color:var(--blue)}
+h1{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(52px,9.5vw,112px);line-height:1;letter-spacing:.01em}
+.lede{margin:18px 0 0;max-width:58ch;color:var(--muted)}
 .lede b{color:var(--ink);font-weight:700}
-.lede b.num{color:var(--amber);font-weight:400;font-size:16px}
-.stamp{display:block;font-size:12px;color:var(--faint);margin-top:6px}
+.lede b.num{font-weight:400;color:var(--blue);font-size:18px}
+.stamp{display:table;margin-top:12px;padding:3px 14px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);font-size:12px;color:var(--ink)}
 
-.hist{display:grid;gap:6px;margin:0;padding:14px 16px 10px;border-radius:10px;background:var(--stub);box-shadow:0 0 0 1px var(--line)}
-.hist-cap{font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
-.hist-bars{display:grid;grid-template-columns:repeat(15,1fr);align-items:end;gap:3px;height:74px;border-bottom:1px solid var(--line)}
-.hist-bars span{display:block;background:#3A2E2C;border-radius:2px 2px 0 0;min-height:2px;transition:background .2s,box-shadow .2s}
-.hist-bars span.on{background:var(--amber);box-shadow:0 0 8px var(--amber-glow)}
-.hist-ticks{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;font-family:var(--board);font-size:10px;color:var(--faint)}
+.hist{display:grid;gap:6px;margin:0;padding:16px 18px 12px;background:var(--paper);border:2px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink)}
+.hist-cap{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted)}
+.hist-cap span:first-child{font-weight:700;color:var(--ink)}
+.hist-bars{display:grid;grid-template-columns:repeat(15,1fr);align-items:end;gap:3px;height:78px;border-bottom:2px solid var(--ink)}
+.hist-bars span{display:block;background:var(--hair);border-radius:3px 3px 0 0;min-height:2px;transition:background .2s}
+.hist-bars span.on{background:var(--blue)}
+.hist-ticks{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;font-family:var(--display);font-size:10px;color:var(--faint)}
 .hist-ticks span{white-space:nowrap}
 
-/* ---------- 絞り込み（チケット売り場） ---------- */
-.controls{display:grid;gap:14px;padding:18px 20px;border-radius:12px;background:var(--ticket);box-shadow:0 0 0 1px var(--line)}
-.ctl{display:grid;grid-template-columns:7.5em 1fr;gap:10px;align-items:start}
-.ctl>label,.ctl>.lbl{font-family:var(--board);font-size:12px;color:var(--muted);padding-top:6px;letter-spacing:.1em}
-.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.chip{border:1px solid var(--line);background:var(--field);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13px;line-height:1.5;white-space:nowrap;transition:background .15s,box-shadow .15s,border-color .15s}
-.chip:hover{border-color:var(--amber)}
-.chip[aria-pressed="true"]{background:var(--amber);border-color:var(--amber);color:var(--amber-ink);font-weight:700;box-shadow:0 0 12px var(--amber-glow)}
-.chip small{font-family:var(--board);font-size:11px;opacity:.72;margin-left:5px;font-weight:400}
-.chip:disabled{opacity:.4;cursor:default;box-shadow:none}
+/* 観たい作品のポスターが流れる帯 */
+.belt{margin:30px -16px 0;overflow:hidden;background:var(--sun);border-block:2px solid var(--ink);padding-block:16px}
+.belt-track{display:flex;gap:16px;width:max-content;padding-inline:8px;animation:belt 80s linear infinite}
+.belt a{display:block;flex:none}
+.belt img{display:block;width:78px;aspect-ratio:5/7;object-fit:cover;background:var(--hair);border:2px solid var(--ink);border-radius:8px}
+.belt a:nth-child(odd) img{transform:rotate(-3deg)}
+.belt a:nth-child(even) img{transform:rotate(2.5deg)}
+.belt:hover .belt-track{animation-play-state:paused}
+@keyframes belt{to{transform:translateX(-50%)}}
+
+/* ---------- 見出し（英字＋明朝） ---------- */
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin:48px 0 16px}
+.sec-head .en{font-family:var(--display);font-size:clamp(32px,5vw,46px);line-height:1}
+.sec-head .ja{font-family:var(--mincho);font-size:14px;letter-spacing:.32em;color:var(--blue)}
+
+/* ---------- 絞り込み ---------- */
+.controls{display:grid;gap:16px;padding:22px 24px;background:var(--paper);border:2px solid var(--ink);border-radius:20px;box-shadow:6px 6px 0 var(--ink)}
+.ctl{display:grid;grid-template-columns:8em 1fr;gap:10px;align-items:start}
+.ctl>label,.ctl>.lbl{padding-top:6px;font-size:12.5px;font-weight:700;letter-spacing:.06em}
+.chips{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.chip{border:1.5px solid var(--ink);background:var(--paper);border-radius:999px;padding:5px 13px;cursor:pointer;font-size:13px;font-weight:500;line-height:1.45;white-space:nowrap;transition:background .15s,transform .15s}
+.chip:hover{background:var(--lime)}
+.chip[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip small{margin-left:5px;font-family:var(--display);font-size:11px;opacity:.75}
+.chip:disabled{opacity:.4;cursor:default;background:var(--paper)}
 .hint{font-size:12px;color:var(--muted)}
 .row-inline{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
-input[type="time"],input[type="search"],select{background:var(--field);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:13px}
-input[type="time"]{font-family:var(--board)}
+input[type="time"],input[type="search"],select{background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;padding:5px 10px;font-size:13px}
+input[type="time"]{font-family:var(--display)}
 input[type="search"]{width:min(100%,320px)}
 input::placeholder{color:var(--faint)}
 .switch{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
-.switch input{accent-color:var(--amber);width:16px;height:16px}
-.more{background:none;border:0;color:var(--amber);cursor:pointer;font-size:13px;padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
+.switch input{accent-color:var(--blue);width:17px;height:17px}
+.more{background:none;border:0;color:var(--blue);cursor:pointer;font-size:13px;font-weight:700;padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
 
 /* ---------- ツールバー ---------- */
 .toolbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;
-  margin-top:14px;padding:10px 2px;background:rgba(13,10,11,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  padding:10px 2px;background:var(--bg);border-bottom:2px solid var(--ink)}
 .count{font-size:13px;color:var(--muted)}
-.count b{font-family:var(--board);font-size:22px;color:var(--amber);font-weight:400;text-shadow:0 0 10px var(--amber-glow)}
+.count b{font-family:var(--display);font-weight:400;font-size:26px;color:var(--blue);margin-right:2px}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.btn{border:1px solid var(--amber);background:transparent;color:var(--amber);border-radius:6px;padding:5px 12px;cursor:pointer;font-size:13px;font-weight:700}
-.btn.solid{background:var(--amber);color:var(--amber-ink);box-shadow:0 0 14px var(--amber-glow)}
-.btn.ghost{border-color:var(--line);color:var(--muted);font-weight:500}
+.btn{border:2px solid var(--ink);background:var(--paper);border-radius:999px;padding:6px 16px;cursor:pointer;font-size:13px;font-weight:700}
+.btn:hover{background:var(--lime)}
+.btn.lime{background:var(--lime)}
+.btn.ghost{border-color:var(--hair);color:var(--muted);font-weight:500}
 
-.picked{margin-top:14px;padding:12px 16px;border:1px solid var(--amber);border-radius:10px;
-  background:linear-gradient(90deg,rgba(240,180,76,.2),rgba(240,180,76,.04));display:flex;gap:12px;flex-wrap:wrap;align-items:baseline}
-.picked .hint{font-family:var(--board);color:var(--amber);letter-spacing:.12em}
-.picked b{font-family:var(--display);font-weight:400;font-size:18px}
+.picked{margin-top:16px;padding:14px 18px;background:var(--lime);border:2px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);display:flex;gap:12px;flex-wrap:wrap;align-items:baseline}
+.picked .hint{font-family:var(--display);font-size:12px;letter-spacing:.1em;color:var(--ink)}
+.picked b{font-size:17px}
 
-/* ---------- 上映作品（チケット） ---------- */
-.band{display:flex;align-items:center;gap:12px;margin:30px 0 10px;font-size:12px;color:var(--muted)}
-.band h2{font-family:var(--board);font-size:15px;font-weight:400;color:var(--amber);margin:0;letter-spacing:.08em;white-space:nowrap}
-.band span{white-space:nowrap}
-/* フィルムの送り穴 */
-.band::after{content:"";flex:1;height:6px;border-radius:1px;background:repeating-linear-gradient(90deg,var(--perf) 0 8px,transparent 8px 14px)}
-.list{display:grid;gap:10px}
-.movie{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) 196px;grid-template-areas:"poster main stub";
-  background:linear-gradient(180deg,var(--ticket-2),var(--ticket));border-radius:10px;overflow:hidden;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 18px rgba(0,0,0,.35);scroll-margin-top:96px}
-.movie.hl{box-shadow:0 0 0 2px var(--amber),0 0 26px var(--amber-glow)}
-.poster{grid-area:poster;display:block;margin:12px 0 12px 12px;width:68px;aspect-ratio:5/7;max-width:100%;align-self:start;border-radius:3px;overflow:hidden;
-  background:#2A2022;box-shadow:0 0 0 1px rgba(255,255,255,.07),0 4px 10px rgba(0,0,0,.55)}
-.poster img{width:100%;height:100%;object-fit:cover;display:block}
-.main{grid-area:main;min-width:0;display:grid;gap:3px;align-content:start;padding:12px 16px 12px 14px}
-.t{margin:0;font-family:var(--display);font-weight:400;font-size:18px;line-height:1.35;letter-spacing:.02em;text-wrap:balance}
+/* ---------- 上映作品（カード） ---------- */
+.band{display:flex;align-items:center;gap:12px;width:max-content;max-width:100%;margin:36px 0 16px;padding:8px 10px 8px 20px;
+  background:var(--c,var(--paper));border:2px solid var(--ink);border-radius:999px}
+.band h2{margin:0;font-family:var(--display);font-weight:400;font-size:20px;line-height:1.2}
+.band span{font-family:var(--display);font-size:13px;background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;padding:1px 11px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px 18px}
+.card{position:relative;display:flex;flex-direction:column;min-width:0;background:var(--paper);border:2px solid var(--ink);border-radius:16px;overflow:hidden;
+  transition:transform .15s,box-shadow .15s;scroll-margin-top:110px}
+.card:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--ink)}
+.card.hl{outline:4px solid var(--blue);outline-offset:3px;box-shadow:6px 6px 0 var(--ink)}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px 8px 12px;background:var(--c,var(--paper));border-bottom:2px solid var(--ink)}
+.no{font-family:var(--display);font-size:22px;line-height:1;letter-spacing:.02em}
+.rt{font-family:var(--display);font-size:12px;background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;padding:2px 10px;white-space:nowrap}
+.rt b{font-weight:400;font-size:17px}
+.poster{display:block;aspect-ratio:5/7;max-width:100%;background:var(--hair);border-bottom:2px solid var(--ink);overflow:hidden}
+.poster img{display:block;width:100%;height:100%;object-fit:cover}
+.poster .ph{display:grid;place-items:center;height:100%;padding:12px;text-align:center;font-family:var(--display);font-size:18px;color:var(--muted)}
+.card-body{display:grid;gap:6px;align-content:start;padding:12px 12px 14px}
+.t{margin:0;font-size:15px;font-weight:700;line-height:1.4;text-wrap:balance;overflow-wrap:anywhere}
 .t a{text-decoration:none}
-.t a:hover{color:#FFF6E3;text-decoration:underline;text-decoration-color:var(--amber);text-underline-offset:4px}
-.meta{margin:0;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
-.people{margin:0;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
-.people b{font-weight:500;color:var(--ink)}
-.vod{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
-.v{font-size:11px;line-height:1.4;padding:2px 7px;border-radius:4px;border:1px solid var(--line);color:var(--muted);text-decoration:none;white-space:nowrap}
-.v:hover{border-color:var(--ink);color:var(--ink)}
-.v.svod{border-color:rgba(240,180,76,.6);color:var(--amber);font-weight:700}
-.v.mine{background:var(--amber);border-color:var(--amber);color:var(--amber-ink)}
-.v.theater{border-color:var(--velvet);color:var(--velvet-ink);background:var(--velvet-soft)}
-.v.none{border-style:dashed}
-.badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:3px}
-.b{font-size:11px;line-height:1.4;padding:1px 8px;border-radius:999px;white-space:nowrap}
-.b.clip{background:var(--amber-soft);color:var(--amber);font-weight:700}
-.b.rank{border:1px solid var(--line);color:var(--muted);font-family:var(--board);font-size:10.5px}
-.b.rank b{color:var(--amber);font-weight:400}
-.b.seen{border:1px dashed var(--faint);color:var(--muted)}
-.b.award{border:1px solid rgba(240,180,76,.55);color:#F6D48E;background:linear-gradient(180deg,rgba(240,180,76,.16),rgba(240,180,76,.04))}
-.b.sim{background:var(--velvet-soft);color:var(--velvet-ink)}
-.more-wrap{display:flex;justify-content:center;margin-top:22px}
-.more-wrap .btn{padding:8px 22px;font-size:14px}
-details{margin-top:4px;font-size:13px}
-summary{cursor:pointer;color:var(--amber);font-size:12px;width:max-content}
-details p{margin:6px 0 0;max-width:65ch;color:var(--ink)}
-.links{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px}
-.links a{color:var(--amber)}
+.t a:hover{text-decoration:underline;text-decoration-color:var(--blue);text-decoration-thickness:2px;text-underline-offset:3px}
+.meta{margin:0;font-size:11.5px;color:var(--muted);overflow-wrap:anywhere}
+.times{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;margin:0;font-size:12px}
+.clock{font-family:var(--display);font-size:13px;white-space:nowrap}
+.clock .late{color:var(--late)}
+.score{white-space:nowrap;color:var(--muted)}
+.score b{font-family:var(--display);font-weight:400;font-size:14px;color:var(--blue)}
+.vod{display:flex;flex-wrap:wrap;gap:4px}
+.v{font-size:10.5px;line-height:1.45;padding:1px 8px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);text-decoration:none;white-space:nowrap}
+.v:hover{background:var(--lime)}
+.v.svod{background:var(--blue-soft);font-weight:700}
+.v.mine{background:var(--blue);border-color:var(--blue);color:#fff}
+.v.theater{background:var(--pink)}
+.v.none{border-style:dashed;border-color:var(--faint);color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:4px}
+.b{font-size:10.5px;font-weight:700;line-height:1.45;padding:1px 7px;border-radius:6px;white-space:nowrap}
+.b.clip{background:var(--lime);border:1.5px solid var(--ink)}
+.b.rank{border:1.5px solid var(--hair);color:var(--muted);font-weight:500}
+.b.rank b{font-family:var(--display);font-weight:400;color:var(--ink)}
+.b.award{background:var(--sun);border:1.5px solid var(--ink)}
+.b.sim{background:var(--pink);border:1.5px solid var(--ink)}
+.b.seen{border:1.5px dashed var(--faint);color:var(--muted)}
+details{font-size:12px}
+summary{cursor:pointer;color:var(--blue);font-weight:700;width:max-content}
+details p{margin:6px 0 0;color:var(--ink)}
+.people{color:var(--muted)}
+.links{display:flex;flex-wrap:wrap;gap:4px 12px}
+.links a{color:var(--blue)}
 
-/* 半券：ミシン目で切り離せる右端 */
-.stub{grid-area:stub;position:relative;display:grid;gap:5px;align-content:center;justify-items:end;text-align:right;
-  padding:12px 16px;border-left:2px dashed var(--perf);background:var(--stub)}
-.stub::before,.stub::after{content:"";position:absolute;left:-10px;width:18px;height:18px;border-radius:50%;background:var(--bg)}
-.stub::before{top:-9px}
-.stub::after{bottom:-9px}
-.stub-lbl{font-family:var(--board);font-size:10.5px;letter-spacing:.2em;color:var(--faint)}
-.min{font-family:var(--board);font-size:13px;color:var(--muted);line-height:1}
-.min b{font-weight:400;font-size:32px;color:var(--amber);letter-spacing:.02em;text-shadow:0 0 12px var(--amber-glow)}
-.bar{width:100%;height:6px;border-radius:3px;position:relative;overflow:hidden;background:
-  linear-gradient(90deg,transparent calc(25% - 1px),var(--stub) calc(25% - 1px) 25%,transparent 25%),
-  linear-gradient(90deg,transparent calc(37.5% - 1px),var(--stub) calc(37.5% - 1px) 37.5%,transparent 37.5%),
-  linear-gradient(90deg,transparent calc(50% - 1px),var(--stub) calc(50% - 1px) 50%,transparent 50%),
-  linear-gradient(90deg,transparent calc(62.5% - 1px),var(--stub) calc(62.5% - 1px) 62.5%,transparent 62.5%),
-  #2E2426}
-.bar i{position:absolute;inset:0 auto 0 0;background:var(--amber);border-radius:3px;box-shadow:0 0 8px var(--amber-glow)}
-.times{display:flex;gap:10px;font-family:var(--board);font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
-.times small{font-size:10px;color:var(--faint);margin-right:3px;letter-spacing:.08em}
-.times .late{color:var(--velvet-ink)}
-.score{font-size:12px;color:var(--muted);white-space:nowrap}
-.score .s{font-family:var(--board);color:var(--amber);font-size:14px}
-
+.more-wrap{display:flex;justify-content:center;margin-top:30px}
+.more-wrap .btn{padding:10px 26px;font-size:14px;box-shadow:4px 4px 0 var(--ink)}
 .empty{padding:56px 0;text-align:center;color:var(--muted)}
-.fin{margin:56px auto 0;text-align:center;font-family:var(--display);font-size:44px;line-height:1;color:#F7ECD4;letter-spacing:.1em;
-  text-shadow:0 0 18px rgba(240,180,76,.25)}
-.foot{margin:18px auto 0;max-width:62ch;text-align:center;font-size:12px;color:var(--faint)}
+.fin{display:grid;justify-items:center;gap:10px;margin:80px 0 0}
+.fin .en{font-family:var(--display);font-size:clamp(44px,8vw,76px);line-height:1}
+.fin .ja{font-family:var(--mincho);font-size:14px;letter-spacing:.32em;color:var(--blue)}
+.foot{margin:20px auto 0;max-width:62ch;text-align:center;font-size:12px;color:var(--faint)}
 
-@media (max-width:720px){
-  .hero{grid-template-columns:1fr;gap:16px}
-  .marquee{padding:22px 22px 18px}
-  .controls{padding:16px}
-  .ctl{grid-template-columns:1fr;gap:4px}
+/* おまかせのステッカー（右下で回る） */
+.sticker{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;width:120px;height:120px;padding:0;
+  display:grid;place-items:center;border-radius:50%;border:2px solid var(--ink);background:var(--lime);cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .15s}
+.sticker:hover{transform:translate(-2px,-2px) rotate(-6deg)}
+.sticker svg{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px);animation:spin 18s linear infinite}
+.sticker text{font-family:var(--display);font-size:10px;fill:var(--ink)}
+.sticker-label{position:relative;display:grid;justify-items:center;font-size:12px;font-weight:700;line-height:1.15}
+.sticker-label b{font-family:var(--display);font-weight:400;font-size:24px;line-height:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;gap:22px}
+  .controls{padding:18px 16px;border-radius:16px;box-shadow:4px 4px 0 var(--ink)}
+  .ctl{grid-template-columns:1fr;gap:5px}
   .ctl>label,.ctl>.lbl{padding-top:0}
-  .movie{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"poster main" "stub stub"}
-  .poster{width:58px}
-  .main{padding:12px 14px 10px 12px}
-  .stub{grid-template-columns:auto minmax(40px,1fr) auto;align-items:center;justify-items:start;text-align:left;gap:6px 12px;
-    padding:10px 14px;border-left:0;border-top:2px dashed var(--perf)}
-  .stub::before{left:-9px;top:-10px}
-  .stub::after{left:auto;right:-9px;top:-10px;bottom:auto}
-  .stub-lbl{display:none}
-  .stub .score{grid-column:1 / -1}
-  .min b{font-size:26px}
+}
+@media (max-width:560px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}
+  .card-top{padding:6px 7px 6px 9px}
+  .no{font-size:17px}
+  .rt{padding:1px 7px}
+  .rt b{font-size:14px}
+  .card-body{padding:9px 9px 12px;gap:5px}
+  .t{font-size:13.5px}
+  .band h2{font-size:17px}
+  .sticker{width:94px;height:94px;right:12px}
+  .sticker text{font-size:9px}
+  .sticker-label{font-size:10.5px}
+  .sticker-label b{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 
 <div class="wrap">
   <header class="hero">
-    <div class="marquee">
-      <p class="kicker">本日の上映案内</p>
-      <h1>今夜なに観る？</h1>
+    <div>
+      <p class="en-label">WHAT TO WATCH TONIGHT</p>
+      <h1>今夜<br>なに観る？</h1>
       <p class="lede" id="lede"></p>
     </div>
     <figure class="hist" aria-label="上映時間の分布">
@@ -195,7 +198,9 @@ details p{margin:6px 0 0;max-width:65ch;color:var(--ink)}
       <div class="hist-ticks" id="histTicks"></div>
     </figure>
   </header>
+  <div class="belt" aria-hidden="true"><div class="belt-track" id="belt"></div></div>
 
+  <div class="sec-head"><span class="en">FILTER</span><span class="ja">条件をえらぶ</span></div>
   <section class="controls" aria-label="絞り込み">
     <div class="ctl">
       <span class="lbl">リスト</span>
@@ -253,6 +258,7 @@ details p{margin:6px 0 0;max-width:65ch;color:var(--ink)}
     </div>
   </section>
 
+  <div class="sec-head"><span class="en">LINEUP</span><span class="ja">今夜の上映作品</span></div>
   <div class="toolbar">
     <div class="count" id="count"></div>
     <div class="tools">
@@ -269,17 +275,22 @@ details p{margin:6px 0 0;max-width:65ch;color:var(--ink)}
         <option value="order-desc">観たいに入れた古い順</option>
         <option value="title-asc">タイトル順</option>
       </select>
-      <button class="btn solid" id="pickBtn" type="button">おまかせで1本</button>
       <button class="btn ghost" id="resetBtn" type="button">条件をリセット</button>
     </div>
   </div>
   <div id="picked"></div>
 
   <main id="list"></main>
-  <div class="more-wrap" id="moreWrap" hidden><button class="btn" type="button" id="moreBtn"></button></div>
-  <div class="fin" id="fin" aria-hidden="true" hidden>終</div>
+  <div class="more-wrap" id="moreWrap" hidden><button class="btn lime" type="button" id="moreBtn"></button></div>
+  <div class="fin" id="fin" hidden><span class="en">THE END</span><span class="ja">今夜も、いい映画を。</span></div>
   <p class="foot" id="foot"></p>
 </div>
+
+<button class="sticker" id="pickBtn" type="button" aria-label="条件に合う作品からおまかせで1本えらぶ">
+  <svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="ring" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"/></defs>
+    <text><textPath href="#ring" textLength="292" lengthAdjust="spacing">PICK ONE FOR TONIGHT ● PICK ONE FOR TONIGHT ●</textPath></text></svg>
+  <span class="sticker-label">おまかせで<b>1本</b></span>
+</button>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -483,15 +494,15 @@ function vodChips(m){
   if(inTheater(m)) out.push(`<a class="v theater" href="${esc(m.url)}/theaters" target="_blank" rel="noopener">映画館で上映中${m.theaters ? ` ${m.theaters}館` : ""}</a>`);
   else if(upcoming(m)) out.push(`<span class="v theater">${esc(m.release.replace(/-/g,"/"))} 公開</span>`);
   const vods = [...m.vod].sort((a,b) => (mine.has(b.name)-mine.has(a.name)) || (isSvod(b)-isSvod(a)));
-  // 札は見放題と契約中のサービスだけ。レンタル・購入しかない他社はまとめて件数にする
-  let shown = vods.filter(v => mine.has(v.name) || isSvod(v));
-  if(!shown.length) shown = vods.slice(0, 2);
+  // 札は契約中のサービスだけ（未選択なら見放題を3社まで）。ほかは「ほか◯社」にまとめてカードを短く保つ
+  let shown = state.services.length ? vods.filter(v => mine.has(v.name)) : vods.filter(isSvod).slice(0, 3);
+  if(!shown.length) shown = vods.slice(0, state.services.length ? 1 : 2);
   const rest = vods.length - shown.length;
   shown.forEach(v => {
     const cls = ["v", isSvod(v) ? "svod" : "", mine.has(v.name) && (!state.svodOnly || isSvod(v)) ? "mine" : ""].join(" ");
     out.push(`<a class="${cls}" href="${esc(v.href)}" target="_blank" rel="noopener nofollow">${esc(v.name)} ${esc(v.kinds.join("・"))}</a>`);
   });
-  if(rest) out.push(`<a class="v none" href="${esc(m.url)}/vod" target="_blank" rel="noopener">ほかレンタル・購入 ${rest}件</a>`);
+  if(rest) out.push(`<a class="v none" href="${esc(m.url)}/vod" target="_blank" rel="noopener">ほか${rest}社</a>`);
   if(!m.vod.length && !inTheater(m) && !upcoming(m)) out.push(`<span class="v none">配信なし</span>`);
   return out.join("");
 }
@@ -504,12 +515,12 @@ function badges(m){
   (m.ranks || []).forEach(r => out.push(`<span class="b rank">${esc(r.list)} <b>${r.rank}位</b></span>`));
   return out.length ? `<div class="badges">${out.join("")}</div>` : "";
 }
-function row(m, start){
-  const pct = m.runtime ? Math.min(100, m.runtime/240*100) : 0;
+const BAND_COLOR = {"90分未満":"var(--mint)","90〜119分":"var(--sun)","2時間〜2時間29分":"var(--sky)","2時間半以上":"var(--pink)","上映時間の登録なし":"var(--paper)"};
+function card(m, start, no){
   const endMin = m.runtime ? start + m.runtime : null;
-  const meta = [m.original, m.year && `${m.year}年`, m.countries.join("・"), m.genres.join("・")].filter(Boolean).map(esc).join(" ／ ");
+  const meta = [m.year && `${m.year}年`, m.countries.slice(0,2).join("・"), m.genres.slice(0,2).join("・")].filter(Boolean).map(esc).join(" ／ ");
   const people = [
-    m.directors.length ? `監督 <b>${esc(m.directors.join("、"))}</b>` : "",
+    m.directors.length ? `監督 ${esc(m.directors.join("、"))}` : "",
     m.cast.length ? `出演 ${esc(m.cast.slice(0,4).join("、"))}` : "",
   ].filter(Boolean).join("　");
   const links = [
@@ -518,22 +529,18 @@ function row(m, start){
     m.official ? `<a href="${esc(m.official)}" target="_blank" rel="noopener nofollow">公式サイト</a>` : "",
     `<a href="${esc(m.url)}/vod" target="_blank" rel="noopener">配信サービスをすべて見る</a>`,
   ].filter(Boolean).join("");
-  return `<article class="movie${m.id===pickedId?" hl":""}" id="m-${m.id}">
-    <a class="poster" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>
-    <div class="main">
+  const clock = endMin != null
+    ? `<span class="clock">${hhmm(start)} → <span${endMin >= 1440 ? ' class="late"' : ""}>${hhmm(endMin)}</span></span>` : "";
+  return `<article class="card${m.id===pickedId?" hl":""}" id="m-${m.id}" style="--c:${BAND_COLOR[band(m)]}">
+    <div class="card-top"><span class="no">${String(no).padStart(3,"0")}</span><span class="rt">${m.runtime ? `<b>${m.runtime}</b>分` : "時間未登録"}</span></div>
+    <a class="poster" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : `<span class="ph">${esc(m.title.slice(0,8))}</span>`}</a>
+    <div class="card-body">
       ${badges(m)}
       <h3 class="t"><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
-      <p class="meta">${meta}</p>
-      ${people ? `<p class="people">${people}</p>` : ""}
+      ${meta ? `<p class="meta">${meta}</p>` : ""}
+      <p class="times">${clock}<span class="score"><b>★${m.score != null ? m.score.toFixed(1) : "—"}</b> 観たい${(m.clips||0).toLocaleString()}人</span></p>
       <div class="vod">${vodChips(m)}</div>
-      <details><summary>${m.synopsis ? "あらすじ・リンク" : "リンク（あらすじはFilmarksで）"}</summary>${m.synopsis ? `<p>${esc(m.synopsis)}</p>` : ""}<p class="links">${links}</p></details>
-    </div>
-    <div class="stub">
-      <div class="stub-lbl">上映時間</div>
-      <div class="min">${m.runtime ? `<b>${m.runtime}</b>分` : "—"}</div>
-      <div class="bar" title="240分を100%とした長さ"><i style="width:${pct}%"></i></div>
-      <div class="times">${endMin != null ? `<span><small>開映</small>${hhmm(start)}</span><span${endMin >= 1440 ? ' class="late"' : ""}><small>終映</small>${hhmm(endMin)}</span>` : "時間の登録なし"}</div>
-      <div class="score"><span class="s">★${m.score != null ? m.score.toFixed(1) : "—"}</span> 観たい ${(m.clips||0).toLocaleString()}人</div>
+      <details><summary>${m.synopsis ? "あらすじ・くわしく" : "くわしく"}</summary>${m.original ? `<p>${esc(m.original)}</p>` : ""}${people ? `<p class="people">${people}</p>` : ""}${m.synopsis ? `<p>${esc(m.synopsis)}</p>` : ""}<p class="links">${links}</p></details>
     </div>
   </article>`;
 }
@@ -553,13 +560,15 @@ function render(){
   if(!list.length){
     $("list").innerHTML = `<p class="empty">この条件に合う作品はありません。「条件をリセット」で最初の状態に戻せます。</p>`;
   } else if(state.sort.startsWith("runtime")){
-    let html = "", cur = null, buf = [];
-    const flush = () => { if(cur){ html += `<div class="band"><h2>${cur}</h2><span>${buf.length}本</span></div><div class="list">${buf.map(m=>row(m,start)).join("")}</div>`; } };
+    const bandTotal = {};
+    all.forEach(m => { const b = band(m); bandTotal[b] = (bandTotal[b] || 0) + 1; });
+    let html = "", cur = null, buf = [], no = 0;
+    const flush = () => { if(cur){ html += `<div class="band" style="--c:${BAND_COLOR[cur]}"><h2>${cur}</h2><span>${bandTotal[cur]}本</span></div><div class="grid">${buf.map(m=>card(m,start,++no)).join("")}</div>`; } };
     list.forEach(m => { const b = band(m); if(b !== cur){ flush(); cur = b; buf = []; } buf.push(m); });
     flush();
     $("list").innerHTML = html;
   } else {
-    $("list").innerHTML = `<div class="list">${list.map(m=>row(m,start)).join("")}</div>`;
+    $("list").innerHTML = `<div class="grid">${list.map((m,i)=>card(m,start,i+1)).join("")}</div>`;
   }
   $("foot").textContent = `データ：Filmarks（${fmtStamp(DATA.fetched_at)} 時点）。配信状況と評価は取得時点のもので、最新の状況は各サービスでご確認ください。${DATA.failed.length ? `取得できなかった観たい作品：${DATA.failed.length}本。` : ""}`;
   save();
@@ -604,7 +613,7 @@ function pick(){
   const pos = sorted.findIndex(x => x.id === m.id);
   if(pos >= limit) limit = Math.ceil((pos + 1) / STEP) * STEP;
   const start = startMinutes();
-  $("picked").innerHTML = `<div class="picked"><span class="hint">今夜の1本</span><b>${esc(m.title)}</b><span class="num">${m.runtime ? `${m.runtime}分・${hhmm(start)} → ${hhmm(start+m.runtime)}` : ""}</span><button class="more" type="button" id="pickBtn2">別のにする</button></div>`;
+  $("picked").innerHTML = `<div class="picked"><span class="hint">TONIGHT'S PICK</span><b>${esc(m.title)}</b><span class="num">${m.runtime ? `${m.runtime}分・${hhmm(start)} → ${hhmm(start+m.runtime)}` : ""}</span><button class="more" type="button" id="pickBtn2">別のにする</button></div>`;
   render();
   $("pickBtn2").onclick = pick;
   document.getElementById("m-" + m.id)?.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center"});
@@ -619,6 +628,9 @@ fetch("data.json", {cache: "no-cache"})
     SERVICES = countBy(MOVIES.flatMap(m => [...new Set(m.vod.map(v => v.name))]));
     GENRES = countBy(MOVIES.flatMap(m => m.genres));
     state.services = state.services.filter(s => SERVICES.some(([n]) => n === s));
+    const belt = MOVIES.filter(m => m.source === "clip" && m.poster).sort((a,b) => (b.score||0)-(a.score||0)).slice(0, 18)
+      .map(m => `<a href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1"><img src="${m.poster}" alt="" decoding="async"></a>`).join("");
+    $("belt").innerHTML = belt + belt;  // 2周分並べて切れ目なく流す
     render();
     setInterval(() => { if(!state.start) render(); }, 5 * 60 * 1000);
   })
