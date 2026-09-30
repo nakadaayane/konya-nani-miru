@@ -37,12 +37,6 @@ button,input,select{font:inherit;color:inherit}
 .stage-deco{position:absolute;left:0;right:0;top:0;height:min(760px,100vh);overflow:hidden;pointer-events:none;z-index:0;
   background:radial-gradient(60% 70% at 50% 0%,rgba(165,218,242,.55),transparent 70%)}
 .valance{position:absolute;left:0;top:0;display:block}
-.beam{position:absolute;bottom:-20px;width:190px;height:115%;transform-origin:50% 100%;opacity:.72;
-  clip-path:polygon(44% 100%,56% 100%,100% 0,0 0)}
-.beam-l{left:12%;background:linear-gradient(to top,rgba(226,255,50,.95),rgba(226,255,50,0) 88%);animation:sweepL 9s ease-in-out infinite alternate}
-.beam-r{right:12%;background:linear-gradient(to top,rgba(165,218,242,.95),rgba(165,218,242,0) 88%);animation:sweepR 9s ease-in-out -4.5s infinite alternate}
-@keyframes sweepL{from{transform:rotate(-30deg)}to{transform:rotate(12deg)}}
-@keyframes sweepR{from{transform:rotate(30deg)}to{transform:rotate(-12deg)}}
 .spark{position:absolute;height:auto;animation:twinkle 3.4s ease-in-out var(--d,0s) infinite}
 @keyframes twinkle{0%,100%{transform:scale(.55) rotate(0deg);opacity:.55}50%{transform:scale(1) rotate(25deg);opacity:1}}
 .drape{position:absolute;top:0;width:clamp(0px,calc((100vw - 1180px) / 2 - 8px),150px);height:560px;display:none;transform-origin:50% 0;animation:sway 6s ease-in-out infinite}
@@ -331,7 +325,6 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
   .band h2{font-size:17px}
   .sticker{width:94px;height:94px;right:12px}
   .wrap{padding-top:60px}
-  .beam{width:120px;opacity:.6}
   .spark.extra{display:none}
   .illo-slot{width:74px}
   .tab{font-size:14px;padding:8px 14px 9px 12px}
@@ -346,7 +339,6 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
 </style>
 
 <div class="stage-deco" aria-hidden="true">
-  <div class="beam beam-l"></div><div class="beam beam-r"></div>
   <svg class="spark" viewBox="0 0 40 40" style="left:5%;top:22%;width:30px;--d:0s" fill="#E2FF32"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:42%;top:6%;width:22px;--d:-1.2s" fill="#FFA9C2"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:58%;top:30%;width:26px;--d:-2.1s" fill="#A5DAF2"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:88%;top:12%;width:32px;--d:-.6s" fill="#FFD84A"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:94%;top:52%;width:20px;--d:-1.7s" fill="#6CCB9F"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark extra" viewBox="0 0 40 40" style="left:30%;top:58%;width:18px;--d:-2.6s" fill="#FFD84A"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark extra" viewBox="0 0 40 40" style="left:70%;top:70%;width:22px;--d:-.3s" fill="#E2FF32"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark extra" viewBox="0 0 40 40" style="left:12%;top:76%;width:24px;--d:-1.9s" fill="#A5DAF2"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg>
   <svg class="drape drape-l" viewBox="0 0 140 560" preserveAspectRatio="none">
 <path d="M0 0 H140 C122 120 118 260 94 410 C86 462 96 516 122 560 H0 Z" fill="#E8332E" stroke="#141414" stroke-width="3" stroke-linejoin="round"/>
