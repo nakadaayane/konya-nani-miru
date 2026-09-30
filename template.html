@@ -3,9 +3,15 @@
 <meta name="referrer" content="no-referrer">
 <title>今夜なに観る？</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#E8E2DF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="今夜なに観る">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Old+Mincho:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
 /* 生成りのグレーに群青とライム、上映時間の帯ごとにポップな色。明るい見た目に固定する */
 :root{
@@ -14,7 +20,6 @@
   --blue:#1E2BDC; --blue-soft:#E2E4FB; --lime:#E2FF32;
   --mint:#6CCB9F; --sun:#FFD84A; --sky:#A5DAF2; --pink:#FFA9C2; --late:#C0245A;
   --display:"Dela Gothic One","Zen Kaku Gothic New","Hiragino Sans",sans-serif;
-  --mincho:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho","YuMincho",serif;
   --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -58,7 +63,7 @@ h1{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(52px,9.5v
 /* ---------- 見出し（英字＋明朝） ---------- */
 .sec-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin:48px 0 16px}
 .sec-head .en{font-family:var(--display);font-size:clamp(32px,5vw,46px);line-height:1}
-.sec-head .ja{font-family:var(--mincho);font-size:14px;letter-spacing:.32em;color:var(--blue)}
+.sec-head .ja{font-family:var(--body);font-weight:700;font-size:14px;letter-spacing:.24em;color:var(--blue)}
 
 /* ---------- 絞り込み ---------- */
 .controls{display:grid;gap:16px;padding:22px 24px;background:var(--paper);border:2px solid var(--ink);border-radius:20px;box-shadow:6px 6px 0 var(--ink)}
@@ -149,12 +154,11 @@ details p{margin:6px 0 0;color:var(--ink)}
 .empty{padding:56px 0;text-align:center;color:var(--muted)}
 .fin{display:grid;justify-items:center;gap:10px;margin:80px 0 0}
 .fin .en{font-family:var(--display);font-size:clamp(44px,8vw,76px);line-height:1}
-.fin .ja{font-family:var(--mincho);font-size:14px;letter-spacing:.32em;color:var(--blue)}
+.fin .ja{font-family:var(--body);font-weight:700;font-size:14px;letter-spacing:.24em;color:var(--blue)}
 .foot{margin:20px auto 0;max-width:62ch;text-align:center;font-size:12px;color:var(--faint)}
 
 /* イラスト */
-.title-wrap{position:relative}
-.illo-pop{position:absolute;right:0;top:-6px;width:132px;transform:rotate(8deg)}  /* 「今夜」の行の右横。英字タイトルには重ねない */
+.illo-pop{display:inline-block;width:.9em;margin-left:.12em;vertical-align:-.06em;transform:rotate(8deg)}  /* 「今夜」の行の中に収め、下の行や英字に重ねない */
 .illo-pop .illo,.illo-slot .illo{display:block;width:100%;height:auto}
 .illo-slot{margin-left:auto;width:112px;align-self:center;transform:rotate(-6deg)}
 .illo-slot.tilt{transform:rotate(7deg)}
@@ -224,6 +228,46 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
 .ev-sub:first-child{margin-top:4px}
 .ev-empty{padding:14px 0;font-size:12.5px;color:var(--muted)}
 
+/* 変わったこと */
+.news{margin-top:26px;padding:16px 20px 12px;background:var(--paper);border:2px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink)}
+.news-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:4px}
+.news-head .en{font-family:var(--display);font-size:22px;line-height:1}
+.news-head .ja{font-weight:700;font-size:13px;letter-spacing:.2em;color:var(--blue)}
+.news-head .since{margin-left:auto;font-size:11.5px;color:var(--faint)}
+.news ul{list-style:none;margin:0;padding:0}
+.news li{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;padding:8px 0;border-top:1.5px dashed var(--hair);font-size:13.5px}
+.news li:first-child{border-top:0}
+.news .new{font-family:var(--display);font-size:10px;padding:1px 7px;border-radius:999px;background:var(--lime);border:1.5px solid var(--ink)}
+.news .kind{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:6px;border:1.5px solid var(--ink);background:var(--c,var(--paper))}
+.news .txt{flex:1 1 16em;min-width:0;overflow-wrap:anywhere}
+.news .txt a,.news .txt button{font:inherit;color:inherit;background:none;border:0;padding:0;text-align:left;cursor:pointer;text-decoration:underline;text-decoration-color:var(--blue);text-underline-offset:3px}
+.news time{font-family:var(--display);font-size:11px;color:var(--faint)}
+.news details summary{margin-top:6px;font-size:12px}
+
+/* 名前で絞り込み・共有 */
+.name{font:inherit;color:var(--blue);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(30,43,220,.35);text-underline-offset:3px}
+.name:hover{text-decoration-color:var(--blue)}
+.dir{margin:0;font-size:11.5px;color:var(--muted);overflow-wrap:anywhere}
+.card-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.share{font:inherit;font-size:12px;font-weight:700;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;padding:1px 10px;cursor:pointer}
+.share:hover{background:var(--lime)}
+.toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;max-width:calc(100% - 32px);
+  padding:10px 16px;background:var(--ink);color:#fff;border-radius:12px;font-size:13px;box-shadow:4px 4px 0 var(--blue)}
+
+/* 公開予定 */
+.co-date{display:flex;align-items:center;gap:12px;margin:28px 0 12px}
+.co-date h3{margin:0;font-family:var(--display);font-weight:400;font-size:20px;padding:6px 16px;background:var(--c,var(--sky));border:2px solid var(--ink);border-radius:999px}
+.co-date span{font-size:12px;color:var(--muted)}
+.co-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.co-card{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;padding:12px;background:var(--paper);border:2px solid var(--ink);border-radius:16px}
+.co-poster{display:block;width:72px;aspect-ratio:5/7;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--hair)}
+.co-poster img{display:block;width:100%;height:100%;object-fit:cover}
+.co-card h4{margin:0;font-size:14.5px;line-height:1.4;overflow-wrap:anywhere}
+.co-card h4 a{text-decoration:none}
+.co-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.co-btns a,.co-btns button{font:inherit;font-size:11.5px;font-weight:700;text-decoration:none;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;padding:2px 10px;cursor:pointer}
+.co-btns .cal{background:var(--lime)}
+
 /* おまかせのステッカー（右下で回る） */
 .sticker{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;width:120px;height:120px;padding:0;
   display:grid;place-items:center;border-radius:50%;border:2px solid var(--ink);background:var(--lime);cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .15s}
@@ -235,6 +279,14 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 @media (max-width:760px){
+  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:2px solid var(--ink)}
+  .tab{justify-items:center;text-align:center;border:0;border-radius:12px;box-shadow:none;padding:6px 2px;font-size:12.5px}
+  .tab .tab-en{font-size:8.5px;letter-spacing:.08em}
+  .tab b{margin-left:3px;font-size:10px;padding:0 5px}
+  .tab[aria-selected="true"]{transform:none}
+  .wrap{padding-bottom:190px}
+  .sticker{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
   .hero{grid-template-columns:1fr;gap:22px}
   .controls{padding:18px 16px;border-radius:16px;box-shadow:4px 4px 0 var(--ink)}
   .ctl{grid-template-columns:1fr;gap:5px}
@@ -250,7 +302,6 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
   .t{font-size:13.5px}
   .band h2{font-size:17px}
   .sticker{width:94px;height:94px;right:12px}
-  .illo-pop{width:64px;top:-2px}
   .illo-slot{width:74px}
   .tab{font-size:14px;padding:8px 14px 9px 12px}
   .th-movies{padding:2px 12px 6px}
@@ -267,11 +318,15 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
   <header class="hero">
     <div class="hero-main">
       <p class="en-label">WHAT TO WATCH TONIGHT</p>
-      <div class="title-wrap"><h1>今夜<br>なに観る？</h1><span class="illo-pop"><svg class="illo" viewBox="0 0 120 130" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
-<circle cx="34" cy="46" r="15" fill="#FFF6D6"/><circle cx="56" cy="31" r="17" fill="#FFF6D6"/><circle cx="81" cy="37" r="16" fill="#FFF6D6"/><circle cx="95" cy="55" r="13" fill="#FFF6D6"/><circle cx="23" cy="62" r="12" fill="#FFF6D6"/>
-<path d="M17 60 H103 L91 125 H29 Z" fill="#fff"/><path d="M38 60 H52 L50 125 H40 Z M68 60 H82 L79 125 H69 Z" fill="#FFA9C2"/>
-<circle cx="49" cy="88" r="3.6" fill="#141414"/><circle cx="71" cy="88" r="3.6" fill="#141414"/><path d="M52 99 Q60 106 68 99" fill="none"/>
-<circle cx="41" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/><circle cx="79" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/></g></svg></span></div>
+      <h1>今夜<span class="illo-pop"><svg class="illo" viewBox="0 0 120 128" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<g fill="#FFF3C4"><circle cx="18" cy="20" r="6"/><circle cx="24" cy="15" r="5"/><circle cx="101" cy="13" r="5"/><circle cx="106" cy="19" r="5"/></g>
+<g fill="#FFF3C4"><circle cx="30" cy="52" r="12"/><circle cx="40" cy="41" r="12"/><circle cx="54" cy="33" r="13"/><circle cx="69" cy="35" r="12"/><circle cx="83" cy="43" r="12"/><circle cx="93" cy="54" r="11"/>
+<circle cx="46" cy="55" r="11"/><circle cx="62" cy="51" r="12"/><circle cx="78" cy="58" r="10"/><circle cx="23" cy="62" r="9"/><circle cx="97" cy="63" r="8"/></g>
+<g fill="#FFD84A" stroke="none"><circle cx="51" cy="29" r="3"/><circle cx="81" cy="40" r="2.5"/><circle cx="60" cy="47" r="2.5"/><circle cx="36" cy="38" r="2"/></g>
+<path d="M16 66 H104 L94 124 H26 Z" fill="#fff"/>
+<path d="M16.0 66 H28.6 L35.7 124 H26.0 Z M41.1 66 H53.7 L55.1 124 H45.4 Z M66.3 66 H78.9 L74.6 124 H64.9 Z M91.4 66 H104.0 L94.0 124 H84.3 Z" fill="#E8332E" stroke="none"/>
+<path d="M16 66 H104 L94 124 H26 Z" fill="none"/>
+<rect x="11" y="60" width="98" height="10" rx="3" fill="#E8332E"/></g></svg></span><br>なに観る？</h1>
       <p class="lede" id="lede"></p>
     </div>
     <figure class="hist" aria-label="上映時間の分布">
@@ -282,9 +337,12 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
   </header>
   <div class="belt" aria-hidden="true"><div class="belt-track" id="belt"></div></div>
 
+  <section class="news" id="news" aria-label="変わったこと" hidden></section>
+
   <nav class="tabs" role="tablist" aria-label="表示の切り替え">
     <button class="tab" type="button" role="tab" data-tab="movies" aria-selected="true"><span class="tab-en">LINEUP</span>作品</button>
     <button class="tab" type="button" role="tab" data-tab="theaters" aria-selected="false"><span class="tab-en">THEATERS</span><span>映画館<b id="tabTheaterN" hidden></b></span></button>
+    <button class="tab" type="button" role="tab" data-tab="coming" aria-selected="false"><span class="tab-en">COMING</span><span>公開予定<b id="tabComingN" hidden></b></span></button>
     <button class="tab" type="button" role="tab" data-tab="events" aria-selected="false"><span class="tab-en">EVENTS</span><span>イベント<b id="tabEventN" hidden></b></span></button>
   </nav>
 
@@ -400,6 +458,16 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
     <div id="theaterBody"></div>
   </div>
 
+  <div id="panel-coming" role="tabpanel" hidden>
+    <div class="sec-head"><span class="en">COMING SOON</span><span class="ja">公開予定</span><span class="illo-slot"><svg class="illo" viewBox="0 0 120 104" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<rect x="12" y="40" width="96" height="58" rx="6" fill="#141414"/>
+<rect x="12" y="40" width="96" height="14" fill="#fff"/><path d="M26 40 L36 54 M50 40 L60 54 M74 40 L84 54" stroke-width="7"/>
+<g transform="rotate(-14 14 38)"><rect x="12" y="22" width="96" height="16" rx="3" fill="#fff"/><path d="M28 22 L38 38 M52 22 L62 38 M76 22 L86 38" stroke-width="7"/></g>
+<path d="M26 72 H74 M26 85 H58" stroke="#E2FF32" stroke-width="5"/></g></svg></span></div>
+    <p class="th-note" id="coNote"></p>
+    <div id="comingBody"></div>
+  </div>
+
   <div id="panel-events" role="tabpanel" hidden>
     <div class="sec-head"><span class="en">EVENTS</span><span class="ja">よく行く映画館のイベント</span><span class="illo-slot"><svg class="illo" viewBox="0 0 140 70" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
 <path d="M8 10 H132 V26 A9 9 0 0 0 132 44 V60 H8 V44 A9 9 0 0 0 8 26 Z" fill="#E2FF32"/>
@@ -407,11 +475,15 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
 <polygon points="116.0,24.0 118.8,31.1 126.5,31.6 120.6,36.5 122.5,43.9 116.0,39.8 109.5,43.9 111.4,36.5 105.5,31.6 113.2,31.1" fill="#FFA9C2" stroke-width="2"/>
 <text x="54" y="41" text-anchor="middle" font-family="Dela Gothic One, sans-serif" font-size="13" fill="#141414" stroke="none">ADMIT ONE</text></g></svg></span></div>
     <div class="ev-grid" id="evTheaters"></div>
-    <div class="sec-head"><span class="en">FILMARKS</span><span class="ja">リバイバル上映・試写会</span><span class="illo-slot tilt"><svg class="illo" viewBox="0 0 120 130" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
-<circle cx="34" cy="46" r="15" fill="#FFF6D6"/><circle cx="56" cy="31" r="17" fill="#FFF6D6"/><circle cx="81" cy="37" r="16" fill="#FFF6D6"/><circle cx="95" cy="55" r="13" fill="#FFF6D6"/><circle cx="23" cy="62" r="12" fill="#FFF6D6"/>
-<path d="M17 60 H103 L91 125 H29 Z" fill="#fff"/><path d="M38 60 H52 L50 125 H40 Z M68 60 H82 L79 125 H69 Z" fill="#FFA9C2"/>
-<circle cx="49" cy="88" r="3.6" fill="#141414"/><circle cx="71" cy="88" r="3.6" fill="#141414"/><path d="M52 99 Q60 106 68 99" fill="none"/>
-<circle cx="41" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/><circle cx="79" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/></g></svg></span></div>
+    <div class="sec-head"><span class="en">FILMARKS</span><span class="ja">リバイバル上映・試写会</span><span class="illo-slot tilt"><svg class="illo" viewBox="0 0 120 128" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<g fill="#FFF3C4"><circle cx="18" cy="20" r="6"/><circle cx="24" cy="15" r="5"/><circle cx="101" cy="13" r="5"/><circle cx="106" cy="19" r="5"/></g>
+<g fill="#FFF3C4"><circle cx="30" cy="52" r="12"/><circle cx="40" cy="41" r="12"/><circle cx="54" cy="33" r="13"/><circle cx="69" cy="35" r="12"/><circle cx="83" cy="43" r="12"/><circle cx="93" cy="54" r="11"/>
+<circle cx="46" cy="55" r="11"/><circle cx="62" cy="51" r="12"/><circle cx="78" cy="58" r="10"/><circle cx="23" cy="62" r="9"/><circle cx="97" cy="63" r="8"/></g>
+<g fill="#FFD84A" stroke="none"><circle cx="51" cy="29" r="3"/><circle cx="81" cy="40" r="2.5"/><circle cx="60" cy="47" r="2.5"/><circle cx="36" cy="38" r="2"/></g>
+<path d="M16 66 H104 L94 124 H26 Z" fill="#fff"/>
+<path d="M16.0 66 H28.6 L35.7 124 H26.0 Z M41.1 66 H53.7 L55.1 124 H45.4 Z M66.3 66 H78.9 L74.6 124 H64.9 Z M91.4 66 H104.0 L94.0 124 H84.3 Z" fill="#E8332E" stroke="none"/>
+<path d="M16 66 H104 L94 124 H26 Z" fill="none"/>
+<rect x="11" y="60" width="98" height="10" rx="3" fill="#E8332E"/></g></svg></span></div>
     <div class="ev-grid" id="evFilmarks"></div>
   </div>
 
@@ -655,10 +727,8 @@ const BAND_COLOR = {"90分未満":"var(--mint)","90〜119分":"var(--sun)","2時
 function card(m, start, no){
   const endMin = m.runtime ? start + m.runtime : null;
   const meta = [m.year && `${m.year}年`, m.countries.slice(0,2).join("・"), m.genres.slice(0,2).join("・")].filter(Boolean).map(esc).join(" ／ ");
-  const people = [
-    m.directors.length ? `監督 ${esc(m.directors.join("、"))}` : "",
-    m.cast.length ? `出演 ${esc(m.cast.slice(0,4).join("、"))}` : "",
-  ].filter(Boolean).join("　");
+  const names = list => list.map(n => `<button type="button" class="name" data-person="${esc(n)}">${esc(n)}</button>`).join("、");
+  const people = m.cast.length ? `出演 ${names(m.cast.slice(0,5))}` : "";
   const links = [
     `<a href="${esc(m.url)}" target="_blank" rel="noopener">${m.source === "pick" ? "Filmarksで開く（観たいに追加できます）" : "Filmarksで開く"}</a>`,
     m.trailer ? `<a href="${esc(m.trailer)}" target="_blank" rel="noopener nofollow">予告編</a>` : "",
@@ -674,9 +744,11 @@ function card(m, start, no){
       ${badges(m)}
       <h3 class="t"><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
       ${meta ? `<p class="meta">${meta}</p>` : ""}
+      ${m.directors.length ? `<p class="dir">監督 ${names(m.directors.slice(0,2))}</p>` : ""}
       <p class="times">${clock}<span class="score"><b>★${m.score != null ? m.score.toFixed(1) : "—"}</b> 観たい${(m.clips||0).toLocaleString()}人</span></p>
       <div class="vod">${vodChips(m)}</div>
-      <details><summary>${m.synopsis ? "あらすじ・くわしく" : "くわしく"}</summary>${m.original ? `<p>${esc(m.original)}</p>` : ""}${people ? `<p class="people">${people}</p>` : ""}${m.synopsis ? `<p>${esc(m.synopsis)}</p>` : ""}<p class="links">${links}</p></details>
+      <div class="card-actions"><button type="button" class="share" data-share="${m.id}">共有</button>
+      <details><summary>${m.synopsis ? "あらすじ・くわしく" : "くわしく"}</summary>${m.original ? `<p>${esc(m.original)}</p>` : ""}${people ? `<p class="people">${people}</p>` : ""}${m.synopsis ? `<p>${esc(m.synopsis)}</p>` : ""}<p class="links">${links}</p></details></div>
     </div>
   </article>`;
 }
@@ -715,7 +787,7 @@ function render(){
 document.addEventListener("click", e => {
   const b = e.target.closest("button");
   if(!b || !DATA) return;
-  if(b.dataset.tab || b.dataset.tdate || b.dataset.tview || b.dataset.tfav || b.dataset.tmovie) return;  // タブ・映画館は別の処理
+  if(b.dataset.tab || b.dataset.tdate || b.dataset.tview || b.dataset.tfav || b.dataset.tmovie || b.dataset.person || b.dataset.share) return;  // タブ・映画館・名前・共有は別の処理
   if(b.id === "moreBtn"){ limit += STEP; render(); return; }
   limit = STEP;  // 条件を変えたら先頭の100本から出し直す
   if(b.dataset.pool){ state.pool = b.dataset.pool; }
@@ -758,7 +830,7 @@ function pick(){
 
 
 /* ---------- タブ ---------- */
-const TABS = ["movies", "theaters", "events"];
+const TABS = ["movies", "theaters", "coming", "events"];
 function showTab(tab, keepScroll){
   if(!TABS.includes(tab)) tab = "movies";
   state.tab = tab; save();
@@ -769,8 +841,12 @@ function showTab(tab, keepScroll){
   $("pickBtn").hidden = tab !== "movies";
   if(tab === "theaters") renderTheaters();
   if(tab === "events") renderEvents();
+  if(tab === "coming") renderComing();
   try{ history.replaceState(null, "", tab === "movies" ? location.pathname + location.search : "#" + tab); }catch(e){}
-  if(!keepScroll) document.querySelector(".tabs").scrollIntoView({block: "start", behavior: "auto"});
+  if(!keepScroll){  // 切り替えたら、そのタブの先頭へ（スマホは下のタブから押すので）
+    const y = $("panel-" + tab).getBoundingClientRect().top + scrollY - 16;
+    if(scrollY > y) scrollTo({top: y});
+  }
 }
 
 /* ---------- 映画館 ---------- */
@@ -872,7 +948,7 @@ function renderEvents(){
 document.addEventListener("click", e => {
   const b = e.target.closest("button");
   if(!b || !DATA) return;
-  if(b.dataset.tab){ showTab(b.dataset.tab, true); return; }
+  if(b.dataset.tab){ showTab(b.dataset.tab, false); return; }
   if(b.dataset.tdate){ tstate.date = b.dataset.tdate; renderTheaters(); return; }
   if(b.dataset.tview){ tstate.view = b.dataset.tview; tstate.movie = null; renderTheaters(); return; }
   if(b.dataset.tfav){ tstate.fav = !tstate.fav; renderTheaters(); return; }
@@ -881,6 +957,89 @@ document.addEventListener("click", e => {
     showTab("theaters", true);
     document.getElementById("tm-" + tstate.movie)?.scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
   }
+});
+
+
+/* ---------- 共有 ---------- */
+function toast(msg){
+  let t = document.querySelector(".toast");
+  if(!t){ t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => { t.hidden = true; }, 2600);
+}
+async function shareMovie(m){
+  const text = `『${m.title}』${m.runtime ? `（${m.runtime}分）` : ""}${m.score != null ? ` ★${m.score.toFixed(1)}` : ""}`;
+  if(navigator.share){
+    try{ await navigator.share({title: m.title, text, url: m.url}); return; }
+    catch(e){ if(e && e.name === "AbortError") return; }
+  }
+  try{ await navigator.clipboard.writeText(`${text}\n${m.url}`); toast("作品名とリンクをコピーしました"); }
+  catch(e){ toast(`${text} ${m.url}`); }
+}
+
+/* ---------- 公開予定 ---------- */
+function calUrl(m){
+  const d = m.release.replace(/-/g, "");
+  const next = localISO(new Date(new Date(m.release + "T00:00:00").getTime() + 864e5)).replace(/-/g, "");
+  const q = new URLSearchParams({action: "TEMPLATE", text: `『${m.title}』公開`, dates: `${d}/${next}`,
+    details: `${m.runtime ? `${m.runtime}分 ／ ` : ""}${m.url}`});
+  return "https://calendar.google.com/calendar/render?" + q.toString();
+}
+function comingList(){
+  const today = localISO(new Date());
+  return MOVIES.filter(m => m.release && m.release > today).sort((a,b) => a.release.localeCompare(b.release) || (b.clips||0) - (a.clips||0));
+}
+function renderComing(){
+  const all = comingList();
+  const clips = all.filter(m => m.source === "clip"), picks = all.filter(m => m.source === "pick").slice(0, 40);
+  $("coNote").textContent = `観たいに入れた作品 ${clips.length}本と、観たい以外で話題の公開予定 ${picks.length}本を公開日順に並べています。「カレンダーに追加」を押すとGoogleカレンダーの予定作成画面が開きます（登録するかはそこで決められます）。`;
+  const card = m => `<article class="co-card"><a class="co-poster" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>
+    <div>${badges(m)}<h4><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h4>
+      <p class="meta">${[m.runtime && `${m.runtime}分`, m.countries.slice(0,2).join("・"), m.genres.slice(0,2).join("・")].filter(Boolean).map(esc).join(" ／ ")}</p>
+      <div class="co-btns"><a class="cal" href="${esc(calUrl(m))}" target="_blank" rel="noopener">カレンダーに追加</a><button type="button" data-share="${m.id}">共有</button></div></div></article>`;
+  const byDate = list => { const g = new Map(); list.forEach(m => { if(!g.has(m.release)) g.set(m.release, []); g.get(m.release).push(m); }); return g; };
+  const section = (title, list, color) => {
+    if(!list.length) return "";
+    return `<div class="sec-head" style="margin-top:36px"><span class="ja" style="font-size:15px">${title}</span></div>` +
+      [...byDate(list)].map(([d, ms]) => `<div class="co-date" style="--c:${color}"><h3>${esc(dayLabel(d))}</h3><span>${ms.length}本</span></div><div class="co-list">${ms.map(card).join("")}</div>`).join("");
+  };
+  $("comingBody").innerHTML = (section("観たいに入れた作品", clips, "var(--sun)") + section("観たい以外で話題の公開予定", picks, "var(--sky)"))
+    || `<p class="empty">これから公開される作品は、いまのところ見つかりませんでした。</p>`;
+}
+
+/* ---------- 変わったこと ---------- */
+const KIND_LABEL = {svod: ["見放題に", "var(--mint)"], vod: ["配信開始", "var(--mint)"], theater: ["上映開始", "var(--sky)"],
+  ending: ["終了間近", "var(--pink)"], event: ["イベント", "var(--sun)"], release: ["公開間近", "var(--sky)"], clip: ["観たいに追加", "var(--lime)"]};
+function renderNews(){
+  const C = DATA.changes || [];
+  const box = $("news");
+  if(!C.length){ box.hidden = true; return; }
+  const today = (DATA.fetched_at || "").slice(0, 10);
+  const byId = new Map(MOVIES.map(m => [m.id, m]));
+  const li = c => {
+    const [label, color] = KIND_LABEL[c.kind] || ["お知らせ", "var(--paper)"];
+    const m = c.movie && byId.get(c.movie);
+    let body = esc(c.text);
+    if(c.kind === "theater" && m) body = `<button type="button" data-tmovie="${m.id}">${esc(c.text)}</button>`;
+    else if(c.url) body = `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.text)}</a>`;
+    return `<li>${c.date === today ? '<span class="new">NEW</span>' : ""}<span class="kind" style="--c:${color}">${label}</span><span class="txt">${body}</span><time>${esc(c.date.slice(5).replace("-", "/"))}</time></li>`;
+  };
+  box.innerHTML = `<div class="news-head"><span class="en">NEWS</span><span class="ja">変わったこと</span><span class="since">毎朝の更新で前日と比べています（${3}日分）</span></div>
+    <ul>${C.slice(0, 5).map(li).join("")}</ul>${C.length > 5 ? `<details><summary>ほか${C.length - 5}件</summary><ul>${C.slice(5).map(li).join("")}</ul></details>` : ""}`;
+  box.hidden = false;
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if(!b || !DATA) return;
+  if(b.dataset.person){  // 監督・出演者の名前で絞り込み
+    state.q = b.dataset.person; $("q").value = state.q; limit = STEP;
+    showTab("movies", true); render();
+    document.getElementById("list").scrollIntoView({block: "start"});
+    toast(`「${state.q}」の作品に絞り込みました（検索欄を消すと元に戻ります）`);
+    return;
+  }
+  if(b.dataset.share){ const m = MOVIES.find(x => x.id === Number(b.dataset.share)); if(m) shareMovie(m); }
 });
 
 /* ---------- boot ---------- */
@@ -905,6 +1064,9 @@ fetch("data.json", {cache: "no-cache"})
     const nMv = THEATER_N.size, nEv = (d.events?.theaters || []).filter(e => EVENT_WORDS.test(e.title)).length;
     if(nMv){ $("tabTheaterN").hidden = false; $("tabTheaterN").textContent = nMv; }
     if(nEv){ $("tabEventN").hidden = false; $("tabEventN").textContent = nEv; }
+    const nCo = comingList().filter(m => m.source === "clip").length;
+    if(nCo){ $("tabComingN").hidden = false; $("tabComingN").textContent = nCo; }
+    renderNews();
     render();
     const hashTab = location.hash.replace("#", "");
     showTab(TABS.includes(hashTab) ? hashTab : (state.tab || "movies"), true);

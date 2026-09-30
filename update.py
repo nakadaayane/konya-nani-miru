@@ -349,6 +349,7 @@ def fetch_schedules(clips):
                             "info": sc.get("information"),
                             "times": [[x.get("start"), x.get("end")] for x in sc.get("showtimes") or []],
                         } for sc in t.get("screens") or []]
+                        ends = [sc.get("releaseEndDate") for sc in t.get("screens") or [] if sc.get("releaseEndDate")]
                         screens = [sc for sc in screens if sc["times"]]
                         if not screens:
                             continue
@@ -362,7 +363,10 @@ def fetch_schedules(clips):
                         if key in seen:  # 都県の境目の映画館は、東京都と神奈川県の両方で返ってくる
                             continue
                         seen.add(key)
-                        shows.append({"movie": d["id"], "theater": t["id"], "date": date, "screens": screens})
+                        show = {"movie": d["id"], "theater": t["id"], "date": date, "screens": screens}
+                        if ends:
+                            show["end"] = min(ends)[:10]
+                        shows.append(show)
         print(f"[上映館 {n}/{len(targets)}] {d['title']}")
     return {"origin": ORIGIN, "dates": dates,
             "theaters": sorted(theaters.values(), key=lambda t: t["distance"]), "shows": shows}
@@ -524,6 +528,70 @@ def fetch_events(clips):
     return out
 
 
+# ---------- 変わったこと（前回の公開データと比べる） ----------
+CHANGE_DAYS = 3  # お知らせを残す日数
+
+
+def compute_changes(prev, data):
+    today = datetime.now(JST).date()
+    t0 = today.isoformat()
+    svod = lambda m: {v["name"] for v in m.get("vod", []) if any("見放題" in k for k in v.get("kinds", []))}
+    clips = [m for m in data["movies"] if m["source"] == "clip"]
+    prev_clips = {m["id"]: m for m in prev.get("movies", []) if m.get("source") == "clip"}
+    items = []
+
+    def add(key, kind, text, movie=None, url=None):
+        items.append({"key": key, "kind": kind, "date": t0, "text": text, "movie": movie, "url": url})
+
+    if prev_clips:
+        for m in clips:
+            old = prev_clips.get(m["id"])
+            if old is None:
+                add(f"clip-{m['id']}", "clip", f"『{m['title']}』を観たいに追加しました", m["id"], m["url"])
+                continue
+            for name in sorted(svod(m) - svod(old)):
+                add(f"svod-{m['id']}-{name}", "svod", f"『{m['title']}』が{name}で見放題になりました", m["id"],
+                    next((v["href"] for v in m["vod"] if v["name"] == name), m["url"]))
+            if m.get("vod") and not old.get("vod") and not svod(m):
+                add(f"vod-{m['id']}", "vod", f"『{m['title']}』の配信が始まりました（レンタル・購入）", m["id"], m["url"] + "/vod")
+        prev_shown = {x["movie"] for x in (prev.get("theater") or {}).get("shows", [])}
+        if prev.get("theater"):
+            now_shown = {}
+            for x in data["theater"]["shows"]:
+                now_shown.setdefault(x["movie"], set()).add(x["theater"])
+            names = {m["id"]: m for m in clips}
+            for mid, ths in now_shown.items():
+                if mid not in prev_shown and mid in names:
+                    add(f"theater-{mid}", "theater", f"『{names[mid]['title']}』が近くの映画館{len(ths)}館で上映中になりました", mid)
+        prev_urls = {e.get("url") for e in (prev.get("events") or {}).get("theaters", [])}
+        for e in data["events"]["theaters"]:
+            if e["url"] not in prev_urls and (e.get("clip") or re.search("舞台挨拶|登壇|トーク", e["title"])):
+                add(f"event-{e['url']}", "event", f"{e['theater']}：{e['title']}", e.get("clip"), e["url"])
+        prev_rev = {r.get("title") for r in ((prev.get("events") or {}).get("filmarks") or {}).get("revival", [])}
+        for r in data["events"]["filmarks"]["revival"]:
+            if r["title"] not in prev_rev:
+                add(f"revival-{r['title']}", "event", f"Filmarksリバイバル上映（{r['section']}）：{r['title']}", r.get("clip"), r["url"])
+    for m in clips:  # 公開が近い（3日以内）
+        rel = m.get("release")
+        if rel and t0 <= rel <= (today + timedelta(days=3)).isoformat():
+            add(f"release-{m['id']}-{rel}", "release", f"『{m['title']}』は{int(rel[5:7])}月{int(rel[8:10])}日公開です", m["id"], m["url"])
+    ending = {}
+    for x in data["theater"]["shows"]:  # 近くの映画館での上映終了が近い（7日以内・映画館が終了日を出しているときだけ）
+        if x.get("end") and x["end"] <= (today + timedelta(days=7)).isoformat():
+            ending[x["movie"]] = min(ending.get(x["movie"], x["end"]), x["end"])
+    titles = {m["id"]: m["title"] for m in clips}
+    for mid, end in ending.items():
+        if mid in titles:
+            add(f"ending-{mid}-{end}", "ending", f"『{titles[mid]}』の近くでの上映は{int(end[5:7])}月{int(end[8:10])}日までの館があります", mid)
+
+    keys = {i["key"] for i in items}
+    keep_from = (today - timedelta(days=CHANGE_DAYS - 1)).isoformat()
+    items += [i for i in prev.get("changes", []) if i.get("date", "") >= keep_from and i.get("key") not in keys]
+    order = {"svod": 0, "event": 1, "theater": 2, "ending": 3, "release": 4, "vod": 5, "clip": 6}
+    items.sort(key=lambda i: (i["date"], -order.get(i["kind"], 9)), reverse=True)
+    return items
+
+
 # ---------- 出力 ----------
 def poster_data_uri(path):
     """一覧では幅64pxで表示するので、高精細画面向けに128px幅へ縮めて埋め込む"""
@@ -553,6 +621,9 @@ def build(public=False):
         json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
     )
     shutil.copyfile(TEMPLATE, dest / page)
+    if public:  # ホーム画面に追加したときのアイコンと設定
+        for f in (ROOT / "assets").glob("*"):
+            shutil.copyfile(f, dest / f.name)
     size = (dest / "data.json").stat().st_size / 1e6
     print(f"出力: {dest}（data.json {size:.1f}MB）")
 
@@ -688,6 +759,8 @@ def main():
         "failed": failed,
         "movies": movies,
     }
+    data["changes"] = compute_changes(previous_data(), data)
+    print(f"変わったこと: {sum(1 for c in data['changes'] if c['date'] == data['fetched_at'][:10])}件（残しているもの {len(data['changes'])}件）")
     (DATA / "clips.json").write_text(
         json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8"
     )
