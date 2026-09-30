@@ -472,7 +472,23 @@ def fetch_filmarks_events(match):
                 link = "https://revival.filmarks.com/" + href if href.startswith("#") else (href or "https://revival.filmarks.com/")
                 revival.append({"section": section, "title": txt(h), "url": link, "clip": match(txt(h))})
     time.sleep(WAIT)
-    r = get("https://filmaga.filmarks.com/writers/premium-ticket/")
+    # FILMAGA は記事一覧のページが混み合うと断られやすいので、まず RSS を読む
+    r = get("https://filmaga.filmarks.com/writers/premium-ticket/feed/", retries=2)
+    if r is not None:
+        try:
+            feed = BeautifulSoup(r.content, "xml")
+            articles = [{"title": txt(it.find("title")), "url": txt(it.find("link")),
+                         "posted": datetime.strptime(txt(it.find("pubDate"))[:16], "%a, %d %b %Y").strftime("%Y.%m.%d")
+                         if it.find("pubDate") else "",
+                         "clip": match(txt(it.find("title")))} for it in feed.find_all("item")][:10]
+        except Exception as e:
+            print(f"  FILMAGAのRSSが読めませんでした: {e}")
+            articles = None
+    if not articles:
+        time.sleep(WAIT)
+        r = get("https://filmaga.filmarks.com/writers/premium-ticket/")
+    else:
+        r = None
     if r is not None:
         articles = []
         soup = BeautifulSoup(r.text, "lxml")
@@ -498,8 +514,17 @@ def previous_data():
     return {}
 
 
-def fetch_events(clips):
+def attach_clips(events, clips):
+    """イベントの題名が観たい作品と一致したら、その作品IDを付ける（観たいを読み終えてから）"""
     match = clip_matcher(clips)
+    for e in events["theaters"] + events["filmarks"]["revival"] + events["filmarks"]["articles"]:
+        e["clip"] = match(e.get("title"))
+    return events
+
+
+def fetch_events():
+    """イベントは更新の最初に読む（Filmarks本体を続けて読んだあとだと、FILMAGAに断られやすいため）"""
+    match = lambda title: None  # 観たいとの照合は attach_clips で
     prev = previous_data()
     prev_ev, prev_at = prev.get("events") or {}, prev.get("fetched_at")
     out = {"theaters": [], "filmarks": {"revival": [], "articles": []}, "stale": {},
@@ -653,7 +678,7 @@ def main():
         data = json.loads((DATA / "clips.json").read_text(encoding="utf-8"))
         clips = [d for d in data["movies"] if d["source"] == "clip"]
         data["theater"] = fetch_schedules(clips)
-        data["events"] = fetch_events(clips)
+        data["events"] = attach_clips(fetch_events(), clips)
         (DATA / "clips.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
         build(public)
         return
@@ -669,6 +694,8 @@ def main():
     clip_ids = paged_ids(f"/users/{USER_ID}/clips", ".p-contents-grid .c-content-item", "観たい")
     time.sleep(WAIT)
     mark_ids = set(paged_ids(f"/users/{USER_ID}", ".c-content-card", "観た"))
+    time.sleep(WAIT)
+    events = fetch_events()
 
     # 2. ランキングと映画賞（観たい作品にも「U-NEXT人気 12位」などの印をつけるために先に読む）
     rankings = {}
@@ -754,7 +781,7 @@ def main():
     except Exception as e:
         print(f"  上映館の取得エラー: {e}")
         theater = {"origin": ORIGIN, "dates": [], "theaters": [], "shows": []}
-    events = fetch_events(clips)
+    attach_clips(events, clips)
 
     data = {
         "user": USER_ID,
