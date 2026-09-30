@@ -337,7 +337,7 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
   </header>
   <div class="belt" aria-hidden="true"><div class="belt-track" id="belt"></div></div>
 
-  <section class="news" id="news" aria-label="変わったこと" hidden></section>
+  <section class="news" id="news" aria-label="おしらせ" hidden></section>
 
   <nav class="tabs" role="tablist" aria-label="表示の切り替え">
     <button class="tab" type="button" role="tab" data-tab="movies" aria-selected="true"><span class="tab-en">LINEUP</span>作品</button>
@@ -1024,7 +1024,7 @@ function renderNews(){
     else if(c.url) body = `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.text)}</a>`;
     return `<li>${c.date === today ? '<span class="new">NEW</span>' : ""}<span class="kind" style="--c:${color}">${label}</span><span class="txt">${body}</span><time>${esc(c.date.slice(5).replace("-", "/"))}</time></li>`;
   };
-  box.innerHTML = `<div class="news-head"><span class="en">NEWS</span><span class="ja">変わったこと</span><span class="since">毎朝の更新で前日と比べています（${3}日分）</span></div>
+  box.innerHTML = `<div class="news-head"><span class="en">NEWS</span><span class="ja">おしらせ</span><span class="since">毎朝の更新で前日と比べています（${3}日分）</span></div>
     <ul>${C.slice(0, 5).map(li).join("")}</ul>${C.length > 5 ? `<details><summary>ほか${C.length - 5}件</summary><ul>${C.slice(5).map(li).join("")}</ul></details>` : ""}`;
   box.hidden = false;
 }
