@@ -852,20 +852,21 @@ function renderEvents(){
   if(!E){ $("evTheaters").innerHTML = `<p class="empty">イベント情報はまだありません。次の更新で取り込みます。</p>`; $("evFilmarks").innerHTML = ""; return; }
   const byId = new Map(MOVIES.map(m => [m.id, m]));
   const clipBadge = e => e.clip && byId.get(e.clip) ? ` <span class="b clip">観たい</span>` : "";
+  const stale = key => E.stale && E.stale[key] ? `<li class="ev-empty">今朝は取得できなかったので、${esc(fmtStamp(E.stale[key]))} 時点の内容です。</li>` : "";
   const item = (e, notice) => `<li class="${notice ? "notice" : ""}"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.title)}</a>${clipBadge(e)}${e.text ? `<p>${esc(e.text)}</p>` : ""}${e.posted ? `<time>${esc(e.posted)} 掲載</time>` : ""}</li>`;
   const colors = ["var(--mint)", "var(--sky)", "var(--pink)"];
   $("evTheaters").innerHTML = (E.fav || []).map((name, i) => {
     const list = E.theaters.filter(e => e.theater === name);
     const ev = list.filter(e => EVENT_WORDS.test(e.title)), other = list.filter(e => !EVENT_WORDS.test(e.title));
     return `<article class="ev-card"><header class="ev-head" style="--c:${colors[i % colors.length]}"><h3>${esc(name)}</h3>${E.official && E.official[name] ? `<a href="${esc(E.official[name])}" target="_blank" rel="noopener">公式サイト ↗</a>` : ""}</header>
-      <ul class="ev-list">${ev.map(e => item(e, false)).join("") || `<li class="ev-empty">いま告知されているイベントはありません。</li>`}${other.map(e => item(e, true)).join("")}</ul></article>`;
+      <ul class="ev-list">${stale(name)}${ev.map(e => item(e, false)).join("") || `<li class="ev-empty">いま告知されているイベントはありません。</li>`}${other.map(e => item(e, true)).join("")}</ul></article>`;
   }).join("");
   const R = E.filmarks?.revival || [], A = E.filmarks?.articles || [];
   const sections = [...new Set(R.map(r => r.section))];
   $("evFilmarks").innerHTML = `<article class="ev-card"><header class="ev-head" style="--c:var(--sun)"><h3>Filmarksリバイバル上映</h3><a href="https://revival.filmarks.com/" target="_blank" rel="noopener">特設サイト ↗</a></header>
-      <ul class="ev-list">${sections.map(sec => `<li class="ev-sub">${esc(sec)}</li>${R.filter(r => r.section === sec).map(r => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>${clipBadge(r)}</li>`).join("")}`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>
+      <ul class="ev-list">${stale("revival")}${sections.map(sec => `<li class="ev-sub">${esc(sec)}</li>${R.filter(r => r.section === sec).map(r => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>${clipBadge(r)}</li>`).join("")}`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>
     <article class="ev-card"><header class="ev-head" style="--c:var(--lime)"><h3>FILMAGAのお知らせ（試写会・プレゼント）</h3><a href="https://filmaga.filmarks.com/writers/premium-ticket/" target="_blank" rel="noopener">一覧 ↗</a></header>
-      <ul class="ev-list">${A.map(a => `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a>${clipBadge(a)}</li>`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>`;
+      <ul class="ev-list">${stale("articles")}${A.map(a => `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a>${clipBadge(a)}</li>`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>`;
 }
 
 document.addEventListener("click", e => {

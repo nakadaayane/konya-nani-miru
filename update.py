@@ -72,6 +72,10 @@ def get(url, retries=3):
             if r.status_code == 200:
                 return r
             print(f"  HTTP {r.status_code}: {url}")
+            if r.status_code == 429:
+                ra = r.headers.get("Retry-After", "")
+                time.sleep(min(int(ra) if ra.isdigit() else 30 * (i + 1), 120))
+                continue
         except requests.RequestException as e:
             print(f"  error {e}: {url}")
         time.sleep(3 * (i + 1))
@@ -385,7 +389,7 @@ def fetch_toho_events(match):
     """TOHOシネマズの「舞台挨拶・イベント」から、日比谷・大井町で実施するものを拾う"""
     r = get("https://www.tohotheater.jp/event/")
     if r is None:
-        return []
+        return None
     r.encoding = "cp932"
     soup = BeautifulSoup(r.text, "lxml")
     keys = {"日比谷": "TOHOシネマズ 日比谷", "大井町": "TOHOシネマズ 大井町"}
@@ -415,7 +419,7 @@ def fetch_109_events(match, name="109シネマズ二子玉川", url="https://109
     """109シネマズ二子玉川のトップの「お知らせ」（舞台挨拶・最速上映など）。60日より古いものは外す"""
     r = get(url)
     if r is None:
-        return []
+        return None
     r.encoding = r.apparent_encoding
     soup = BeautifulSoup(r.text, "lxml")
     limit = (datetime.now(JST) - timedelta(days=60)).strftime("%Y/%m/%d")
@@ -436,9 +440,10 @@ def fetch_109_events(match, name="109シネマズ二子玉川", url="https://109
 
 def fetch_filmarks_events(match):
     """Filmarksリバイバル上映（上映中・上映予定・イベント・キャンペーン）と、FILMAGAのお知らせ"""
-    revival, articles = [], []
+    revival, articles = None, None
     r = get("https://revival.filmarks.com/")
     if r is not None:
+        revival = []
         soup = BeautifulSoup(r.text, "lxml")
         section = None
         for h in soup.select("h2, h3"):
@@ -455,6 +460,7 @@ def fetch_filmarks_events(match):
     time.sleep(WAIT)
     r = get("https://filmaga.filmarks.com/writers/premium-ticket/")
     if r is not None:
+        articles = []
         soup = BeautifulSoup(r.text, "lxml")
         seen = set()
         for a in soup.select('a[href*="/articles/"]'):
@@ -468,23 +474,51 @@ def fetch_filmarks_events(match):
     return {"revival": revival, "articles": articles}
 
 
+def previous_data():
+    """前回公開したデータ（取れなかった取得元は前回分で埋める）"""
+    for f in (SITE / "data.json", OUT / "data.json"):
+        try:
+            return json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+    return {}
+
+
 def fetch_events(clips):
     match = clip_matcher(clips)
-    out = {"theaters": [], "filmarks": {"revival": [], "articles": []},
+    prev = previous_data()
+    prev_ev, prev_at = prev.get("events") or {}, prev.get("fetched_at")
+    out = {"theaters": [], "filmarks": {"revival": [], "articles": []}, "stale": {},
            "fav": FAV_THEATERS, "official": {
                "109シネマズ二子玉川": "https://109cinemas.net/futakotamagawa/",
                "TOHOシネマズ 日比谷": "https://www.tohotheater.jp/event/",
                "TOHOシネマズ 大井町": "https://www.tohotheater.jp/event/"}}
-    for f in (lambda: fetch_109_events(match), lambda: fetch_toho_events(match)):
+    sources = [("109シネマズ二子玉川", lambda: fetch_109_events(match), ["109シネマズ二子玉川"]),
+               ("TOHOシネマズ", lambda: fetch_toho_events(match), ["TOHOシネマズ 日比谷", "TOHOシネマズ 大井町"])]
+    for label, f, names in sources:
         try:
-            out["theaters"] += f()
+            got = f()
         except Exception as e:  # 映画館のサイトが変わっても、ほかの取得は止めない
-            print(f"  イベント取得エラー: {e}")
+            print(f"  イベント取得エラー（{label}）: {e}")
+            got = None
+        if got is None:  # 取れなかったら前回分を出す
+            got = [e for e in prev_ev.get("theaters", []) if e.get("theater") in names]
+            for n in names:
+                out["stale"][n] = (prev_ev.get("stale") or {}).get(n) or prev_at
+            print(f"  {label}: 取得できなかったので前回分（{len(got)}件）を使います")
+        out["theaters"] += got
         time.sleep(WAIT)
     try:
-        out["filmarks"] = fetch_filmarks_events(match)
+        fm = fetch_filmarks_events(match)
     except Exception as e:
         print(f"  Filmarksイベント取得エラー: {e}")
+        fm = {"revival": None, "articles": None}
+    for key in ("revival", "articles"):
+        if fm[key] is None:
+            fm[key] = (prev_ev.get("filmarks") or {}).get(key) or []
+            out["stale"][key] = (prev_ev.get("stale") or {}).get(key) or prev_at
+            print(f"  Filmarks {key}: 取得できなかったので前回分（{len(fm[key])}件）を使います")
+    out["filmarks"] = fm
     print(f"イベント: 映画館 {len(out['theaters'])}件、リバイバル {len(out['filmarks']['revival'])}件、"
           f"FILMAGA {len(out['filmarks']['articles'])}件")
     return out

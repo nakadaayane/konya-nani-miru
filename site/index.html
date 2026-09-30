@@ -153,8 +153,8 @@ details p{margin:6px 0 0;color:var(--ink)}
 .foot{margin:20px auto 0;max-width:62ch;text-align:center;font-size:12px;color:var(--faint)}
 
 /* イラスト */
-.hero-main{position:relative}
-.illo-pop{position:absolute;right:0;top:-8px;width:132px;transform:rotate(8deg)}
+.title-wrap{position:relative}
+.illo-pop{position:absolute;right:0;top:-6px;width:132px;transform:rotate(8deg)}  /* 「今夜」の行の右横。英字タイトルには重ねない */
 .illo-pop .illo,.illo-slot .illo{display:block;width:100%;height:auto}
 .illo-slot{margin-left:auto;width:112px;align-self:center;transform:rotate(-6deg)}
 .illo-slot.tilt{transform:rotate(7deg)}
@@ -250,7 +250,7 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
   .t{font-size:13.5px}
   .band h2{font-size:17px}
   .sticker{width:94px;height:94px;right:12px}
-  .illo-pop{width:84px;top:-14px}
+  .illo-pop{width:64px;top:-2px}
   .illo-slot{width:74px}
   .tab{font-size:14px;padding:8px 14px 9px 12px}
   .th-movies{padding:2px 12px 6px}
@@ -266,13 +266,12 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
 <div class="wrap">
   <header class="hero">
     <div class="hero-main">
-      <span class="illo-pop"><svg class="illo" viewBox="0 0 120 130" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+      <p class="en-label">WHAT TO WATCH TONIGHT</p>
+      <div class="title-wrap"><h1>今夜<br>なに観る？</h1><span class="illo-pop"><svg class="illo" viewBox="0 0 120 130" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
 <circle cx="34" cy="46" r="15" fill="#FFF6D6"/><circle cx="56" cy="31" r="17" fill="#FFF6D6"/><circle cx="81" cy="37" r="16" fill="#FFF6D6"/><circle cx="95" cy="55" r="13" fill="#FFF6D6"/><circle cx="23" cy="62" r="12" fill="#FFF6D6"/>
 <path d="M17 60 H103 L91 125 H29 Z" fill="#fff"/><path d="M38 60 H52 L50 125 H40 Z M68 60 H82 L79 125 H69 Z" fill="#FFA9C2"/>
 <circle cx="49" cy="88" r="3.6" fill="#141414"/><circle cx="71" cy="88" r="3.6" fill="#141414"/><path d="M52 99 Q60 106 68 99" fill="none"/>
-<circle cx="41" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/><circle cx="79" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/></g></svg></span>
-      <p class="en-label">WHAT TO WATCH TONIGHT</p>
-      <h1>今夜<br>なに観る？</h1>
+<circle cx="41" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/><circle cx="79" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/></g></svg></span></div>
       <p class="lede" id="lede"></p>
     </div>
     <figure class="hist" aria-label="上映時間の分布">
@@ -784,6 +783,7 @@ function dayLabel(iso){
   return (iso === t0 ? "今日 " : iso === t1 ? "明日 " : iso === t2 ? "あさって " : "") + md;
 }
 const fmtDist = m => m < 1000 ? `${m}m` : `${(m/1000).toFixed(1)}km`;
+const favFirst = (a, b) => (b.fav - a.fav) || (a.distance - b.distance);  // よく行く3館を先に、ほかは近い順
 const toMin = hm => { const [h, m] = String(hm).split(":").map(Number); return h*60 + m; };
 function timeRows(screens, isToday){
   const now = new Date(), cur = now.getHours()*60 + now.getMinutes();
@@ -815,7 +815,7 @@ function renderTheaters(){
   const shows = T.shows.filter(s => s.date === tstate.date && byId.has(s.movie) && thMap.has(s.theater) && (!tstate.fav || thMap.get(s.theater).fav))
     .filter(s => { const k = s.movie + "-" + s.theater; if(seenKey.has(k)) return false; seenKey.add(k); return true; });
   const nTh = new Set(shows.map(s => s.theater)).size, nMv = new Set(shows.map(s => s.movie)).size;
-  $("tNote").textContent = `${origin}から近い順（${Math.round((T.theaters.at(-1)?.distance || 0)/1000)}km以内）。${dayLabel(tstate.date)}は${nTh}館で、観たいに入れた${nMv}本を上映しています。上映時刻は ${fmtStamp(DATA.fetched_at)} 時点のFilmarksの情報です。${isToday ? "過ぎた回はうすく表示しています。" : ""}`;
+  $("tNote").textContent = `よく行く3館を先に、ほかは${origin}から近い順（${Math.round((T.theaters.at(-1)?.distance || 0)/1000)}km以内）。${dayLabel(tstate.date)}は${nTh}館で、観たいに入れた${nMv}本を上映しています。上映時刻は ${fmtStamp(DATA.fetched_at)} 時点のFilmarksの情報です。${isToday ? "過ぎた回はうすく表示しています。" : ""}`;
   if(!shows.length){ $("theaterBody").innerHTML = `<p class="empty">この条件で上映している映画館はありません。</p>`; return; }
   const group = key => { const g = new Map(); shows.forEach(s => { const k = s[key]; if(!g.has(k)) g.set(k, []); g.get(k).push(s); }); return g; };
   const poster = (m, cls) => `<a class="${cls}" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>`;
@@ -825,7 +825,7 @@ function renderTheaters(){
   let html = "";
   if(tstate.view === "theater"){
     const g = group("theater");
-    const ths = [...g.keys()].map(id => thMap.get(id)).filter(Boolean).sort((a,b) => a.distance - b.distance);
+    const ths = [...g.keys()].map(id => thMap.get(id)).filter(Boolean).sort(favFirst);
     html = `<div class="th-list">${ths.map(t => `<article class="th-card" id="th-${t.id}">${thHead(t)}
       <ul class="th-movies">${g.get(t.id).sort((a,b) => earliest(a) - earliest(b)).map(s => { const m = byId.get(s.movie); return `<li>${poster(m, "th-poster")}
         <div><p class="th-title"><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a>${m.runtime ? `<span class="rt"><b>${m.runtime}</b>分</span>` : ""}</p>${timeRows(s.screens, isToday)}</div></li>`; }).join("")}</ul></article>`).join("")}</div>`;
@@ -834,7 +834,7 @@ function renderTheaters(){
     const mvs = [...g.keys()].map(id => byId.get(id)).sort((a,b) =>
       Math.min(...g.get(a.id).map(s => thMap.get(s.theater).distance)) - Math.min(...g.get(b.id).map(s => thMap.get(s.theater).distance)));
     const li = s => { const t = thMap.get(s.theater); return `<li><div class="mv-th">${esc(t.name)}${t.fav ? '<span class="fav">★</span>' : ""}<span class="dist">${fmtDist(t.distance)}</span></div>${timeRows(s.screens, isToday)}</li>`; };
-    html = `<div class="th-list">${mvs.map(m => { const ss = g.get(m.id).sort((a,b) => thMap.get(a.theater).distance - thMap.get(b.theater).distance);
+    html = `<div class="th-list">${mvs.map(m => { const ss = g.get(m.id).sort((a,b) => favFirst(thMap.get(a.theater), thMap.get(b.theater)));
       return `<article class="mv-card${tstate.movie === m.id ? " hl" : ""}" id="tm-${m.id}">${poster(m, "mv-poster")}<div>
         <h3><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
         <p class="meta">${m.runtime ? `${m.runtime}分 ／ ` : ""}近くの${ss.length}館で上映</p>
@@ -852,20 +852,21 @@ function renderEvents(){
   if(!E){ $("evTheaters").innerHTML = `<p class="empty">イベント情報はまだありません。次の更新で取り込みます。</p>`; $("evFilmarks").innerHTML = ""; return; }
   const byId = new Map(MOVIES.map(m => [m.id, m]));
   const clipBadge = e => e.clip && byId.get(e.clip) ? ` <span class="b clip">観たい</span>` : "";
+  const stale = key => E.stale && E.stale[key] ? `<li class="ev-empty">今朝は取得できなかったので、${esc(fmtStamp(E.stale[key]))} 時点の内容です。</li>` : "";
   const item = (e, notice) => `<li class="${notice ? "notice" : ""}"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.title)}</a>${clipBadge(e)}${e.text ? `<p>${esc(e.text)}</p>` : ""}${e.posted ? `<time>${esc(e.posted)} 掲載</time>` : ""}</li>`;
   const colors = ["var(--mint)", "var(--sky)", "var(--pink)"];
   $("evTheaters").innerHTML = (E.fav || []).map((name, i) => {
     const list = E.theaters.filter(e => e.theater === name);
     const ev = list.filter(e => EVENT_WORDS.test(e.title)), other = list.filter(e => !EVENT_WORDS.test(e.title));
     return `<article class="ev-card"><header class="ev-head" style="--c:${colors[i % colors.length]}"><h3>${esc(name)}</h3>${E.official && E.official[name] ? `<a href="${esc(E.official[name])}" target="_blank" rel="noopener">公式サイト ↗</a>` : ""}</header>
-      <ul class="ev-list">${ev.map(e => item(e, false)).join("") || `<li class="ev-empty">いま告知されているイベントはありません。</li>`}${other.map(e => item(e, true)).join("")}</ul></article>`;
+      <ul class="ev-list">${stale(name)}${ev.map(e => item(e, false)).join("") || `<li class="ev-empty">いま告知されているイベントはありません。</li>`}${other.map(e => item(e, true)).join("")}</ul></article>`;
   }).join("");
   const R = E.filmarks?.revival || [], A = E.filmarks?.articles || [];
   const sections = [...new Set(R.map(r => r.section))];
   $("evFilmarks").innerHTML = `<article class="ev-card"><header class="ev-head" style="--c:var(--sun)"><h3>Filmarksリバイバル上映</h3><a href="https://revival.filmarks.com/" target="_blank" rel="noopener">特設サイト ↗</a></header>
-      <ul class="ev-list">${sections.map(sec => `<li class="ev-sub">${esc(sec)}</li>${R.filter(r => r.section === sec).map(r => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>${clipBadge(r)}</li>`).join("")}`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>
+      <ul class="ev-list">${stale("revival")}${sections.map(sec => `<li class="ev-sub">${esc(sec)}</li>${R.filter(r => r.section === sec).map(r => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>${clipBadge(r)}</li>`).join("")}`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>
     <article class="ev-card"><header class="ev-head" style="--c:var(--lime)"><h3>FILMAGAのお知らせ（試写会・プレゼント）</h3><a href="https://filmaga.filmarks.com/writers/premium-ticket/" target="_blank" rel="noopener">一覧 ↗</a></header>
-      <ul class="ev-list">${A.map(a => `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a>${clipBadge(a)}</li>`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>`;
+      <ul class="ev-list">${stale("articles")}${A.map(a => `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a>${clipBadge(a)}</li>`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>`;
 }
 
 document.addEventListener("click", e => {
