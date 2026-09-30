@@ -784,6 +784,7 @@ function dayLabel(iso){
   return (iso === t0 ? "今日 " : iso === t1 ? "明日 " : iso === t2 ? "あさって " : "") + md;
 }
 const fmtDist = m => m < 1000 ? `${m}m` : `${(m/1000).toFixed(1)}km`;
+const favFirst = (a, b) => (b.fav - a.fav) || (a.distance - b.distance);  // よく行く3館を先に、ほかは近い順
 const toMin = hm => { const [h, m] = String(hm).split(":").map(Number); return h*60 + m; };
 function timeRows(screens, isToday){
   const now = new Date(), cur = now.getHours()*60 + now.getMinutes();
@@ -815,7 +816,7 @@ function renderTheaters(){
   const shows = T.shows.filter(s => s.date === tstate.date && byId.has(s.movie) && thMap.has(s.theater) && (!tstate.fav || thMap.get(s.theater).fav))
     .filter(s => { const k = s.movie + "-" + s.theater; if(seenKey.has(k)) return false; seenKey.add(k); return true; });
   const nTh = new Set(shows.map(s => s.theater)).size, nMv = new Set(shows.map(s => s.movie)).size;
-  $("tNote").textContent = `${origin}から近い順（${Math.round((T.theaters.at(-1)?.distance || 0)/1000)}km以内）。${dayLabel(tstate.date)}は${nTh}館で、観たいに入れた${nMv}本を上映しています。上映時刻は ${fmtStamp(DATA.fetched_at)} 時点のFilmarksの情報です。${isToday ? "過ぎた回はうすく表示しています。" : ""}`;
+  $("tNote").textContent = `よく行く3館を先に、ほかは${origin}から近い順（${Math.round((T.theaters.at(-1)?.distance || 0)/1000)}km以内）。${dayLabel(tstate.date)}は${nTh}館で、観たいに入れた${nMv}本を上映しています。上映時刻は ${fmtStamp(DATA.fetched_at)} 時点のFilmarksの情報です。${isToday ? "過ぎた回はうすく表示しています。" : ""}`;
   if(!shows.length){ $("theaterBody").innerHTML = `<p class="empty">この条件で上映している映画館はありません。</p>`; return; }
   const group = key => { const g = new Map(); shows.forEach(s => { const k = s[key]; if(!g.has(k)) g.set(k, []); g.get(k).push(s); }); return g; };
   const poster = (m, cls) => `<a class="${cls}" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>`;
@@ -825,7 +826,7 @@ function renderTheaters(){
   let html = "";
   if(tstate.view === "theater"){
     const g = group("theater");
-    const ths = [...g.keys()].map(id => thMap.get(id)).filter(Boolean).sort((a,b) => a.distance - b.distance);
+    const ths = [...g.keys()].map(id => thMap.get(id)).filter(Boolean).sort(favFirst);
     html = `<div class="th-list">${ths.map(t => `<article class="th-card" id="th-${t.id}">${thHead(t)}
       <ul class="th-movies">${g.get(t.id).sort((a,b) => earliest(a) - earliest(b)).map(s => { const m = byId.get(s.movie); return `<li>${poster(m, "th-poster")}
         <div><p class="th-title"><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a>${m.runtime ? `<span class="rt"><b>${m.runtime}</b>分</span>` : ""}</p>${timeRows(s.screens, isToday)}</div></li>`; }).join("")}</ul></article>`).join("")}</div>`;
@@ -834,7 +835,7 @@ function renderTheaters(){
     const mvs = [...g.keys()].map(id => byId.get(id)).sort((a,b) =>
       Math.min(...g.get(a.id).map(s => thMap.get(s.theater).distance)) - Math.min(...g.get(b.id).map(s => thMap.get(s.theater).distance)));
     const li = s => { const t = thMap.get(s.theater); return `<li><div class="mv-th">${esc(t.name)}${t.fav ? '<span class="fav">★</span>' : ""}<span class="dist">${fmtDist(t.distance)}</span></div>${timeRows(s.screens, isToday)}</li>`; };
-    html = `<div class="th-list">${mvs.map(m => { const ss = g.get(m.id).sort((a,b) => thMap.get(a.theater).distance - thMap.get(b.theater).distance);
+    html = `<div class="th-list">${mvs.map(m => { const ss = g.get(m.id).sort((a,b) => favFirst(thMap.get(a.theater), thMap.get(b.theater)));
       return `<article class="mv-card${tstate.movie === m.id ? " hl" : ""}" id="tm-${m.id}">${poster(m, "mv-poster")}<div>
         <h3><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
         <p class="meta">${m.runtime ? `${m.runtime}分 ／ ` : ""}近くの${ss.length}館で上映</p>
