@@ -41,6 +41,13 @@ AWARDS = {        # 映画賞の受賞作（人気順）: 表示名 -> Filmarks 
 AWARD_PAGES = 2   # 各賞の上位72本
 SIMILAR_TOP = 100 # 観たい作品の「似ている作品」でよく挙がる上位何本を足すか
 
+# 映画館（観たい作品のうち上映中のもの）
+ORIGIN = {"name": "大岡山駅", "lat": 35.607474, "lng": 139.685767}  # 近い順の基準
+PREFS = {13: "tokyo", 14: "kanagawa"}  # Filmarks の都道府県ID -> URLの名前
+SCHEDULE_DAYS = 3        # 今日・明日・あさって
+MAX_DISTANCE = 30000     # 大岡山から30kmまでの映画館
+FAV_THEATERS = ["109シネマズ二子玉川", "TOHOシネマズ 日比谷", "TOHOシネマズ 大井町"]  # よく行く映画館（イベントも取る）
+
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data"
 POSTERS = DATA / "posters"
@@ -68,6 +75,19 @@ def get(url, retries=3):
         except requests.RequestException as e:
             print(f"  error {e}: {url}")
         time.sleep(3 * (i + 1))
+    return None
+
+
+def get_json(url, params):
+    """Filmarks のページが裏で使っている JSON（上映館・上映時刻）。表示用と同じものを1件ずつ読む"""
+    try:
+        r = session.get(url, params=params, timeout=30,
+                        headers={"Accept": "application/json", "Referer": f"{BASE}/"})
+        if r.status_code == 200 and "json" in r.headers.get("content-type", ""):
+            return r.json()
+        print(f"  JSON取得できず HTTP {r.status_code}: {url}")
+    except (requests.RequestException, ValueError) as e:
+        print(f"  error {e}: {url}")
     return None
 
 
@@ -300,6 +320,176 @@ def fetch_poster(d):
         time.sleep(0.2)
 
 
+# ---------- 映画館（観たい × 上映中） ----------
+def fetch_schedules(clips):
+    """観たい作品のうち上映中（または近日公開）のものについて、大岡山から近い上映館と上映時刻を取る"""
+    today = datetime.now(JST).date()
+    dates = [(today + timedelta(days=i)).isoformat() for i in range(SCHEDULE_DAYS)]
+    targets = [d for d in clips if d.get("status") == "上映中" or d.get("theaters")
+               or (d.get("status") == "公開予定" and d.get("release") and d["release"] <= dates[-1])]
+    theaters, shows, seen = {}, [], set()
+    for n, d in enumerate(targets, 1):
+        for pid, slug in PREFS.items():
+            for date in dates:
+                time.sleep(WAIT)
+                data = get_json(f"{BASE}/movies/{d['id']}/areas", {
+                    "scheduleDate": date, "prefectureId": pid, "limit": 1000,
+                    "latitude": ORIGIN["lat"], "longitude": ORIGIN["lng"]})
+                for area in (data or {}).get("areas", []):
+                    for t in area.get("theaters", []):
+                        dist = t.get("distance")
+                        if dist is None or dist > MAX_DISTANCE:
+                            continue
+                        screens = [{
+                            "formats": sc.get("screenFormat") or [],
+                            "info": sc.get("information"),
+                            "times": [[x.get("start"), x.get("end")] for x in sc.get("showtimes") or []],
+                        } for sc in t.get("screens") or []]
+                        screens = [sc for sc in screens if sc["times"]]
+                        if not screens:
+                            continue
+                        theaters.setdefault(t["id"], {
+                            "id": t["id"], "name": t.get("name"), "distance": dist,
+                            "area": area.get("name"), "official": t.get("url"),
+                            "page": f"{BASE}/theaters/{slug}/{area.get('id')}/{t['id']}",
+                            "fav": t.get("name") in FAV_THEATERS,
+                        })
+                        key = (d["id"], t["id"], date)
+                        if key in seen:  # 都県の境目の映画館は、東京都と神奈川県の両方で返ってくる
+                            continue
+                        seen.add(key)
+                        shows.append({"movie": d["id"], "theater": t["id"], "date": date, "screens": screens})
+        print(f"[上映館 {n}/{len(targets)}] {d['title']}")
+    return {"origin": ORIGIN, "dates": dates,
+            "theaters": sorted(theaters.values(), key=lambda t: t["distance"]), "shows": shows}
+
+
+# ---------- イベント ----------
+def clip_matcher(clips):
+    """イベントの題名（『』「」の中）が観たい作品と一致したら、その作品IDを返す"""
+    def norm(x):
+        return re.sub(r"[\s　『』「」【】・:：!！?？\-－―〜~]", "", x or "").lower()
+    names = [(norm(d["title"]), d["id"]) for d in clips if len(norm(d["title"])) >= 2]
+
+    def match(text):
+        for q in re.findall(r"[『「](.+?)[』」]", text or ""):
+            nq = norm(q)
+            for name, mid in names:
+                if nq == name or (len(name) >= 4 and nq.startswith(name)):
+                    return mid
+        return None
+    return match
+
+
+def fetch_toho_events(match):
+    """TOHOシネマズの「舞台挨拶・イベント」から、日比谷・大井町で実施するものを拾う"""
+    r = get("https://www.tohotheater.jp/event/")
+    if r is None:
+        return []
+    r.encoding = "cp932"
+    soup = BeautifulSoup(r.text, "lxml")
+    keys = {"日比谷": "TOHOシネマズ 日比谷", "大井町": "TOHOシネマズ 大井町"}
+    out = []
+    for li in soup.select("li.c-mainList01__item"):
+        a = li.select_one(".c-mainList01__title a")
+        if not a:
+            continue
+        title, text = txt(a), txt(li.select_one(".c-mainList01__text"))
+        url = "https://www.tohotheater.jp" + a["href"] if a["href"].startswith("/") else a["href"]
+        where = [v for k, v in keys.items() if k in title + text]
+        if not where and re.search(r"\d+劇場", title + text):  # 「TOHOシネマズ69劇場にて」は詳細ページの実施劇場を見る
+            time.sleep(WAIT)
+            d = get(url)
+            if d is not None:
+                d.encoding = "cp932"
+                full = BeautifulSoup(d.text, "lxml").get_text(" ", strip=True)
+                seg = full[full.find("実施劇場"):][:1000] if "実施劇場" in full else ""
+                where = [v for k, v in keys.items() if k in seg]
+        for w in where:
+            out.append({"theater": w, "title": title, "text": text, "url": url,
+                        "posted": txt(li.select_one(".c-mainList01__date")), "clip": match(title)})
+    return out
+
+
+def fetch_109_events(match, name="109シネマズ二子玉川", url="https://109cinemas.net/futakotamagawa/"):
+    """109シネマズ二子玉川のトップの「お知らせ」（舞台挨拶・最速上映など）。60日より古いものは外す"""
+    r = get(url)
+    if r is None:
+        return []
+    r.encoding = r.apparent_encoding
+    soup = BeautifulSoup(r.text, "lxml")
+    limit = (datetime.now(JST) - timedelta(days=60)).strftime("%Y/%m/%d")
+    out = []
+    for li in soup.select("li"):
+        a, t = li.select_one("h3 a"), li.select_one("time")
+        if not (a and t):
+            continue
+        posted = txt(t).strip("[]")
+        if posted < limit:
+            continue
+        href = a["href"]
+        href = "https://109cinemas.net" + href if href.startswith("/") else href
+        out.append({"theater": name, "title": txt(a), "text": "", "url": href,
+                    "posted": posted.replace("/", "."), "clip": match(txt(a))})
+    return out
+
+
+def fetch_filmarks_events(match):
+    """Filmarksリバイバル上映（上映中・上映予定・イベント・キャンペーン）と、FILMAGAのお知らせ"""
+    revival, articles = [], []
+    r = get("https://revival.filmarks.com/")
+    if r is not None:
+        soup = BeautifulSoup(r.text, "lxml")
+        section = None
+        for h in soup.select("h2, h3"):
+            if h.name == "h2":
+                section = txt(h)
+                if section.startswith("上映終了") or section.startswith("終了した"):
+                    break
+                continue
+            if section:
+                a = h.find_parent("a") or h.find("a")
+                href = a["href"] if a and a.get("href") else ""
+                link = "https://revival.filmarks.com/" + href if href.startswith("#") else (href or "https://revival.filmarks.com/")
+                revival.append({"section": section, "title": txt(h), "url": link, "clip": match(txt(h))})
+    time.sleep(WAIT)
+    r = get("https://filmaga.filmarks.com/writers/premium-ticket/")
+    if r is not None:
+        soup = BeautifulSoup(r.text, "lxml")
+        seen = set()
+        for a in soup.select('a[href*="/articles/"]'):
+            title = txt(a)
+            if not title or a["href"] in seen:
+                continue
+            seen.add(a["href"])
+            articles.append({"title": title, "url": a["href"], "clip": match(title)})
+            if len(articles) >= 10:
+                break
+    return {"revival": revival, "articles": articles}
+
+
+def fetch_events(clips):
+    match = clip_matcher(clips)
+    out = {"theaters": [], "filmarks": {"revival": [], "articles": []},
+           "fav": FAV_THEATERS, "official": {
+               "109シネマズ二子玉川": "https://109cinemas.net/futakotamagawa/",
+               "TOHOシネマズ 日比谷": "https://www.tohotheater.jp/event/",
+               "TOHOシネマズ 大井町": "https://www.tohotheater.jp/event/"}}
+    for f in (lambda: fetch_109_events(match), lambda: fetch_toho_events(match)):
+        try:
+            out["theaters"] += f()
+        except Exception as e:  # 映画館のサイトが変わっても、ほかの取得は止めない
+            print(f"  イベント取得エラー: {e}")
+        time.sleep(WAIT)
+    try:
+        out["filmarks"] = fetch_filmarks_events(match)
+    except Exception as e:
+        print(f"  Filmarksイベント取得エラー: {e}")
+    print(f"イベント: 映画館 {len(out['theaters'])}件、リバイバル {len(out['filmarks']['revival'])}件、"
+          f"FILMAGA {len(out['filmarks']['articles'])}件")
+    return out
+
+
 # ---------- 出力 ----------
 def poster_data_uri(path):
     """一覧では幅64pxで表示するので、高精細画面向けに128px幅へ縮めて埋め込む"""
@@ -343,6 +533,14 @@ def main():
             r = get(f"{BASE}/movies/{mid}")
             print(json.dumps(parse_movie(int(mid), r.text), ensure_ascii=False, indent=1))
             time.sleep(WAIT)
+        return
+    if args[:1] == ["--extras"]:
+        data = json.loads((DATA / "clips.json").read_text(encoding="utf-8"))
+        clips = [d for d in data["movies"] if d["source"] == "clip"]
+        data["theater"] = fetch_schedules(clips)
+        data["events"] = fetch_events(clips)
+        (DATA / "clips.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+        build(public)
         return
     if args[:1] == ["--build"]:
         build(public)
@@ -434,6 +632,15 @@ def main():
     for d in movies:
         d.setdefault("similar", 0)
 
+    # 5. 観たい × 上映中の映画館と、よく行く映画館・Filmarksのイベント
+    clips = [d for d in movies if d["source"] == "clip"]
+    try:
+        theater = fetch_schedules(clips)
+    except Exception as e:
+        print(f"  上映館の取得エラー: {e}")
+        theater = {"origin": ORIGIN, "dates": [], "theaters": [], "shows": []}
+    events = fetch_events(clips)
+
     data = {
         "user": USER_ID,
         "fetched_at": datetime.now(JST).strftime("%Y-%m-%d %H:%M"),
@@ -442,6 +649,8 @@ def main():
         "lists": {k: len(v) for k, v in rankings.items()},
         "awards": list(AWARDS),
         "similar_top": len(sim_top),
+        "theater": theater,
+        "events": events,
         "failed": failed,
         "movies": movies,
     }

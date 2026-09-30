@@ -152,6 +152,78 @@ details p{margin:6px 0 0;color:var(--ink)}
 .fin .ja{font-family:var(--mincho);font-size:14px;letter-spacing:.32em;color:var(--blue)}
 .foot{margin:20px auto 0;max-width:62ch;text-align:center;font-size:12px;color:var(--faint)}
 
+/* イラスト */
+.hero-main{position:relative}
+.illo-pop{position:absolute;right:0;top:-8px;width:132px;transform:rotate(8deg)}
+.illo-pop .illo,.illo-slot .illo{display:block;width:100%;height:auto}
+.illo-slot{margin-left:auto;width:112px;align-self:center;transform:rotate(-6deg)}
+.illo-slot.tilt{transform:rotate(7deg)}
+.fin .illo-slot{margin:0 0 6px;width:104px;transform:rotate(-8deg)}
+
+/* タブ */
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+.tab{display:grid;justify-items:start;padding:9px 20px 10px 16px;border:2px solid var(--ink);border-radius:18px;background:var(--paper);cursor:pointer;
+  font-size:16px;font-weight:700;line-height:1.25;box-shadow:3px 3px 0 var(--ink);transition:transform .12s,box-shadow .12s}
+.tab .tab-en{font-family:var(--display);font-weight:400;font-size:11px;letter-spacing:.14em;color:var(--blue)}
+.tab b{font-family:var(--display);font-weight:400;font-size:12px;margin-left:6px;padding:0 7px;border-radius:999px;background:var(--lime);border:1.5px solid var(--ink);color:var(--ink)}
+.tab:hover{background:var(--lime)}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff;box-shadow:none;transform:translate(3px,3px)}
+.tab[aria-selected="true"] .tab-en{color:var(--lime)}
+
+/* 映画館 */
+.th-note{margin:14px 0 0;font-size:12px;color:var(--muted)}
+.th-list{display:grid;gap:18px;margin-top:18px}
+.th-card{background:var(--paper);border:2px solid var(--ink);border-radius:18px;overflow:hidden}
+.th-card.hl,.mv-card.hl{outline:4px solid var(--blue);outline-offset:3px}
+.th-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px;padding:12px 16px;background:var(--c,var(--paper));border-bottom:2px solid var(--ink)}
+.th-head h3{margin:0;font-size:17px;line-height:1.35}
+.th-meta{margin:2px 0 0;font-size:12px;color:var(--ink)}
+.dist{font-family:var(--display);font-size:13px;padding:1px 10px;background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;white-space:nowrap}
+.fav{display:inline-block;margin-left:6px;padding:1px 8px;font-size:11px;background:var(--lime);border:1.5px solid var(--ink);border-radius:999px;vertical-align:2px;white-space:nowrap}
+.th-links{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px}
+.th-links a{color:var(--blue);font-weight:700}
+.th-movies{list-style:none;margin:0;padding:4px 16px 8px}
+.th-movies li{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1.5px dashed var(--hair)}
+.th-movies li:first-child{border-top:0}
+.th-poster{display:block;width:48px;aspect-ratio:5/7;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden;background:var(--hair)}
+.th-poster img{display:block;width:100%;height:100%;object-fit:cover}
+.th-title{margin:0;font-size:14px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
+.th-title a{text-decoration:none}
+.th-title .rt{margin-left:6px;font-size:11px;vertical-align:1px}
+.scr{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:6px}
+.fmt{font-size:10.5px;color:var(--muted);margin-right:2px}
+.tm{font-family:var(--display);font-size:13px;padding:1px 9px;border:1.5px solid var(--ink);border-radius:8px;background:var(--paper)}
+.tm.past{opacity:.35;text-decoration:line-through}
+.mv-card{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding:16px;background:var(--paper);border:2px solid var(--ink);border-radius:18px}
+.mv-poster{display:block;width:96px;aspect-ratio:5/7;border:2px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--hair)}
+.mv-poster img{display:block;width:100%;height:100%;object-fit:cover}
+.mv-card h3{margin:0;font-size:16px;line-height:1.4}
+.mv-card h3 a{text-decoration:none}
+.mv-theaters{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:4px}
+.mv-theaters li{padding:8px 0 6px;border-top:1.5px dashed var(--hair)}
+.mv-th{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:13px;font-weight:700}
+.mv-more summary{margin-top:8px}
+button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
+
+/* イベント */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px 18px}
+.ev-card{background:var(--paper);border:2px solid var(--ink);border-radius:18px;overflow:hidden;box-shadow:5px 5px 0 var(--ink)}
+.ev-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 12px;padding:12px 16px;background:var(--c,var(--paper));border-bottom:2px solid var(--ink)}
+.ev-head h3{margin:0;font-size:16px;line-height:1.35}
+.ev-head a{font-size:12px;font-weight:700;color:var(--ink)}
+.ev-list{list-style:none;margin:0;padding:4px 16px 12px}
+.ev-list li{display:grid;gap:3px;padding:11px 0;border-top:1.5px dashed var(--hair)}
+.ev-list li:first-child{border-top:0}
+.ev-list a{font-size:13.5px;font-weight:700;line-height:1.45;text-decoration:none;overflow-wrap:anywhere}
+.ev-list a:hover{text-decoration:underline;text-decoration-color:var(--blue);text-decoration-thickness:2px;text-underline-offset:3px}
+.ev-list p{margin:0;font-size:12px;color:var(--muted)}
+.ev-list time{font-family:var(--display);font-size:11px;color:var(--faint)}
+.ev-list .notice a{font-weight:500;color:var(--muted)}
+.ev-list .b{justify-self:start}
+.ev-sub{margin:14px 0 0;font-family:var(--display);font-size:12px;letter-spacing:.08em;color:var(--blue)}
+.ev-sub:first-child{margin-top:4px}
+.ev-empty{padding:14px 0;font-size:12.5px;color:var(--muted)}
+
 /* おまかせのステッカー（右下で回る） */
 .sticker{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;width:120px;height:120px;padding:0;
   display:grid;place-items:center;border-radius:50%;border:2px solid var(--ink);background:var(--lime);cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .15s}
@@ -178,6 +250,12 @@ details p{margin:6px 0 0;color:var(--ink)}
   .t{font-size:13.5px}
   .band h2{font-size:17px}
   .sticker{width:94px;height:94px;right:12px}
+  .illo-pop{width:84px;top:-14px}
+  .illo-slot{width:74px}
+  .tab{font-size:14px;padding:8px 14px 9px 12px}
+  .th-movies{padding:2px 12px 6px}
+  .mv-card{grid-template-columns:64px minmax(0,1fr);gap:12px;padding:12px}
+  .mv-poster{width:64px}
   .sticker text{font-size:9px}
   .sticker-label{font-size:10.5px}
   .sticker-label b{font-size:19px}
@@ -187,7 +265,12 @@ details p{margin:6px 0 0;color:var(--ink)}
 
 <div class="wrap">
   <header class="hero">
-    <div>
+    <div class="hero-main">
+      <span class="illo-pop"><svg class="illo" viewBox="0 0 120 130" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<circle cx="34" cy="46" r="15" fill="#FFF6D6"/><circle cx="56" cy="31" r="17" fill="#FFF6D6"/><circle cx="81" cy="37" r="16" fill="#FFF6D6"/><circle cx="95" cy="55" r="13" fill="#FFF6D6"/><circle cx="23" cy="62" r="12" fill="#FFF6D6"/>
+<path d="M17 60 H103 L91 125 H29 Z" fill="#fff"/><path d="M38 60 H52 L50 125 H40 Z M68 60 H82 L79 125 H69 Z" fill="#FFA9C2"/>
+<circle cx="49" cy="88" r="3.6" fill="#141414"/><circle cx="71" cy="88" r="3.6" fill="#141414"/><path d="M52 99 Q60 106 68 99" fill="none"/>
+<circle cx="41" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/><circle cx="79" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/></g></svg></span>
       <p class="en-label">WHAT TO WATCH TONIGHT</p>
       <h1>今夜<br>なに観る？</h1>
       <p class="lede" id="lede"></p>
@@ -200,7 +283,19 @@ details p{margin:6px 0 0;color:var(--ink)}
   </header>
   <div class="belt" aria-hidden="true"><div class="belt-track" id="belt"></div></div>
 
-  <div class="sec-head"><span class="en">FILTER</span><span class="ja">条件をえらぶ</span></div>
+  <nav class="tabs" role="tablist" aria-label="表示の切り替え">
+    <button class="tab" type="button" role="tab" data-tab="movies" aria-selected="true"><span class="tab-en">LINEUP</span>作品</button>
+    <button class="tab" type="button" role="tab" data-tab="theaters" aria-selected="false"><span class="tab-en">THEATERS</span><span>映画館<b id="tabTheaterN" hidden></b></span></button>
+    <button class="tab" type="button" role="tab" data-tab="events" aria-selected="false"><span class="tab-en">EVENTS</span><span>イベント<b id="tabEventN" hidden></b></span></button>
+  </nav>
+
+  <div id="panel-movies" role="tabpanel">
+
+  <div class="sec-head"><span class="en">FILTER</span><span class="ja">条件をえらぶ</span><span class="illo-slot"><svg class="illo" viewBox="0 0 132 66" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M4 20 L0 8 M128 20 L132 8" fill="none"/>
+<path d="M6 16 L126 16 L126 42 Q126 55 113 55 L83 55 Q73 55 71 45 L66 37 L61 45 Q59 55 49 55 L19 55 Q6 55 6 42 Z" fill="#fff"/>
+<rect x="14" y="22" width="41" height="25" rx="8" fill="#FFA9C2"/><rect x="77" y="22" width="41" height="25" rx="8" fill="#A5DAF2"/>
+<path d="M22 28 L30 28" stroke="#fff" stroke-width="4"/><path d="M85 28 L93 28" stroke="#fff" stroke-width="4"/></g></svg></span></div>
   <section class="controls" aria-label="絞り込み">
     <div class="ctl">
       <span class="lbl">リスト</span>
@@ -258,7 +353,11 @@ details p{margin:6px 0 0;color:var(--ink)}
     </div>
   </section>
 
-  <div class="sec-head"><span class="en">LINEUP</span><span class="ja">今夜の上映作品</span></div>
+  <div class="sec-head"><span class="en">LINEUP</span><span class="ja">今夜の上映作品</span><span class="illo-slot tilt"><svg class="illo" viewBox="0 0 124 110" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M84 86 C98 94 106 102 120 103" fill="none" stroke-width="11"/><path d="M84 86 C98 94 106 102 120 103" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="4 5"/>
+<circle cx="52" cy="52" r="45" fill="#1E2BDC"/>
+<circle cx="52" cy="27" r="10" fill="#E8E2DF"/><circle cx="75.8" cy="44.3" r="10" fill="#E8E2DF"/><circle cx="66.7" cy="72.2" r="10" fill="#E8E2DF"/><circle cx="37.3" cy="72.2" r="10" fill="#E8E2DF"/><circle cx="28.2" cy="44.3" r="10" fill="#E8E2DF"/>
+<circle cx="52" cy="52" r="6" fill="#E2FF32"/></g></svg></span></div>
   <div class="toolbar">
     <div class="count" id="count"></div>
     <div class="tools">
@@ -282,7 +381,41 @@ details p{margin:6px 0 0;color:var(--ink)}
 
   <main id="list"></main>
   <div class="more-wrap" id="moreWrap" hidden><button class="btn lime" type="button" id="moreBtn"></button></div>
-  <div class="fin" id="fin" hidden><span class="en">THE END</span><span class="ja">今夜も、いい映画を。</span></div>
+  <div class="fin" id="fin" hidden><span class="illo-slot"><svg class="illo" viewBox="0 0 120 104" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<rect x="12" y="40" width="96" height="58" rx="6" fill="#141414"/>
+<rect x="12" y="40" width="96" height="14" fill="#fff"/><path d="M26 40 L36 54 M50 40 L60 54 M74 40 L84 54" stroke-width="7"/>
+<g transform="rotate(-14 14 38)"><rect x="12" y="22" width="96" height="16" rx="3" fill="#fff"/><path d="M28 22 L38 38 M52 22 L62 38 M76 22 L86 38" stroke-width="7"/></g>
+<path d="M26 72 H74 M26 85 H58" stroke="#E2FF32" stroke-width="5"/></g></svg></span><span class="en">THE END</span><span class="ja">今夜も、いい映画を。</span></div>
+  </div>
+
+  <div id="panel-theaters" role="tabpanel" hidden>
+    <div class="sec-head"><span class="en">THEATERS</span><span class="ja">観たい × 上映中</span><span class="illo-slot tilt"><svg class="illo" viewBox="0 0 100 122" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<ellipse cx="50" cy="114" rx="24" ry="5" fill="#141414" stroke="none" opacity=".18"/>
+<path d="M50 111 C30 83 13 65 13 45 A37 37 0 1 1 87 45 C87 65 70 83 50 111 Z" fill="#FFD84A"/>
+<circle cx="50" cy="45" r="18" fill="#fff"/><path d="M44 36 L61 45 L44 54 Z" fill="#1E2BDC"/></g></svg></span></div>
+    <section class="controls" aria-label="映画館の絞り込み">
+      <div class="ctl"><span class="lbl">日にち</span><div class="chips" id="tDates"></div></div>
+      <div class="ctl"><span class="lbl">見かた</span><div class="chips" id="tViews"></div></div>
+    </section>
+    <p class="th-note" id="tNote"></p>
+    <div id="theaterBody"></div>
+  </div>
+
+  <div id="panel-events" role="tabpanel" hidden>
+    <div class="sec-head"><span class="en">EVENTS</span><span class="ja">よく行く映画館のイベント</span><span class="illo-slot"><svg class="illo" viewBox="0 0 140 70" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M8 10 H132 V26 A9 9 0 0 0 132 44 V60 H8 V44 A9 9 0 0 0 8 26 Z" fill="#E2FF32"/>
+<path d="M100 13 V57" fill="none" stroke-dasharray="5 5"/>
+<polygon points="116.0,24.0 118.8,31.1 126.5,31.6 120.6,36.5 122.5,43.9 116.0,39.8 109.5,43.9 111.4,36.5 105.5,31.6 113.2,31.1" fill="#FFA9C2" stroke-width="2"/>
+<text x="54" y="41" text-anchor="middle" font-family="Dela Gothic One, sans-serif" font-size="13" fill="#141414" stroke="none">ADMIT ONE</text></g></svg></span></div>
+    <div class="ev-grid" id="evTheaters"></div>
+    <div class="sec-head"><span class="en">FILMARKS</span><span class="ja">リバイバル上映・試写会</span><span class="illo-slot tilt"><svg class="illo" viewBox="0 0 120 130" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<circle cx="34" cy="46" r="15" fill="#FFF6D6"/><circle cx="56" cy="31" r="17" fill="#FFF6D6"/><circle cx="81" cy="37" r="16" fill="#FFF6D6"/><circle cx="95" cy="55" r="13" fill="#FFF6D6"/><circle cx="23" cy="62" r="12" fill="#FFF6D6"/>
+<path d="M17 60 H103 L91 125 H29 Z" fill="#fff"/><path d="M38 60 H52 L50 125 H40 Z M68 60 H82 L79 125 H69 Z" fill="#FFA9C2"/>
+<circle cx="49" cy="88" r="3.6" fill="#141414"/><circle cx="71" cy="88" r="3.6" fill="#141414"/><path d="M52 99 Q60 106 68 99" fill="none"/>
+<circle cx="41" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/><circle cx="79" cy="97" r="4" fill="#FF7FA3" stroke="none" opacity=".55"/></g></svg></span></div>
+    <div class="ev-grid" id="evFilmarks"></div>
+  </div>
+
   <p class="foot" id="foot"></p>
 </div>
 
@@ -323,6 +456,8 @@ const WHERE_OPTS = [
 ];
 const DEFAULTS = {kinds:[], pool:"clip", where:"home", services:["U-NEXT","Prime Video"], svodOnly:false, runtime:"all", start:"", genres:[], country:"", minScore:0, q:"", sort:"runtime-asc"};
 let DATA = null, MOVIES = [], SERVICES = [], GENRES = [];
+let THEATER_N = new Map();  // 観たい作品ID -> 近くで上映している館数
+let tstate = {date: null, view: "theater", fav: false, movie: null};
 let state = load();
 let pickedId = null;
 let showAllGenres = false;
@@ -491,7 +626,9 @@ function renderHeader(list){
 function vodChips(m){
   const mine = new Set(state.services);
   const out = [];
-  if(inTheater(m)) out.push(`<a class="v theater" href="${esc(m.url)}/theaters" target="_blank" rel="noopener">映画館で上映中${m.theaters ? ` ${m.theaters}館` : ""}</a>`);
+  const nearN = THEATER_N.get(m.id);
+  if(nearN) out.push(`<button type="button" class="v theater" data-tmovie="${m.id}">近くの${nearN}館で上映中 ▶</button>`);
+  else if(inTheater(m)) out.push(`<a class="v theater" href="${esc(m.url)}/theaters" target="_blank" rel="noopener">映画館で上映中${m.theaters ? ` ${m.theaters}館` : ""}</a>`);
   else if(upcoming(m)) out.push(`<span class="v theater">${esc(m.release.replace(/-/g,"/"))} 公開</span>`);
   const vods = [...m.vod].sort((a,b) => (mine.has(b.name)-mine.has(a.name)) || (isSvod(b)-isSvod(a)));
   // 札は契約中のサービスだけ（未選択なら見放題を3社まで）。ほかは「ほか◯社」にまとめてカードを短く保つ
@@ -579,6 +716,7 @@ function render(){
 document.addEventListener("click", e => {
   const b = e.target.closest("button");
   if(!b || !DATA) return;
+  if(b.dataset.tab || b.dataset.tdate || b.dataset.tview || b.dataset.tfav || b.dataset.tmovie) return;  // タブ・映画館は別の処理
   if(b.id === "moreBtn"){ limit += STEP; render(); return; }
   limit = STEP;  // 条件を変えたら先頭の100本から出し直す
   if(b.dataset.pool){ state.pool = b.dataset.pool; }
@@ -619,6 +757,131 @@ function pick(){
   document.getElementById("m-" + m.id)?.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center"});
 }
 
+
+/* ---------- タブ ---------- */
+const TABS = ["movies", "theaters", "events"];
+function showTab(tab, keepScroll){
+  if(!TABS.includes(tab)) tab = "movies";
+  state.tab = tab; save();
+  TABS.forEach(t => {
+    $("panel-" + t).hidden = t !== tab;
+    document.querySelector(`[data-tab="${t}"]`).setAttribute("aria-selected", String(t === tab));
+  });
+  $("pickBtn").hidden = tab !== "movies";
+  if(tab === "theaters") renderTheaters();
+  if(tab === "events") renderEvents();
+  try{ history.replaceState(null, "", tab === "movies" ? location.pathname + location.search : "#" + tab); }catch(e){}
+  if(!keepScroll) document.querySelector(".tabs").scrollIntoView({block: "start", behavior: "auto"});
+}
+
+/* ---------- 映画館 ---------- */
+const localISO = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+function dayLabel(iso){
+  const today = new Date(); const t0 = localISO(today);
+  const t1 = localISO(new Date(today.getTime() + 864e5)), t2 = localISO(new Date(today.getTime() + 1728e5));
+  const d = new Date(iso + "T00:00:00");
+  const md = `${d.getMonth()+1}/${d.getDate()}（${"日月火水木金土"[d.getDay()]}）`;
+  return (iso === t0 ? "今日 " : iso === t1 ? "明日 " : iso === t2 ? "あさって " : "") + md;
+}
+const fmtDist = m => m < 1000 ? `${m}m` : `${(m/1000).toFixed(1)}km`;
+const toMin = hm => { const [h, m] = String(hm).split(":").map(Number); return h*60 + m; };
+function timeRows(screens, isToday){
+  const now = new Date(), cur = now.getHours()*60 + now.getMinutes();
+  return screens.map(sc => `<div class="scr">${sc.formats.length ? `<span class="fmt">${esc(sc.formats.join("・"))}</span>` : ""}${
+    sc.times.map(([st, en]) => `<span class="tm${isToday && toMin(st) < cur ? " past" : ""}" title="${esc(st)}〜${esc(en)}">${esc(st)}</span>`).join("")}</div>`).join("");
+}
+function earliest(show){ return Math.min(...show.screens.flatMap(sc => sc.times.map(t => toMin(t[0])))); }
+function renderTheaters(){
+  const T = DATA.theater || {dates: [], theaters: [], shows: []};
+  const today = localISO(new Date());
+  const dates = T.dates.filter(d => d >= today && T.shows.some(s => s.date === d));
+  const byId = new Map(MOVIES.map(m => [m.id, m]));
+  const thMap = new Map(T.theaters.map(t => [t.id, t]));
+  const origin = (T.origin && T.origin.name) || "大岡山駅";
+  if(!dates.length){
+    $("tDates").innerHTML = ""; $("tViews").innerHTML = "";
+    $("tNote").textContent = "";
+    $("theaterBody").innerHTML = `<p class="empty">観たいに入れた作品で、いま${esc(origin)}の近くで上映しているものは見つかりませんでした。上映時刻は毎朝の更新で取り直します。</p>`;
+    return;
+  }
+  if(!dates.includes(tstate.date)) tstate.date = dates[0];
+  const isToday = tstate.date === today;
+  $("tDates").innerHTML = dates.map(d => chip(dayLabel(d), tstate.date === d, `data-tdate="${d}"`,
+    new Set(T.shows.filter(s => s.date === d).map(s => s.movie)).size)).join("");
+  $("tViews").innerHTML = chip("映画館ごと", tstate.view === "theater", 'data-tview="theater"') +
+    chip("作品ごと", tstate.view === "movie", 'data-tview="movie"') +
+    chip("★よく行く映画館だけ", tstate.fav, 'data-tfav="1"');
+  const seenKey = new Set();
+  const shows = T.shows.filter(s => s.date === tstate.date && byId.has(s.movie) && thMap.has(s.theater) && (!tstate.fav || thMap.get(s.theater).fav))
+    .filter(s => { const k = s.movie + "-" + s.theater; if(seenKey.has(k)) return false; seenKey.add(k); return true; });
+  const nTh = new Set(shows.map(s => s.theater)).size, nMv = new Set(shows.map(s => s.movie)).size;
+  $("tNote").textContent = `${origin}から近い順（${Math.round((T.theaters.at(-1)?.distance || 0)/1000)}km以内）。${dayLabel(tstate.date)}は${nTh}館で、観たいに入れた${nMv}本を上映しています。上映時刻は ${fmtStamp(DATA.fetched_at)} 時点のFilmarksの情報です。${isToday ? "過ぎた回はうすく表示しています。" : ""}`;
+  if(!shows.length){ $("theaterBody").innerHTML = `<p class="empty">この条件で上映している映画館はありません。</p>`; return; }
+  const group = key => { const g = new Map(); shows.forEach(s => { const k = s[key]; if(!g.has(k)) g.set(k, []); g.get(k).push(s); }); return g; };
+  const poster = (m, cls) => `<a class="${cls}" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>`;
+  const thHead = t => `<header class="th-head" style="--c:${t.fav ? "var(--sun)" : "var(--paper)"}">
+      <div><h3>${esc(t.name)}${t.fav ? '<span class="fav">★よく行く</span>' : ""}</h3><p class="th-meta"><span class="dist">${fmtDist(t.distance)}</span> ${esc(t.area || "")}エリア</p></div>
+      <div class="th-links">${t.official ? `<a href="${esc(t.official)}" target="_blank" rel="noopener nofollow">公式サイト・上映時間</a>` : ""}<a href="${esc(t.page)}" target="_blank" rel="noopener">Filmarks</a></div></header>`;
+  let html = "";
+  if(tstate.view === "theater"){
+    const g = group("theater");
+    const ths = [...g.keys()].map(id => thMap.get(id)).filter(Boolean).sort((a,b) => a.distance - b.distance);
+    html = `<div class="th-list">${ths.map(t => `<article class="th-card" id="th-${t.id}">${thHead(t)}
+      <ul class="th-movies">${g.get(t.id).sort((a,b) => earliest(a) - earliest(b)).map(s => { const m = byId.get(s.movie); return `<li>${poster(m, "th-poster")}
+        <div><p class="th-title"><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a>${m.runtime ? `<span class="rt"><b>${m.runtime}</b>分</span>` : ""}</p>${timeRows(s.screens, isToday)}</div></li>`; }).join("")}</ul></article>`).join("")}</div>`;
+  } else {
+    const g = group("movie");
+    const mvs = [...g.keys()].map(id => byId.get(id)).sort((a,b) =>
+      Math.min(...g.get(a.id).map(s => thMap.get(s.theater).distance)) - Math.min(...g.get(b.id).map(s => thMap.get(s.theater).distance)));
+    const li = s => { const t = thMap.get(s.theater); return `<li><div class="mv-th">${esc(t.name)}${t.fav ? '<span class="fav">★</span>' : ""}<span class="dist">${fmtDist(t.distance)}</span></div>${timeRows(s.screens, isToday)}</li>`; };
+    html = `<div class="th-list">${mvs.map(m => { const ss = g.get(m.id).sort((a,b) => thMap.get(a.theater).distance - thMap.get(b.theater).distance);
+      return `<article class="mv-card${tstate.movie === m.id ? " hl" : ""}" id="tm-${m.id}">${poster(m, "mv-poster")}<div>
+        <h3><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
+        <p class="meta">${m.runtime ? `${m.runtime}分 ／ ` : ""}近くの${ss.length}館で上映</p>
+        <ul class="mv-theaters">${ss.slice(0, 5).map(li).join("")}</ul>
+        ${ss.length > 5 ? `<details class="mv-more"><summary>ほか${ss.length - 5}館</summary><ul class="mv-theaters">${ss.slice(5).map(li).join("")}</ul></details>` : ""}
+      </div></article>`; }).join("")}</div>`;
+  }
+  $("theaterBody").innerHTML = html;
+}
+
+/* ---------- イベント ---------- */
+const EVENT_WORDS = /舞台挨拶|上映|イベント|中継|応援|試写|トーク|登壇|キャンペーン|プレゼント|先行|最速|記念|特集|限定/;
+function renderEvents(){
+  const E = DATA.events;
+  if(!E){ $("evTheaters").innerHTML = `<p class="empty">イベント情報はまだありません。次の更新で取り込みます。</p>`; $("evFilmarks").innerHTML = ""; return; }
+  const byId = new Map(MOVIES.map(m => [m.id, m]));
+  const clipBadge = e => e.clip && byId.get(e.clip) ? ` <span class="b clip">観たい</span>` : "";
+  const item = (e, notice) => `<li class="${notice ? "notice" : ""}"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.title)}</a>${clipBadge(e)}${e.text ? `<p>${esc(e.text)}</p>` : ""}${e.posted ? `<time>${esc(e.posted)} 掲載</time>` : ""}</li>`;
+  const colors = ["var(--mint)", "var(--sky)", "var(--pink)"];
+  $("evTheaters").innerHTML = (E.fav || []).map((name, i) => {
+    const list = E.theaters.filter(e => e.theater === name);
+    const ev = list.filter(e => EVENT_WORDS.test(e.title)), other = list.filter(e => !EVENT_WORDS.test(e.title));
+    return `<article class="ev-card"><header class="ev-head" style="--c:${colors[i % colors.length]}"><h3>${esc(name)}</h3>${E.official && E.official[name] ? `<a href="${esc(E.official[name])}" target="_blank" rel="noopener">公式サイト ↗</a>` : ""}</header>
+      <ul class="ev-list">${ev.map(e => item(e, false)).join("") || `<li class="ev-empty">いま告知されているイベントはありません。</li>`}${other.map(e => item(e, true)).join("")}</ul></article>`;
+  }).join("");
+  const R = E.filmarks?.revival || [], A = E.filmarks?.articles || [];
+  const sections = [...new Set(R.map(r => r.section))];
+  $("evFilmarks").innerHTML = `<article class="ev-card"><header class="ev-head" style="--c:var(--sun)"><h3>Filmarksリバイバル上映</h3><a href="https://revival.filmarks.com/" target="_blank" rel="noopener">特設サイト ↗</a></header>
+      <ul class="ev-list">${sections.map(sec => `<li class="ev-sub">${esc(sec)}</li>${R.filter(r => r.section === sec).map(r => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>${clipBadge(r)}</li>`).join("")}`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>
+    <article class="ev-card"><header class="ev-head" style="--c:var(--lime)"><h3>FILMAGAのお知らせ（試写会・プレゼント）</h3><a href="https://filmaga.filmarks.com/writers/premium-ticket/" target="_blank" rel="noopener">一覧 ↗</a></header>
+      <ul class="ev-list">${A.map(a => `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a>${clipBadge(a)}</li>`).join("") || `<li class="ev-empty">いま告知されているものはありません。</li>`}</ul></article>`;
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if(!b || !DATA) return;
+  if(b.dataset.tab){ showTab(b.dataset.tab, true); return; }
+  if(b.dataset.tdate){ tstate.date = b.dataset.tdate; renderTheaters(); return; }
+  if(b.dataset.tview){ tstate.view = b.dataset.tview; tstate.movie = null; renderTheaters(); return; }
+  if(b.dataset.tfav){ tstate.fav = !tstate.fav; renderTheaters(); return; }
+  if(b.dataset.tmovie){
+    tstate.view = "movie"; tstate.movie = Number(b.dataset.tmovie); tstate.fav = false;
+    showTab("theaters", true);
+    document.getElementById("tm-" + tstate.movie)?.scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+  }
+});
+
 /* ---------- boot ---------- */
 $("list").innerHTML = `<p class="empty">作品データを読み込んでいます…</p>`;
 fetch("data.json", {cache: "no-cache"})
@@ -631,7 +894,19 @@ fetch("data.json", {cache: "no-cache"})
     const belt = MOVIES.filter(m => m.source === "clip" && m.poster).sort((a,b) => (b.score||0)-(a.score||0)).slice(0, 18)
       .map(m => `<a href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1"><img src="${m.poster}" alt="" decoding="async"></a>`).join("");
     $("belt").innerHTML = belt + belt;  // 2周分並べて切れ目なく流す
+    const T = d.theater || {shows: []};
+    const todayISO = localISO(new Date());
+    const firstDate = (T.dates || []).find(x => x >= todayISO && T.shows.some(s => s.date === x));
+    T.shows.filter(s => s.date === firstDate).forEach(s => {
+      const set = THEATER_N.get(s.movie) || new Set(); set.add(s.theater); THEATER_N.set(s.movie, set);
+    });
+    THEATER_N.forEach((v, k) => THEATER_N.set(k, v.size));
+    const nMv = THEATER_N.size, nEv = (d.events?.theaters || []).filter(e => EVENT_WORDS.test(e.title)).length;
+    if(nMv){ $("tabTheaterN").hidden = false; $("tabTheaterN").textContent = nMv; }
+    if(nEv){ $("tabEventN").hidden = false; $("tabEventN").textContent = nEv; }
     render();
+    const hashTab = location.hash.replace("#", "");
+    showTab(TABS.includes(hashTab) ? hashTab : (state.tab || "movies"), true);
     setInterval(() => { if(!state.start) render(); }, 5 * 60 * 1000);
   })
   .catch(e => { $("list").innerHTML = `<p class="empty">作品データ（data.json）を読み込めませんでした：${esc(e.message)}。ページを再読み込みしてください。</p>`; });
