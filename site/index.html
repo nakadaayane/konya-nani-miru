@@ -460,6 +460,52 @@ html.calm [role="tabpanel"]{animation:none}
 html.calm .hist-bars span{animation:none}
 @media (max-width:560px){.sh-filter{display:none}}
 
+/* くわしく（作品の詳細のポップアップ） */
+.more-btn{font:inherit;font-size:12px;font-weight:700;color:var(--blue);background:none;border:0;padding:2px 0;cursor:pointer;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+.mv-ov{position:fixed;inset:0;z-index:85;display:grid;place-items:center;padding:20px;background:rgba(20,20,20,.6);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.mv-sheet{position:relative;width:min(820px,100%);max-height:calc(100vh - 40px);overflow:auto;overscroll-behavior:contain;display:grid;grid-template-columns:230px minmax(0,1fr);grid-template-areas:"poster head" "poster nums" "poster body";
+  align-content:start;gap:16px 24px;padding:28px;background:var(--bg);border:2px solid var(--ink);border-radius:22px;box-shadow:8px 8px 0 var(--ink);animation:boxIn .42s cubic-bezier(.2,1.4,.4,1)}
+.mv-x{position:absolute;top:12px;right:12px;z-index:2;width:42px;height:42px;display:grid;place-items:center;font:inherit;font-size:22px;line-height:1;background:var(--paper);border:2px solid var(--ink);border-radius:50%;cursor:pointer}
+.mv-x:hover{background:var(--lime)}
+.mv-poster{grid-area:poster;align-self:start;position:sticky;top:0;aspect-ratio:5/7;border:2px solid var(--ink);border-radius:14px;overflow:hidden;background:var(--hair);box-shadow:5px 5px 0 var(--ink)}
+.mv-poster img{display:block;width:100%;height:100%;object-fit:cover}
+.mv-poster .ph{display:grid;place-items:center;height:100%;padding:12px;text-align:center;font-weight:700}
+.mv-head{grid-area:head;display:grid;gap:8px;align-content:start;padding-right:44px}
+.mv-head h2{margin:0;font-size:24px;line-height:1.35;text-wrap:balance}
+.mv-orig{margin:0;font-size:13px;color:var(--muted)}
+.mv-facts{display:flex;flex-wrap:wrap;gap:5px;margin:0}
+.mv-facts span{font-size:11.5px;font-weight:700;padding:1px 9px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper)}
+.mv-nums{grid-area:nums;display:flex;flex-wrap:wrap;gap:8px}
+.mv-num{display:grid;justify-items:center;min-width:92px;padding:7px 12px 6px;background:var(--c);border:2px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--ink)}
+.mv-num span{font-size:10.5px;font-weight:700}
+.mv-num b{font-family:var(--display);font-weight:400;font-size:24px;line-height:1.15}
+.mv-num small{font-size:10.5px;font-weight:700}
+.mv-body{grid-area:body;display:grid;gap:16px;align-content:start}
+.mv-sec h4{display:flex;align-items:baseline;gap:8px;margin:0 0 8px;font-family:var(--display);font-weight:400;font-size:15px;letter-spacing:.08em}
+.mv-sec h4 span{font-family:var(--body);font-weight:700;font-size:11.5px;letter-spacing:.06em;color:var(--blue)}
+.mv-syn{margin:0;padding:12px 14px;font-size:14px;line-height:1.85;background:var(--paper);border:1.5px dashed var(--faint);border-radius:12px}
+.mv-where{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px}
+.mv-where:empty{display:none}
+.mv-rel{font-family:var(--display);font-size:14px}
+.mv-people{margin:0 0 4px;font-size:13px;line-height:1.8}
+.mv-people b{display:inline-block;margin-right:8px;font-size:11px;padding:0 8px;background:var(--lime);border:1.5px solid var(--ink);border-radius:6px}
+.mv-actions{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px}
+.mv-actions .btn,.mv-where .btn{padding:8px 16px;text-decoration:none;display:inline-flex;align-items:center}
+@keyframes sheetUp{from{transform:translateY(40px)}}
+@media (max-width:640px){
+  .mv-ov{place-items:end center;padding:0}
+  .mv-sheet{width:100%;max-height:90vh;grid-template-columns:104px minmax(0,1fr);grid-template-areas:"poster head" "nums nums" "body body";gap:14px 14px;
+    padding:22px 16px calc(22px + env(safe-area-inset-bottom,0px));border-radius:22px 22px 0 0;border-bottom:0;box-shadow:none;animation:sheetUp .38s cubic-bezier(.2,1,.3,1)}
+  .mv-sheet::before{content:"";position:absolute;top:8px;left:50%;width:44px;height:5px;margin-left:-22px;border-radius:3px;background:var(--hair)}
+  .mv-poster{position:static;border-radius:10px;box-shadow:3px 3px 0 var(--ink)}
+  .mv-head{padding-right:40px;gap:6px}
+  .mv-head h2{font-size:18px}
+  .mv-num{min-width:0;flex:1 1 0;padding:6px 6px 5px}
+  .mv-num b{font-size:19px}
+  .mv-nums{flex-wrap:nowrap}
+}
+html.calm .mv-sheet{animation:none}
+
 @media (max-width:760px){
   .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
     padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:2px solid var(--ink)}
@@ -709,6 +755,9 @@ html.calm .hist-bars span{animation:none}
   <p class="foot" id="foot"></p>
 </div>
 
+<div class="mv-ov" id="mvOv" hidden role="dialog" aria-modal="true" aria-labelledby="mvTitle">
+  <div class="mv-sheet" id="mvSheet"></div>
+</div>
 <div class="reel-ov" id="reelOv" hidden role="dialog" aria-modal="true" aria-labelledby="reelTitle">
   <div class="reel-box">
     <p class="reel-k" id="reelTitle">TONIGHT'S PICK</p>
@@ -980,16 +1029,16 @@ function card(m, start, no){
     ? `<span class="clock">${hhmm(start)} → <span${endMin >= 1440 ? ' class="late"' : ""}>${hhmm(endMin)}</span></span>` : "";
   return `<article class="card${m.id===pickedId?" hl":""}" id="m-${m.id}" style="--c:${BAND_COLOR[band(m)]}">
     <div class="card-top"><span class="no">${String(no).padStart(3,"0")}</span><span class="rt">${m.runtime ? `<b>${m.runtime}</b>分` : "時間未登録"}</span></div>
-    <a class="poster" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : `<span class="ph">${esc(m.title.slice(0,8))}</span>`}</a>
+    <a class="poster" href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : `<span class="ph">${esc(m.title.slice(0,8))}</span>`}</a>
     <div class="card-body">
       ${badges(m)}
-      <h3 class="t"><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
+      <h3 class="t"><a href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
       ${meta ? `<p class="meta">${meta}</p>` : ""}
       ${m.directors.length ? `<p class="dir">監督 ${names(m.directors.slice(0,2))}</p>` : ""}
       <p class="times">${clock}<span class="score"><b>★${m.score != null ? m.score.toFixed(1) : "—"}</b> 観たい${(m.clips||0).toLocaleString()}人</span></p>
       <div class="vod">${vodChips(m)}</div>
       <div class="card-actions"><button type="button" class="share" data-share="${m.id}">共有</button>
-      <details><summary>${m.synopsis ? "あらすじ・くわしく" : "くわしく"}</summary>${m.original ? `<p>${esc(m.original)}</p>` : ""}${people ? `<p class="people">${people}</p>` : ""}${m.synopsis ? `<p>${esc(m.synopsis)}</p>` : ""}<p class="links">${links}</p></details></div>
+      <button type="button" class="more-btn" data-open="${m.id}">くわしく</button></div>
     </div>
   </article>`;
 }
@@ -1029,7 +1078,7 @@ function render(){
 document.addEventListener("click", e => {
   const b = e.target.closest("button");
   if(!b || !DATA) return;
-  if(b.dataset.tab || b.dataset.tdate || b.dataset.tview || b.dataset.tfav || b.dataset.tmovie || b.dataset.person || b.dataset.share) return;  // タブ・映画館・名前・共有は別の処理
+  if(b.dataset.tab || b.dataset.tdate || b.dataset.tview || b.dataset.tfav || b.dataset.tmovie || b.dataset.person || b.dataset.share || b.dataset.open) return;  // タブ・映画館・名前・共有は別の処理
   if(b.id === "moreBtn"){ limit += STEP; render(); return; }
   limit = STEP;  // 条件を変えたら先頭の100本から出し直す
   if(b.dataset.pool){ state.pool = b.dataset.pool; }
@@ -1114,11 +1163,14 @@ function confetti(){
     return `<i class="${sq ? "sq" : ""}" style="left:${Math.random()*100}%;--d:${(Math.random()*.5).toFixed(2)}s;--t:${(1.8 + Math.random()*1.4).toFixed(2)}s;--x:${(Math.random()*120 - 60).toFixed(0)}px;--r:${(Math.random()*720 - 360).toFixed(0)}deg;--c:${colors[i % colors.length]}"></i>`;
   }).join("");
 }
-$("reelGo").addEventListener("click", goPicked);
+$("reelGo").addEventListener("click", () => { const id = pickedId; goPicked(); openMovie(id); });
 $("reelAgain").addEventListener("click", pick);
 $("reelClose").addEventListener("click", closeReel);
 $("reelOv").addEventListener("click", e => { if(e.target === $("reelOv")) closeReel(); });
-document.addEventListener("keydown", e => { if(e.key === "Escape" && !$("reelOv").hidden) closeReel(); });
+document.addEventListener("keydown", e => {
+  if(e.key !== "Escape") return;
+  if(!$("mvOv").hidden) closeMovie(); else if(!$("reelOv").hidden) closeReel();
+});
 
 /* ---------- うごき ---------- */
 function motionOn(){ return !document.documentElement.classList.contains("calm"); }
@@ -1242,7 +1294,7 @@ function renderTheaters(){
   $("tNote").textContent = `よく行く3館を先に、ほかは${origin}から近い順（${Math.round((T.theaters.at(-1)?.distance || 0)/1000)}km以内）。${dayLabel(tstate.date)}は${nTh}館で、観たいに入れた${nMv}本を上映しています。上映時刻は ${fmtStamp(DATA.fetched_at)} 時点のFilmarksの情報です。${isToday ? "過ぎた回はうすく表示しています。" : ""}`;
   if(!shows.length){ $("theaterBody").innerHTML = `<p class="empty">この条件で上映している映画館はありません。</p>`; return; }
   const group = key => { const g = new Map(); shows.forEach(s => { const k = s[key]; if(!g.has(k)) g.set(k, []); g.get(k).push(s); }); return g; };
-  const poster = (m, cls) => `<a class="${cls}" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>`;
+  const poster = (m, cls) => `<a class="${cls}" href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>`;
   const thHead = t => `<header class="th-head" style="--c:${t.fav ? "var(--sun)" : "var(--paper)"}">
       <div><h3>${esc(t.name)}${t.fav ? '<span class="fav">★よく行く</span>' : ""}</h3><p class="th-meta"><span class="dist">${fmtDist(t.distance)}</span> ${esc(t.area || "")}エリア</p></div>
       <div class="th-links">${t.official ? `<a href="${esc(t.official)}" target="_blank" rel="noopener nofollow">公式サイト・上映時間</a>` : ""}<a href="${esc(t.page)}" target="_blank" rel="noopener">Filmarks</a></div></header>`;
@@ -1252,7 +1304,7 @@ function renderTheaters(){
     const ths = [...g.keys()].map(id => thMap.get(id)).filter(Boolean).sort(favFirst);
     html = `<div class="th-list">${ths.map(t => `<article class="th-card" id="th-${t.id}">${thHead(t)}
       <ul class="th-movies">${g.get(t.id).sort((a,b) => earliest(a) - earliest(b)).map(s => { const m = byId.get(s.movie); return `<li>${poster(m, "th-poster")}
-        <div><p class="th-title"><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a>${m.runtime ? `<span class="rt"><b>${m.runtime}</b>分</span>` : ""}</p>${timeRows(s.screens, isToday)}</div></li>`; }).join("")}</ul></article>`).join("")}</div>`;
+        <div><p class="th-title"><a href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener">${esc(m.title)}</a>${m.runtime ? `<span class="rt"><b>${m.runtime}</b>分</span>` : ""}</p>${timeRows(s.screens, isToday)}</div></li>`; }).join("")}</ul></article>`).join("")}</div>`;
   } else {
     const g = group("movie");
     const mvs = [...g.keys()].map(id => byId.get(id)).sort((a,b) =>
@@ -1260,7 +1312,7 @@ function renderTheaters(){
     const li = s => { const t = thMap.get(s.theater); return `<li><div class="mv-th">${esc(t.name)}${t.fav ? '<span class="fav">★</span>' : ""}<span class="dist">${fmtDist(t.distance)}</span></div>${timeRows(s.screens, isToday)}</li>`; };
     html = `<div class="th-list">${mvs.map(m => { const ss = g.get(m.id).sort((a,b) => favFirst(thMap.get(a.theater), thMap.get(b.theater)));
       return `<article class="mv-card${tstate.movie === m.id ? " hl" : ""}" id="tm-${m.id}">${poster(m, "mv-poster")}<div>
-        <h3><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
+        <h3><a href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
         <p class="meta">${m.runtime ? `${m.runtime}分 ／ ` : ""}近くの${ss.length}館で上映</p>
         <ul class="mv-theaters">${ss.slice(0, 5).map(li).join("")}</ul>
         ${ss.length > 5 ? `<details class="mv-more"><summary>ほか${ss.length - 5}館</summary><ul class="mv-theaters">${ss.slice(5).map(li).join("")}</ul></details>` : ""}
@@ -1302,6 +1354,7 @@ document.addEventListener("click", e => {
   if(b.dataset.tview){ tstate.view = b.dataset.tview; tstate.movie = null; renderTheaters(); return; }
   if(b.dataset.tfav){ tstate.fav = !tstate.fav; renderTheaters(); return; }
   if(b.dataset.tmovie){
+    closeMovie();
     tstate.view = "movie"; tstate.movie = Number(b.dataset.tmovie); tstate.fav = false;
     showTab("theaters", true);
     document.getElementById("tm-" + tstate.movie)?.scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
@@ -1343,8 +1396,8 @@ function renderComing(){
   const all = comingList();
   const clips = all.filter(m => m.source === "clip"), picks = all.filter(m => m.source === "pick").slice(0, 40);
   $("coNote").textContent = `観たいに入れた作品 ${clips.length}本と、観たい以外で話題の公開予定 ${picks.length}本を公開日順に並べています。「カレンダーに追加」を押すとGoogleカレンダーの予定作成画面が開きます（登録するかはそこで決められます）。`;
-  const card = m => `<article class="co-card"><a class="co-poster" href="${esc(m.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>
-    <div>${badges(m)}<h4><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h4>
+  const card = m => `<article class="co-card"><a class="co-poster" href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>
+    <div>${badges(m)}<h4><a href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener">${esc(m.title)}</a></h4>
       <p class="meta">${[m.runtime && `${m.runtime}分`, m.countries.slice(0,2).join("・"), m.genres.slice(0,2).join("・")].filter(Boolean).map(esc).join(" ／ ")}</p>
       <div class="co-btns"><a class="cal" href="${esc(calUrl(m))}" target="_blank" rel="noopener">カレンダーに追加</a><button type="button" data-share="${m.id}">共有</button></div></div></article>`;
   const byDate = list => { const g = new Map(); list.forEach(m => { if(!g.has(m.release)) g.set(m.release, []); g.get(m.release).push(m); }); return g; };
@@ -1383,6 +1436,7 @@ document.addEventListener("click", e => {
   const b = e.target.closest("button");
   if(!b || !DATA) return;
   if(b.dataset.person){  // 監督・出演者の名前で絞り込み
+    closeMovie();
     state.q = b.dataset.person; $("q").value = state.q; limit = STEP;
     showTab("movies", true); render();
     document.getElementById("list").scrollIntoView({block: "start"});
@@ -1390,6 +1444,71 @@ document.addEventListener("click", e => {
     return;
   }
   if(b.dataset.share){ const m = MOVIES.find(x => x.id === Number(b.dataset.share)); if(m) shareMovie(m); }
+});
+
+
+/* ---------- くわしく（作品を押すと開く） ---------- */
+let mvOpener = null;
+function openMovie(id){
+  const m = MOVIES.find(x => x.id === Number(id));
+  if(!m) return;
+  mvOpener = document.activeElement;
+  const start = startMinutes(), end = m.runtime ? start + m.runtime : null;
+  const mine = new Set(state.services);
+  const vods = [...m.vod].sort((a,b) => (mine.has(b.name) - mine.has(a.name)) || (isSvod(b) - isSvod(a)));
+  const names = list => list.map(n => `<button type="button" class="name" data-person="${esc(n)}">${esc(n)}</button>`).join("、");
+  const nearN = THEATER_N.get(m.id);
+  const facts = [m.year && `${m.year}年`, ...m.countries.slice(0, 3), ...m.genres.slice(0, 3)].filter(Boolean);
+  const theater = nearN ? `<button type="button" class="btn lime" data-tmovie="${m.id}">近くの${nearN}館で上映中　上映時刻を見る ▶</button>`
+    : inTheater(m) ? `<a class="btn" href="${esc(m.url)}/theaters" target="_blank" rel="noopener">映画館で上映中（Filmarksで探す）↗</a>`
+    : upcoming(m) ? `<span class="mv-rel">${esc(dayLabel(m.release))} 公開</span><a class="btn lime" href="${esc(calUrl(m))}" target="_blank" rel="noopener">カレンダーに追加</a>` : "";
+  $("mvSheet").innerHTML = `
+    <button type="button" class="mv-x" id="mvClose" aria-label="とじる">×</button>
+    <div class="mv-poster">${m.poster ? `<img src="${m.poster}" alt="">` : `<span class="ph">${esc(m.title)}</span>`}</div>
+    <div class="mv-head">
+      ${badges(m)}
+      <h2 id="mvTitle">${esc(m.title)}</h2>
+      ${m.original ? `<p class="mv-orig">${esc(m.original)}</p>` : ""}
+      <p class="mv-facts">${facts.map(f => `<span>${esc(f)}</span>`).join("")}</p>
+    </div>
+      <div class="mv-nums">
+        <div class="mv-num" style="--c:var(--sun)"><span>上映時間</span><b>${m.runtime || "—"}</b><small>${m.runtime ? "分" : "未登録"}</small></div>
+        ${end != null ? `<div class="mv-num" style="--c:var(--sky)"><span>今から観ると</span><b>${hhmm(end)}</b><small>に終わる</small></div>` : ""}
+        <div class="mv-num" style="--c:var(--pink)"><span>評価</span><b>${m.score != null ? m.score.toFixed(1) : "—"}</b><small>観たい ${(m.clips || 0).toLocaleString()}人</small></div>
+      </div>
+    <div class="mv-body">
+      ${m.synopsis ? `<section class="mv-sec"><h4>STORY<span>あらすじ（Filmarksより${m.synopsis.endsWith("…") ? "・冒頭" : ""}）</span></h4><p class="mv-syn">${esc(m.synopsis)}</p></section>` : ""}
+      <section class="mv-sec"><h4>WATCH<span>観られるところ</span></h4>
+        <div class="mv-where">${theater}</div>
+        <div class="vod">${vods.length ? vods.map(v => `<a class="v ${isSvod(v) ? "svod" : ""} ${mine.has(v.name) ? "mine" : ""}" href="${esc(v.href)}" target="_blank" rel="noopener nofollow">${esc(v.name)} ${esc(v.kinds.join("・"))}</a>`).join("") : `<span class="v none">配信なし</span>`}</div>
+      </section>
+      ${m.directors.length || m.cast.length ? `<section class="mv-sec"><h4>CAST<span>監督・出演（押すとその人の作品に絞り込み）</span></h4>
+        ${m.directors.length ? `<p class="mv-people"><b>監督</b>${names(m.directors)}</p>` : ""}
+        ${m.cast.length ? `<p class="mv-people"><b>出演</b>${names(m.cast.slice(0, 8))}</p>` : ""}</section>` : ""}
+      <div class="mv-actions">
+        <a class="btn lime" href="${esc(m.url)}" target="_blank" rel="noopener">Filmarksで開く ↗</a>
+        ${m.trailer ? `<a class="btn" href="${esc(m.trailer)}" target="_blank" rel="noopener nofollow">予告編 ↗</a>` : ""}
+        ${m.official ? `<a class="btn" href="${esc(m.official)}" target="_blank" rel="noopener nofollow">公式サイト ↗</a>` : ""}
+        <button type="button" class="btn" data-share="${m.id}">共有</button>
+      </div>
+    </div>`;
+  $("mvOv").hidden = false; document.body.classList.add("noscroll");
+  $("mvSheet").scrollTop = 0;
+  $("mvClose").addEventListener("click", closeMovie);
+  $("mvClose").focus();
+}
+function closeMovie(){
+  if($("mvOv").hidden) return;
+  $("mvOv").hidden = true; document.body.classList.remove("noscroll");
+  if(mvOpener && document.contains(mvOpener)) mvOpener.focus({preventScroll: true});
+}
+$("mvOv").addEventListener("click", e => { if(e.target === $("mvOv")) closeMovie(); });
+document.addEventListener("click", e => {
+  const o = e.target.closest && e.target.closest("[data-open]");
+  if(!o || !DATA) return;
+  if(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;  // 新しいタブで開きたいときはそのまま
+  e.preventDefault();
+  openMovie(o.dataset.open);
 });
 
 /* ---------- boot ---------- */
