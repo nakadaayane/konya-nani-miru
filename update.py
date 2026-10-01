@@ -637,16 +637,22 @@ def poster_data_uri(path):
     return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
 
 
+def excerpt(text, n=90):
+    """あらすじの冒頭 n 字（公開版用）。続きは作品の Filmarks ページで読んでもらう"""
+    t = re.sub(r"\s+", " ", text or "").strip()
+    return t if len(t) <= n else t[:n].rstrip("、。 ・") + "…"
+
+
 def build(public=False):
     """非公開版: out/filmarks-clips.html ＋ out/data.json（ポスター埋め込み・あらすじあり）
-    公開版:   site/index.html ＋ site/data.json（ポスターは Filmarks の画像を直接表示・あらすじなし）"""
+    公開版:   site/index.html ＋ site/data.json（ポスターは Filmarks の画像を直接表示・あらすじは冒頭だけ）"""
     data = json.loads((DATA / "clips.json").read_text(encoding="utf-8"))
     data["update_note"] = NOTE_PUBLIC if public else NOTE_PRIVATE
     for d in data["movies"]:
         src = d.pop("poster_src", None)
         if public:
             d["poster"] = re.sub(r"/fitpad/\d+/\d+/", "/fitpad/300/420/", src) if src else None  # カード表示用に一回り大きく
-            d["synopsis"] = ""
+            d["synopsis"] = excerpt(d.get("synopsis"))  # 誰でも見られるので、冒頭だけ（続きは Filmarks で）
         else:
             p = POSTERS / f"{d['id']}.webp"
             d["poster"] = poster_data_uri(p) if p.exists() else None
