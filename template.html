@@ -20,6 +20,7 @@
 try{var mv=localStorage.getItem("knm-motion"),rd=matchMedia("(prefers-reduced-motion: reduce)").matches;if(mv==="off"||(!mv&&rd))document.documentElement.classList.add("calm")}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://d2ueuvlup6lbue.cloudfront.net">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
 /* 生成りのグレーに群青とライム、上映時間の帯ごとにポップな色。明るい見た目に固定する */
@@ -604,9 +605,123 @@ html.calm .mv-sheet{animation:none}
   .sticker-label{font-size:10.5px}
   .sticker-label b{font-size:19px}
 }
+
+/* ---------- 今夜のおすすめ（電球の看板） ---------- */
+@property --mqa{syntax:"<angle>";inherits:false;initial-value:0deg}
+.hero-side{display:grid;gap:16px;align-content:end;min-width:0}
+.marquee{position:relative;padding:11px;border:2px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:6px 6px 0 #E8332E;
+  background:radial-gradient(circle,#FFD84A 0 2.4px,rgba(255,216,74,.2) 3px,transparent 3.6px) 0 0/12px 12px space,var(--ink)}
+.marquee::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle,#FFFBE0 0 2.8px,transparent 3.4px) 0 0/12px 12px space;
+  -webkit-mask:conic-gradient(from var(--mqa),#000 0 46deg,transparent 46deg 180deg,#000 180deg 226deg,transparent 226deg);
+  mask:conic-gradient(from var(--mqa),#000 0 46deg,transparent 46deg 180deg,#000 180deg 226deg,transparent 226deg);animation:mqSpin 3.6s linear infinite}
+@keyframes mqSpin{to{--mqa:360deg}}
+.mq-inner{position:relative;z-index:1;display:grid;gap:10px;padding:13px 14px 11px;background:var(--ink);border-radius:12px;color:#fff}
+.mq-k{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:0;font-family:var(--display);font-size:13px;letter-spacing:.14em;color:var(--sun)}
+.mq-k span:first-child{white-space:nowrap}
+.mq-k span:last-child{min-width:0;font-family:var(--body);font-size:11px;letter-spacing:0;color:#CFC8C4;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mq-stage{display:grid;min-height:142px;perspective:800px}
+.mq-item{grid-area:1/1;display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:center;width:100%;padding:0;background:none;border:0;color:#fff;text-align:left;cursor:pointer;font:inherit;transform-origin:50% 50%}
+.mq-poster{display:block;aspect-ratio:5/7;border:2px solid #fff;border-radius:10px;overflow:hidden;background:#333;transition:transform .3s cubic-bezier(.3,1.4,.5,1)}
+.mq-item:hover .mq-poster,.mq-item:focus-visible .mq-poster{transform:rotate(-4deg) scale(1.05)}
+.mq-poster img{display:block;width:100%;height:100%;object-fit:cover}
+.mq-info{display:grid;gap:5px;min-width:0;justify-items:start}
+.mq-t{font-size:16px;font-weight:700;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mq-rt{font-size:12px;color:#CFC8C4}
+.mq-rt b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1;color:var(--lime);margin-right:3px}
+.mq-rt i{font-style:normal;margin-left:10px;color:var(--sun);font-weight:700}
+.mq-end{font-size:12px;color:#CFC8C4}
+.mq-end b{font-family:var(--display);font-weight:400;font-size:15px;color:#fff}
+.mq-svc{font-size:10.5px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--blue);color:#fff}
+.mq-go{font-size:11px;font-weight:700;color:var(--lime);text-decoration:underline;text-underline-offset:3px}
+.mq-item.in{animation:mqIn .65s cubic-bezier(.2,.9,.25,1)}
+.mq-item.out{animation:mqOut .45s ease forwards;pointer-events:none}
+@keyframes mqIn{from{opacity:0;transform:rotateX(-75deg) translateY(12px)}}
+@keyframes mqOut{to{opacity:0;transform:rotateX(75deg) translateY(-12px)}}
+.mq-dots{display:flex;gap:6px;justify-content:center}
+.mq-dot{width:8px;height:8px;padding:0;border-radius:999px;border:0;background:#5A5450;cursor:pointer;transition:width .3s,background .3s}
+.mq-dot[aria-current="true"]{width:22px;background:var(--lime)}
+html.calm .marquee::before{animation:none;opacity:0}
+
+/* ---------- ポスター → くわしく（対応ブラウザだけ） ---------- */
+::view-transition-group(mvp){animation-duration:.5s;animation-timing-function:cubic-bezier(.2,.9,.25,1)}
+::view-transition-old(mvp),::view-transition-new(mvp){height:100%;object-fit:cover;overflow:hidden}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.3s}
+html.vt-run .mv-sheet,html.vt-run .mv-ov{animation:none!important}
+
+/* ---------- タブを切り替えたときに中身がふわっと出る ---------- */
+.pin{animation:panelIn .45s cubic-bezier(.2,.9,.25,1)}
+@keyframes panelIn{from{opacity:0;transform:translateY(16px)}}
+html.calm .pin{animation:none}
+
+/* ---------- キーボードで使う人向け ---------- */
+.skip{position:fixed;left:12px;top:-60px;z-index:100;padding:8px 16px;background:var(--ink);color:#fff;border-radius:999px;font-weight:700;text-decoration:none;transition:top .2s}
+.skip:focus{top:12px}
+
+/* ---------- おしらせ：日付をそろえる ---------- */
+.news li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:baseline;gap:4px 12px}
+.news .tags{display:flex;gap:6px}
+.news time{white-space:nowrap}
+
+/* ---------- ポスターが無い作品 ---------- */
+.poster .ph,.co-poster .ph,.th-poster .ph,.bz-poster .ph{display:grid;place-items:center;height:100%;padding:6px;text-align:center;color:var(--ink);
+  background:repeating-linear-gradient(-45deg,var(--sun) 0 10px,#FFE68A 10px 20px)}
+.co-poster .ph,.th-poster .ph{font-size:10px;font-weight:700;line-height:1.3}
+
+/* ---------- Xで話題：順位の札と話題の大きさ ---------- */
+.bz-no{justify-self:start;display:inline-grid;place-items:center;min-width:62px;padding:5px 12px 3px;border:2px solid var(--ink);border-radius:999px;background:var(--paper);font-size:24px;color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.bz-card:nth-child(1) .bz-no{background:var(--sun)}
+.bz-card:nth-child(2) .bz-no{background:var(--sky)}
+.bz-card:nth-child(3) .bz-no{background:var(--pink)}
+.bz-meter{display:block;width:100%;height:9px;margin-top:2px;border:1.5px solid var(--ink);border-radius:999px;background:var(--bg);overflow:hidden}
+.bz-meter i{display:block;height:100%;width:var(--w);background:var(--pink);border-right:1.5px solid var(--ink);border-radius:999px;animation:meter 1s cubic-bezier(.2,.9,.25,1) .2s backwards}
+@keyframes meter{from{width:0}}
+html.calm .bz-meter i{animation:none}
+
+@media (max-width:760px){
+  .hero-side{gap:14px}
+  .mq-stage{min-height:128px}
+  .mq-item{grid-template-columns:82px minmax(0,1fr)}
+  .mq-rt b{font-size:26px}
+  /* 下へ読んでいる間は、右下の丸いボタンをよける */
+  .sticker,.totop{transition:transform .35s cubic-bezier(.3,1.3,.5,1),opacity .25s}
+  body.fab-away .sticker,body.fab-away .totop{transform:translateY(170px) scale(.7);opacity:0;pointer-events:none}
+}
+@media (max-width:560px){
+  .news li{grid-template-columns:minmax(0,1fr) auto}
+  .news .tags{grid-column:1/-1}
+}
+
+/* ---------- 映画館：このあと始まる回 ---------- */
+.nx{margin-top:18px}
+.nx-h{display:flex;align-items:baseline;gap:10px;margin:0 0 10px;font-weight:400}
+.nx-h .en{font-family:var(--display);font-size:18px}
+.nx-h .ja{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--blue)}
+.nx-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,228px);gap:14px;overflow-x:auto;padding:4px 6px 14px 10px;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:thin}
+.nx-card{position:relative;scroll-snap-align:start;display:flex;flex-direction:column;gap:5px;align-items:flex-start;text-align:left;padding:12px 14px 13px 20px;font:inherit;color:var(--ink);cursor:pointer;
+  background:var(--paper);border:2px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+.nx-card::before{content:"";position:absolute;left:-10px;top:50%;width:16px;height:16px;margin-top:-8px;border-radius:50%;background:var(--bg);border:2px solid var(--ink)}
+.nx-card:first-child{background:var(--lime)}
+.nx-card:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.nx-wait{font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--ink);color:var(--lime)}
+.nx-time{font-size:12px;color:var(--muted)}
+.nx-time b{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.1;color:var(--ink);margin-right:4px}
+.nx-t{font-size:14px;font-weight:700;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nx-th{margin-top:auto;padding-top:4px;font-size:11.5px;color:var(--muted)}
+.nx-fmt{font-size:10.5px;font-weight:700;padding:0 7px;border:1.5px solid var(--ink);border-radius:6px;background:var(--paper)}
+
+/* ---------- パソコン：ポスターに乗せると「くわしく」の札がついてくる ---------- */
+.cur{position:fixed;left:0;top:0;z-index:90;width:0;height:0;pointer-events:none}
+.cur span{position:absolute;left:16px;top:14px;padding:6px 13px;border:2px solid var(--ink);border-radius:999px;background:var(--lime);font-size:12px;font-weight:700;white-space:nowrap;
+  box-shadow:3px 3px 0 var(--ink);transform:scale(0) rotate(-14deg);transform-origin:0 0;transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+.cur.on span{transform:scale(1) rotate(-6deg)}
+/* イベント：観たい作品のお知らせに目印 */
+.ev-list li:has(.b.clip){position:relative;padding-left:16px}
+.ev-list li:has(.b.clip)::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:6px;border-radius:3px;background:var(--lime);border:1.5px solid var(--ink)}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 
+<a class="skip" href="#panel-movies">作品の一覧へ</a>
 <div class="stage-deco" aria-hidden="true">
   <svg class="spark" viewBox="0 0 40 40" style="left:5%;top:22%;width:30px;--d:0s" fill="#E2FF32"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:42%;top:6%;width:22px;--d:-1.2s" fill="#FFA9C2"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:58%;top:30%;width:26px;--d:-2.1s" fill="#A5DAF2"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:88%;top:12%;width:32px;--d:-.6s" fill="#FFD84A"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark" viewBox="0 0 40 40" style="left:94%;top:52%;width:20px;--d:-1.7s" fill="#6CCB9F"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark extra" viewBox="0 0 40 40" style="left:30%;top:58%;width:18px;--d:-2.6s" fill="#FFD84A"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark extra" viewBox="0 0 40 40" style="left:70%;top:70%;width:22px;--d:-.3s" fill="#E2FF32"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg><svg class="spark extra" viewBox="0 0 40 40" style="left:12%;top:76%;width:24px;--d:-1.9s" fill="#A5DAF2"><path d="M20 2 C22 14 26 18 38 20 C26 22 22 26 20 38 C18 26 14 22 2 20 C14 18 18 14 20 2 Z" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg>
   <svg class="drape drape-l" viewBox="0 0 140 560" preserveAspectRatio="none">
@@ -642,11 +757,20 @@ html.calm .mv-sheet{animation:none}
       <p class="lede" id="lede"></p>
       <div class="hero-meta"><span class="stamp" id="stamp"></span><button class="motion-btn" id="motionBtn" type="button" aria-pressed="true"><span class="dot"></span><span id="motionLbl">うごき ON</span></button></div>
     </div>
+    <div class="hero-side">
+    <section class="marquee" id="marquee" aria-label="今夜のおすすめ" hidden>
+      <div class="mq-inner">
+        <p class="mq-k"><span>NOW SHOWING</span><span id="mqWhy"></span></p>
+        <div class="mq-stage" id="mqStage" aria-live="polite"></div>
+        <div class="mq-dots" id="mqDots"></div>
+      </div>
+    </section>
     <figure class="hist" aria-label="上映時間の分布">
       <figcaption class="hist-cap"><span>上映時間の分布（10分きざみ）</span><span id="histNote"></span></figcaption>
       <div class="hist-bars" id="histBars"></div>
       <div class="hist-ticks" id="histTicks"></div>
     </figure>
+    </div>
   </header>
   <div class="belt" aria-hidden="true"><div class="belt-track" id="belt"></div></div>
 
@@ -875,6 +999,7 @@ let tstate = {date: null, view: "theater", fav: false, movie: null};
 let state = load();
 let pickedId = null;
 let showAllGenres = false;
+let showAllSvc = false;
 let limit = STEP;
 
 function load(){
@@ -982,10 +1107,11 @@ function renderControls(){
   $("where").innerHTML = WHERE_OPTS.map(o => chip(o.label, state.where===o.id, `data-where="${o.id}"`, countWith("where", o.id))).join("");
   const home = state.where === "home";
   $("svcRow").style.opacity = home ? "" : ".5";
-  $("services").innerHTML = SERVICES.map(([name]) => {
+  const svcShown = showAllSvc ? SERVICES : SERVICES.filter(([name], i) => i < 6 || state.services.includes(name));
+  $("services").innerHTML = svcShown.map(([name]) => {
     const n = MOVIES.filter(m => passes(m, "where") && m.vod.some(v => v.name === name && (!state.svodOnly || isSvod(v)) && (!state.dubOnly || v.dub === true))).length;
     return chip(name, state.services.includes(name), `data-svc="${esc(name)}"`, n, !home);
-  }).join("");
+  }).join("") + (SERVICES.length > 6 ? `<button class="more" type="button" id="moreSvc">${showAllSvc ? "閉じる" : `ほか${SERVICES.length - svcShown.length}社`}</button>` : "");
   $("svodOnly").checked = state.svodOnly; $("svodOnly").disabled = !home;
   $("dubOnly").checked = state.dubOnly; $("dubOnly").disabled = !home;
   $("svcHint").textContent = state.services.length
@@ -1139,6 +1265,7 @@ function render(){
   $("foot").textContent = `データ：Filmarks（${fmtStamp(DATA.fetched_at)} 時点）。配信状況・吹替・評価は取得時点のもので、最新の状況は各サービスでご確認ください。${DATA.failed.length ? `取得できなかった観たい作品：${DATA.failed.length}本。` : ""}`;
   save();
   observeReveal();
+  renderMarquee();
   return all;
 }
 
@@ -1148,7 +1275,6 @@ document.addEventListener("click", e => {
   if(!b || !DATA) return;
   if(b.dataset.tab || b.dataset.tdate || b.dataset.tview || b.dataset.tfav || b.dataset.tmovie || b.dataset.person || b.dataset.share || b.dataset.open) return;  // タブ・映画館・名前・共有は別の処理
   if(b.id === "moreBtn"){ limit += STEP; render(); return; }
-  limit = STEP;  // 条件を変えたら先頭の100本から出し直す
   if(b.dataset.pool){ state.pool = b.dataset.pool; }
   else if(b.dataset.kind){ const k = b.dataset.kind; state.kinds = state.kinds.includes(k) ? state.kinds.filter(x=>x!==k) : [...state.kinds, k]; }
   else if(b.dataset.where){ state.where = b.dataset.where; }
@@ -1159,7 +1285,9 @@ document.addEventListener("click", e => {
   else if(b.id === "nowBtn"){ state.start = ""; }
   else if(b.id === "resetBtn"){ state = {...DEFAULTS, pool: state.pool, services: state.services}; pickedId = null; $("picked").innerHTML = ""; }
   else if(b.id === "pickBtn"){ pick(); return; }
+  else if(b.id === "moreSvc"){ showAllSvc = !showAllSvc; }
   else return;
+  limit = STEP;  // 条件を変えたら先頭の100本から出し直す
   render();
 });
 $("svodOnly").addEventListener("change", e => { limit = STEP; state.svodOnly = e.target.checked; render(); });
@@ -1300,11 +1428,14 @@ addEventListener("resize", moveTabInd);
 const TABS = ["movies", "theaters", "coming", "events", "buzz"];
 function showTab(tab, keepScroll){
   if(!TABS.includes(tab)) tab = "movies";
+  const changed = TABS.some(t => t !== tab && !$("panel-" + t).hidden);
   state.tab = tab; save();
   TABS.forEach(t => {
     $("panel-" + t).hidden = t !== tab;
-    document.querySelector(`[data-tab="${t}"]`).setAttribute("aria-selected", String(t === tab));
+    const tb = document.querySelector(`[data-tab="${t}"]`);
+    tb.setAttribute("aria-selected", String(t === tab)); tb.tabIndex = t === tab ? 0 : -1;
   });
+  if(changed){ const pn = $("panel-" + tab); pn.classList.remove("pin"); void pn.offsetWidth; pn.classList.add("pin"); }
   $("pickBtn").hidden = tab !== "movies";
   $("toTop").classList.toggle("solo", tab !== "movies");
   moveTabInd();
@@ -1365,7 +1496,7 @@ function renderTheaters(){
   $("tNote").textContent = `よく行く3館を先に、ほかは${origin}から近い順（${Math.round((T.theaters.at(-1)?.distance || 0)/1000)}km以内）。${dayLabel(tstate.date)}は${nTh}館で、観たいに入れた${nMv}本を上映しています。上映時刻は ${fmtStamp(DATA.fetched_at)} 時点のFilmarksの情報です。${isToday ? "過ぎた回はうすく表示しています。" : ""}`;
   if(!shows.length){ $("theaterBody").innerHTML = `<p class="empty">この条件で上映している映画館はありません。</p>`; return; }
   const group = key => { const g = new Map(); shows.forEach(s => { const k = s[key]; if(!g.has(k)) g.set(k, []); g.get(k).push(s); }); return g; };
-  const poster = (m, cls) => `<a class="${cls}" href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>`;
+  const poster = (m, cls) => `<a class="${cls}" href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : `<span class="ph">${esc(m.title.slice(0, 10))}</span>`}</a>`;
   const thHead = t => `<header class="th-head" style="--c:${t.fav ? "var(--sun)" : "var(--paper)"}">
       <div><h3>${esc(t.name)}${t.fav ? '<span class="fav">★よく行く</span>' : ""}</h3><p class="th-meta"><span class="dist">${fmtDist(t.distance)}</span> ${esc(t.area || "")}エリア</p></div>
       <div class="th-links">${t.official ? `<a href="${esc(t.official)}" target="_blank" rel="noopener nofollow">公式サイト・上映時間</a>` : ""}<a href="${esc(t.page)}" target="_blank" rel="noopener">Filmarks</a></div></header>`;
@@ -1389,7 +1520,18 @@ function renderTheaters(){
         ${ss.length > 5 ? `<details class="mv-more"><summary>ほか${ss.length - 5}館</summary><ul class="mv-theaters">${ss.slice(5).map(li).join("")}</ul></details>` : ""}
       </div></article>`; }).join("")}</div>`;
   }
-  $("theaterBody").innerHTML = html;
+  let next = "";
+  if(isToday){  // 今日は、このあと始まる回を時刻順に（よく行く3館だけにしているときはその3館から）
+    const now = new Date(), cur = now.getHours() * 60 + now.getMinutes(), ups = [];
+    shows.forEach(s => s.screens.forEach(sc => sc.times.forEach(([st, en]) => { const a = toMin(st); if(a >= cur - 5) ups.push({s, sc, st, en, a}); })));
+    ups.sort((x, y) => (x.a - y.a) || (thMap.get(x.s.theater).distance - thMap.get(y.s.theater).distance));
+    const wait = w => w <= 0 ? "まもなく" : w < 60 ? `あと${w}分` : `あと${Math.floor(w / 60)}時間${w % 60 ? `${w % 60}分` : ""}`;
+    if(ups.length) next = `<section class="nx" aria-label="このあと始まる回"><h3 class="nx-h"><span class="en">NEXT SHOWS</span><span class="ja">このあと始まる回</span></h3>
+      <div class="nx-row">${ups.slice(0, 10).map(u => { const m = byId.get(u.s.movie), t = thMap.get(u.s.theater);
+        return `<button type="button" class="nx-card" data-open="${m.id}"><span class="nx-wait">${wait(u.a - cur)}</span><span class="nx-time"><b>${esc(u.st)}</b>→ ${esc(u.en)}</span>
+          <span class="nx-t">${esc(m.title)}</span><span class="nx-th">${t.fav ? "★" : ""}${esc(t.name)}・${fmtDist(t.distance)}</span>${u.sc.formats.length ? `<span class="nx-fmt">${esc(u.sc.formats.join("・"))}</span>` : ""}</button>`; }).join("")}</div></section>`;
+  }
+  $("theaterBody").innerHTML = next + html;
 }
 
 /* ---------- イベント ---------- */
@@ -1425,7 +1567,7 @@ document.addEventListener("click", e => {
   if(b.dataset.tview){ tstate.view = b.dataset.tview; tstate.movie = null; renderTheaters(); return; }
   if(b.dataset.tfav){ tstate.fav = !tstate.fav; renderTheaters(); return; }
   if(b.dataset.tmovie){
-    closeMovie();
+    closeMovie(true);
     tstate.view = "movie"; tstate.movie = Number(b.dataset.tmovie); tstate.fav = false;
     showTab("theaters", true);
     document.getElementById("tm-" + tstate.movie)?.scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
@@ -1467,7 +1609,7 @@ function renderComing(){
   const all = comingList();
   const clips = all.filter(m => m.source === "clip"), picks = all.filter(m => m.source === "pick").slice(0, 40);
   $("coNote").textContent = `観たいに入れた作品 ${clips.length}本と、観たい以外で話題の公開予定 ${picks.length}本を公開日順に並べています。「カレンダーに追加」を押すとGoogleカレンダーの予定作成画面が開きます（登録するかはそこで決められます）。`;
-  const card = m => `<article class="co-card"><a class="co-poster" href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : ""}</a>
+  const card = m => `<article class="co-card"><a class="co-poster" href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : `<span class="ph">${esc(m.title.slice(0, 10))}</span>`}</a>
     <div>${badges(m)}<h4><a href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener">${esc(m.title)}</a></h4>
       <p class="meta">${[m.runtime && `${m.runtime}分`, m.countries.slice(0,2).join("・"), m.genres.slice(0,2).join("・")].filter(Boolean).map(esc).join(" ／ ")}</p>
       <div class="co-btns"><a class="cal" href="${esc(calUrl(m))}" target="_blank" rel="noopener">カレンダーに追加</a><button type="button" data-share="${m.id}">共有</button></div></div></article>`;
@@ -1496,7 +1638,7 @@ function renderNews(){
     let body = esc(c.text);
     if(c.kind === "theater" && m) body = `<button type="button" data-tmovie="${m.id}">${esc(c.text)}</button>`;
     else if(c.url) body = `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.text)}</a>`;
-    return `<li>${c.date === today ? '<span class="new">NEW</span>' : ""}<span class="kind" style="--c:${color}">${label}</span><span class="txt">${body}</span><time>${esc(c.date.slice(5).replace("-", "/"))}</time></li>`;
+    return `<li><span class="tags">${c.date === today ? '<span class="new">NEW</span>' : ""}<span class="kind" style="--c:${color}">${label}</span></span><span class="txt">${body}</span><time>${esc(c.date.slice(5).replace("-", "/"))}</time></li>`;
   };
   box.innerHTML = `<div class="news-head"><span class="en">NEWS</span><span class="ja">おしらせ</span><span class="since">毎朝の更新で前日と比べています（${3}日分）</span></div>
     <ul>${C.slice(0, 5).map(li).join("")}</ul>${C.length > 5 ? `<details><summary>ほか${C.length - 5}件</summary><ul>${C.slice(5).map(li).join("")}</ul></details>` : ""}`;
@@ -1507,7 +1649,7 @@ document.addEventListener("click", e => {
   const b = e.target.closest("button");
   if(!b || !DATA) return;
   if(b.dataset.person){  // 監督・出演者の名前で絞り込み
-    closeMovie();
+    closeMovie(true);
     state.q = b.dataset.person; $("q").value = state.q; limit = STEP;
     showTab("movies", true); render();
     document.getElementById("list").scrollIntoView({block: "start"});
@@ -1554,6 +1696,7 @@ function renderBuzz(){
     ? `観たいに入れた上映中・公開間近の作品と、Filmarksの今話題の上位について、7日以内に反応の多かったXのポストを集めています（${fmtStamp(DATA.buzz.fetched_at)} 時点・Yahoo!リアルタイム検索より）。「ネタバレ」と書かれたポストは除いています。数字は上位5件のいいね＋リポストの合計です。`
     : "";
   if(!items.length){ $("buzzBody").innerHTML = `<p class="empty">いまXで話題になっている作品は見つかりませんでした。毎朝の更新で取り直します。</p>`; return; }
+  const maxScore = Math.max(1, ...items.map(it => it.score));
   $("buzzBody").innerHTML = items.map((it, i) => {
     const m = byId.get(it.movie);
     const tags = [m.source === "clip" ? `<span class="b clip">観たい</span>` : "",
@@ -1566,6 +1709,7 @@ function renderBuzz(){
           ${tags ? `<div class="badges">${tags}</div>` : ""}
           <h3><a href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
           <span class="bz-score"><b>${it.score.toLocaleString()}</b>いいね＋リポスト</span>
+          <span class="bz-meter" aria-hidden="true"><i style="--w:${Math.max(6, it.score / maxScore * 100).toFixed(1)}%"></i></span>
         </div>
         <div class="bz-btns"><button type="button" class="btn lime" data-open="${m.id}">くわしく</button><a class="btn" href="${esc(rtUrl(m))}" target="_blank" rel="noopener">ほかのポストを見る ↗</a></div>
       </div>
@@ -1576,8 +1720,37 @@ function renderBuzz(){
 }
 
 /* ---------- くわしく（作品を押すと開く） ---------- */
-let mvOpener = null;
-function openMovie(id){
+let mvOpener = null, mvSrc = null;
+function posterOf(o){
+  if(!o) return null;
+  const img = o.querySelector && o.querySelector("img");
+  if(img) return img;
+  const box = o.closest(".card,.bz-card,.co-card,.mv-card,.th-movies li,.mq-item");
+  return box && box.querySelector("img");
+}
+function openMovie(id, o){  // 対応ブラウザでは、押したポスターが「くわしく」のポスターへ伸びて移る
+  const from = posterOf(o);
+  mvSrc = from;
+  if(!from || !document.startViewTransition || !motionOn()) return openMovieNow(id);
+  let done = false, fb = 0;
+  const run = () => { if(done) return false; done = true; from.style.viewTransitionName = ""; openMovieNow(id); return true; };
+  from.style.viewTransitionName = "mvp";
+  document.documentElement.classList.add("vt-run");
+  const t = document.startViewTransition(() => {
+    clearTimeout(fb);
+    if(!run()) return;
+    const p = document.querySelector("#mvSheet .mv-poster");
+    if(p) p.style.viewTransitionName = "mvp";
+  });
+  fb = setTimeout(() => { run(); try{ t.skipTransition(); }catch(e){} }, 450);  // 画面の描き直しが止まっていても、必ず開く
+  t.ready.catch(() => {});  // 連打などで演出が飛ばされても、開くこと自体は続ける
+  t.finished.finally(() => {
+    document.documentElement.classList.remove("vt-run");
+    const p = document.querySelector("#mvSheet .mv-poster");
+    if(p) p.style.viewTransitionName = "";
+  });
+}
+function openMovieNow(id){
   const m = MOVIES.find(x => x.id === Number(id));
   if(!m) return;
   mvOpener = document.activeElement;
@@ -1630,7 +1803,21 @@ function openMovie(id){
   $("mvClose").focus();
   if(buzzOf) loadEmbeds($("mvSheet"));
 }
-function closeMovie(){
+function closeMovie(quick){
+  if($("mvOv").hidden) return;
+  const p = document.querySelector("#mvSheet .mv-poster"), to = mvSrc;
+  const r = to && document.contains(to) && to.getClientRects().length ? to.getBoundingClientRect() : null;
+  if(quick || !p || !r || r.bottom < 0 || r.top > innerHeight || !document.startViewTransition || !motionOn()) return closeMovieNow();
+  let done = false, fb = 0;
+  const run = () => { if(done) return false; done = true; p.style.viewTransitionName = ""; closeMovieNow(); return true; };
+  p.style.viewTransitionName = "mvp";
+  document.documentElement.classList.add("vt-run");
+  const t = document.startViewTransition(() => { clearTimeout(fb); if(run()) to.style.viewTransitionName = "mvp"; });
+  fb = setTimeout(() => { run(); try{ t.skipTransition(); }catch(e){} }, 450);
+  t.ready.catch(() => {});
+  t.finished.finally(() => { document.documentElement.classList.remove("vt-run"); to.style.viewTransitionName = ""; });
+}
+function closeMovieNow(){
   if($("mvOv").hidden) return;
   $("mvOv").hidden = true; document.body.classList.remove("noscroll");
   if(mvOpener && document.contains(mvOpener)) mvOpener.focus({preventScroll: true});
@@ -1641,8 +1828,123 @@ document.addEventListener("click", e => {
   if(!o || !DATA) return;
   if(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;  // 新しいタブで開きたいときはそのまま
   e.preventDefault();
-  openMovie(o.dataset.open);
+  openMovie(o.dataset.open, o);
 });
+
+
+/* ---------- 今夜のおすすめ（看板） ---------- */
+let mqList = [], mqIdx = 0, mqTimer = 0, mqKey = "", mqHold = false;
+function seeded(seed){ let x = seed % 2147483647 || 1; return () => (x = x * 48271 % 2147483647) / 2147483647; }
+function marqueePicks(){
+  // 観たい × 契約中の配信。夜中の1時までに観終わる作品を優先し、評価の高い18本から日替わりで5本
+  const now = startMinutes();
+  let pool = MOVIES.filter(m => m.source === "clip" && !m.watched && m.runtime && m.poster && vodMatches(m));
+  const fit = pool.filter(m => now + m.runtime <= 25 * 60);
+  if(fit.length >= 3) pool = fit;
+  const top = pool.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 18);
+  const r = seeded(Number(localISO(new Date()).replace(/-/g, "")));
+  for(let i = top.length - 1; i > 0; i--){ const j = Math.floor(r() * (i + 1)); [top[i], top[j]] = [top[j], top[i]]; }
+  return top.slice(0, 5);
+}
+function mqItem(m){
+  const start = startMinutes(), mine = new Set(state.services);
+  const v = m.vod.filter(x => !mine.size || mine.has(x.name)).sort((a, b) => (isSvod(b) - isSvod(a)) || ((b.dub === true) - (a.dub === true)))[0];
+  return `<button type="button" class="mq-item" data-open="${m.id}" aria-label="${esc(m.title)}　${m.runtime}分　くわしく見る">
+    <span class="mq-poster"><img src="${m.poster}" alt="" decoding="async"></span>
+    <span class="mq-info">
+      <span class="mq-t">${esc(m.title)}</span>
+      <span class="mq-rt"><b>${m.runtime}</b>分<i>★${m.score != null ? m.score.toFixed(1) : "—"}</i></span>
+      <span class="mq-end">今から観ると <b>${hhmm(start + m.runtime)}</b> に終わる</span>
+      ${v ? `<span class="mq-svc">${esc(v.name)} ${esc(v.kinds.join("・"))}${v.dub ? "・吹替" : ""}</span>` : ""}
+    </span></button>`;
+}
+function showMq(i, instant){
+  if(!mqList.length) return;
+  mqIdx = (i + mqList.length) % mqList.length;
+  const st = $("mqStage"), html = mqItem(mqList[mqIdx]);
+  if(instant || !motionOn()) st.innerHTML = html;
+  else {
+    const old = st.querySelector(".mq-item:not(.out)");
+    if(old) old.classList.add("out");
+    st.insertAdjacentHTML("beforeend", html);
+    const nu = st.lastElementChild; nu.classList.add("in");
+    setTimeout(() => { if(old) old.remove(); nu.classList.remove("in"); }, 650);
+  }
+  document.querySelectorAll(".mq-dot").forEach((d, k) => d.setAttribute("aria-current", String(k === mqIdx)));
+}
+function scheduleMq(){
+  clearInterval(mqTimer);
+  if(!motionOn() || mqList.length < 2) return;
+  mqTimer = setInterval(() => { if(!mqHold && !document.hidden && $("mvOv").hidden) showMq(mqIdx + 1); }, 5200);
+}
+function renderMarquee(){
+  const list = marqueePicks();
+  const key = list.map(m => m.id).join(",");
+  if(key === mqKey){ if(list.length && !$("mqStage").querySelector(".in,.out")) showMq(mqIdx, true); return; }  // 終わる時刻だけ更新
+  mqKey = key; mqList = list;
+  $("marquee").hidden = !list.length;
+  if(!list.length){ clearInterval(mqTimer); return; }
+  $("mqWhy").textContent = `観たい × ${state.services.length ? state.services.join("・") : "配信あり"}`;
+  $("mqDots").innerHTML = list.map((m, i) => `<button type="button" class="mq-dot" data-mq="${i}" aria-label="${i + 1}本目：${esc(m.title)}"></button>`).join("");
+  showMq(0, true);
+  scheduleMq();
+}
+$("marquee").addEventListener("pointerenter", () => { mqHold = true; });
+$("marquee").addEventListener("pointerleave", () => { mqHold = false; });
+$("marquee").addEventListener("focusin", () => { mqHold = true; });
+$("marquee").addEventListener("focusout", () => { mqHold = false; });
+$("mqDots").addEventListener("click", e => { const d = e.target.closest("[data-mq]"); if(d){ showMq(Number(d.dataset.mq)); scheduleMq(); } });
+
+/* ---------- スマホ：下へ読んでいる間は右下の丸いボタンをよける ---------- */
+let fabY = scrollY, fabT = 0;
+addEventListener("scroll", () => {
+  if(!matchMedia("(max-width:760px)").matches) return;
+  const y = scrollY;
+  if(y > fabY + 6) document.body.classList.add("fab-away");
+  else if(y < fabY - 6) document.body.classList.remove("fab-away");
+  if(Math.abs(y - fabY) > 6) fabY = y;
+  clearTimeout(fabT); fabT = setTimeout(() => document.body.classList.remove("fab-away"), 1200);
+}, {passive: true});
+
+/* ---------- タブ：左右の矢印キーで切り替え ---------- */
+document.querySelectorAll(".tab").forEach(t => {
+  t.id = "tab-" + t.dataset.tab; t.setAttribute("aria-controls", "panel-" + t.dataset.tab);
+  $("panel-" + t.dataset.tab).setAttribute("aria-labelledby", t.id);
+});
+document.querySelector(".tabs").addEventListener("keydown", e => {
+  const i = TABS.indexOf(state.tab || "movies");
+  const j = {ArrowRight: (i + 1) % TABS.length, ArrowLeft: (i - 1 + TABS.length) % TABS.length, Home: 0, End: TABS.length - 1}[e.key];
+  if(j == null) return;
+  e.preventDefault(); showTab(TABS[j]); document.querySelector(`[data-tab="${TABS[j]}"]`).focus();
+});
+/* くわしく を開いている間は、Tab キーで中だけを回る */
+document.addEventListener("keydown", e => {
+  if(e.key !== "Tab" || $("mvOv").hidden) return;
+  const f = [...$("mvSheet").querySelectorAll("a[href],button:not([disabled])")].filter(x => x.getClientRects().length);
+  if(!f.length) return;
+  if(e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f.at(-1).focus(); }
+  else if(!e.shiftKey && document.activeElement === f.at(-1)){ e.preventDefault(); f[0].focus(); }
+});
+
+/* ---------- パソコン：ポスターに乗せると「くわしく」の札がついてくる ---------- */
+if(matchMedia("(hover:hover) and (pointer:fine)").matches){
+  const cur = document.createElement("div");
+  cur.className = "cur"; cur.setAttribute("aria-hidden", "true"); cur.innerHTML = "<span>くわしく</span>";
+  document.body.appendChild(cur);
+  let x = 0, y = 0, cx = 0, cy = 0, on = false, raf = 0;
+  const loop = () => {
+    cx += (x - cx) * .25; cy += (y - cy) * .25;
+    cur.style.transform = `translate(${cx}px,${cy}px)`;
+    raf = Math.abs(x - cx) + Math.abs(y - cy) > .4 ? requestAnimationFrame(loop) : 0;
+  };
+  document.addEventListener("pointermove", e => {
+    x = e.clientX; y = e.clientY;
+    const t = e.target.closest && e.target.closest(".poster,.mq-poster,.bz-poster,.co-poster,.th-poster,.mv-card .mv-poster,.nx-card");
+    const want = !!t && motionOn() && $("mvOv").hidden;
+    if(want !== on){ on = want; cur.classList.toggle("on", on); if(on){ cx = x; cy = y; } }
+    if(on && !raf) raf = requestAnimationFrame(loop);
+  });
+}
 
 /* ---------- ページのいちばん上へ ---------- */
 function syncTop(){ const on = scrollY > 900; if($("toTop").hidden === on) $("toTop").hidden = !on; }
