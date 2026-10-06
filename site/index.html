@@ -1531,7 +1531,11 @@ function loadEmbeds(root){
   const run = r => r.querySelectorAll(".xp:not([data-done])").forEach(x => {
     x.dataset.done = "1";
     twttr.widgets.createTweet(x.dataset.tid, x.querySelector(".xp-embed"), {dnt: true, lang: "ja", conversation: "none"})
-      .then(el => { if(el) x.classList.add("embedded"); }).catch(() => {});
+      .then(() => {  // 「できた」と返っても中身が空のことがあるので、高さが出てから自前のカードと入れ替える
+        const f = x.querySelector(".xp-embed iframe");
+        if(!f || !window.ResizeObserver) return;
+        new ResizeObserver((_, ro) => { if(f.offsetHeight > 80){ x.classList.add("embedded"); ro.disconnect(); } }).observe(f);
+      }).catch(() => {});
   });
   if(window.twttr && twttr.widgets) return run(root);
   if(twAsked) return;
