@@ -407,6 +407,59 @@ button.v{cursor:pointer;font:inherit;font-size:10.5px;font-weight:700}
 .confetti i.sq{border-radius:3px;background:var(--c)}
 @keyframes fall{to{transform:translate(var(--x,0px),110vh) rotate(var(--r,540deg))}}
 body.noscroll{overflow:hidden}
+/* 配信の札の中の「吹替」 */
+.v .dub,.v .nodub{display:inline-block;margin-left:5px;padding:0 6px;border-radius:999px;font-style:normal;font-size:9.5px;font-weight:700;line-height:1.55;vertical-align:1px}
+.v .dub{background:var(--ink);color:var(--lime)}
+.v .nodub{border:1px solid currentColor;opacity:.7;font-weight:500}
+.dub-note{margin:8px 0 0;font-size:11.5px;color:var(--muted)}
+
+/* ページのいちばん上へ */
+.totop{position:fixed;right:50px;bottom:calc(152px + env(safe-area-inset-bottom,0px));z-index:31;width:56px;height:56px;display:grid;place-items:center;padding:0;
+  border:2px solid var(--ink);border-radius:50%;background:var(--paper);box-shadow:3px 3px 0 var(--ink);cursor:pointer;transition:transform .15s,background .15s;animation:topIn .4s cubic-bezier(.2,1.5,.4,1)}
+.totop.solo{right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+.totop:hover{background:var(--lime);transform:translateY(-3px)}
+.totop svg{width:24px;height:24px;fill:none;stroke:var(--ink);stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.totop:hover svg{animation:topHop .5s ease}
+@keyframes topIn{from{transform:translateY(16px) scale(.5);opacity:0}}
+@keyframes topHop{40%{transform:translateY(-4px)}}
+
+/* Xで話題 */
+.bz-list{display:grid;gap:22px;margin-top:18px}
+.bz-card{display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px 22px;padding:18px;background:var(--paper);border:2px solid var(--ink);border-radius:20px;box-shadow:5px 5px 0 var(--ink)}
+.bz-side{display:grid;grid-template-columns:86px minmax(0,1fr);gap:12px;align-content:start}
+.bz-no{grid-column:1/-1;font-family:var(--display);font-size:30px;line-height:1;color:var(--blue)}
+.bz-poster{display:block;width:86px;aspect-ratio:5/7;border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--hair);box-shadow:3px 3px 0 var(--ink)}
+.bz-poster img{display:block;width:100%;height:100%;object-fit:cover}
+.bz-poster .ph{display:grid;place-items:center;height:100%;padding:6px;font-size:11px;font-weight:700;text-align:center}
+.bz-info{display:grid;gap:6px;align-content:start;min-width:0}
+.bz-info h3{margin:0;font-size:16px;line-height:1.4}
+.bz-info h3 a{text-decoration:none}
+.bz-score{font-size:12px;color:var(--muted)}
+.bz-score b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--ink);margin-right:3px}
+.bz-btns{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}
+.bz-btns .btn{font-size:12px;padding:5px 13px}
+.bz-posts{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px 16px;align-items:start;min-width:0}
+.xp{min-width:0}
+.xp-card{padding:12px 14px;border:2px solid var(--ink);border-radius:14px;background:var(--bg);font-size:13px;line-height:1.65}
+.xp-text{margin:0 0 8px;overflow-wrap:anywhere}
+.xp-meta{margin:0;display:flex;flex-wrap:wrap;gap:2px 10px;font-size:11.5px;color:var(--muted)}
+.xp-meta b{color:var(--ink)}
+.xp-link{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:var(--blue)}
+.xp-embed .twitter-tweet{margin:0!important}
+.xp.embedded .xp-card{display:none}
+.mv-x-post{margin-top:4px}
+@media (max-width:760px){
+  .bz-card{grid-template-columns:1fr;padding:14px;border-radius:16px;box-shadow:4px 4px 0 var(--ink)}
+  .bz-posts{grid-template-columns:1fr}
+  .totop{right:54px;bottom:calc(218px + env(safe-area-inset-bottom,0px));width:48px;height:48px}
+  .totop.solo{right:16px;bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+  .totop svg{width:21px;height:21px}
+}
+@media (max-width:560px){
+  .totop{right:35px;bottom:calc(192px + env(safe-area-inset-bottom,0px))}
+}
+html.calm .totop,html.calm .totop:hover svg{animation:none}
+
 
 /* エンドクレジット */
 .credits{display:grid;gap:6px;margin:22px 0 0;text-align:center}
@@ -507,7 +560,7 @@ html.calm .hist-bars span{animation:none}
 html.calm .mv-sheet{animation:none}
 
 @media (max-width:760px){
-  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;
     padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:2px solid var(--ink)}
   .tab{justify-items:center;text-align:center;border:0;border-radius:12px;box-shadow:none;padding:6px 2px;font-size:12.5px}
   .tab .tab-en{font-size:8.5px;letter-spacing:.08em}
@@ -604,6 +657,7 @@ html.calm .mv-sheet{animation:none}
     <button class="tab" type="button" role="tab" data-tab="theaters" aria-selected="false"><span class="tab-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><path d="M10.5 7.5l4 2.5-4 2.5z"/></svg></span><span class="tab-en">THEATERS</span><span>映画館<b id="tabTheaterN" hidden></b></span></button>
     <button class="tab" type="button" role="tab" data-tab="coming" aria-selected="false"><span class="tab-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 14.5h3"/></svg></span><span class="tab-en">COMING</span><span>公開予定<b id="tabComingN" hidden></b></span></button>
     <button class="tab" type="button" role="tab" data-tab="events" aria-selected="false"><span class="tab-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7h18v3.2a2 2 0 0 0 0 3.6V17H3v-3.2a2 2 0 0 0 0-3.6z"/><path d="M15 7v10" stroke-dasharray="1.6 1.6"/></svg></span><span class="tab-en">EVENTS</span><span>イベント<b id="tabEventN" hidden></b></span></button>
+    <button class="tab" type="button" role="tab" data-tab="buzz" aria-selected="false"><span class="tab-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v10H10l-4.5 4v-4H4z"/><path d="M9 10.5c.8-1.7 2.3-1.7 3 0 .7-1.7 2.2-1.7 3 0-.9 1.8-3 3-3 3s-2.1-1.2-3-3z"/></svg></span><span class="tab-en">ON X</span><span>Xで話題<b id="tabBuzzN" hidden></b></span></button>
   </nav>
 
   <div id="panel-movies" role="tabpanel">
@@ -637,6 +691,7 @@ html.calm .mv-sheet{animation:none}
         <div class="chips" id="services"></div>
         <div class="row-inline" style="margin-top:8px">
           <label class="switch"><input type="checkbox" id="svodOnly"> 見放題だけ（レンタル・購入を除く）</label>
+          <label class="switch"><input type="checkbox" id="dubOnly"> 吹替で観られるものだけ</label>
           <span class="hint" id="svcHint">選んだサービスは次回も覚えています</span>
         </div>
       </div>
@@ -707,7 +762,7 @@ html.calm .mv-sheet{animation:none}
 <g transform="rotate(-14 14 38)"><rect x="12" y="22" width="96" height="16" rx="3" fill="#fff"/><path d="M28 22 L38 38 M52 22 L62 38 M76 22 L86 38" stroke-width="7"/></g>
 <path d="M26 72 H74 M26 85 H58" stroke="#E2FF32" stroke-width="5"/></g></svg></span><span class="en">THE END</span><span class="ja">今夜も、いい映画を。</span>
     <dl class="credits"><div><dt>DATA</dt><dd>Filmarks</dd></div><div><dt>THEATERS</dt><dd>Filmarks 上映スケジュール</dd></div>
-      <div><dt>EVENTS</dt><dd>109シネマズ・TOHOシネマズ・Filmarksリバイバル上映・FILMAGA</dd></div><div><dt>UPDATE</dt><dd>毎朝6時ごろ</dd></div></dl></div>
+      <div><dt>EVENTS</dt><dd>109シネマズ・TOHOシネマズ・Filmarksリバイバル上映・FILMAGA</dd></div><div><dt>DUB</dt><dd>U-NEXT・JustWatch（Prime Video）</dd></div><div><dt>ON X</dt><dd>Yahoo!リアルタイム検索</dd></div><div><dt>UPDATE</dt><dd>毎朝</dd></div></dl></div>
   </div>
 
   <div id="panel-theaters" role="tabpanel" hidden>
@@ -752,6 +807,16 @@ html.calm .mv-sheet{animation:none}
     <div class="ev-grid" id="evFilmarks"></div>
   </div>
 
+  <div id="panel-buzz" role="tabpanel" hidden>
+    <div class="sec-head"><span class="en">BUZZ ON X</span><span class="ja">Xで話題の映画</span><span class="illo-slot tilt"><svg class="illo" viewBox="0 0 130 100" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M10 14 H104 Q114 14 114 24 V58 Q114 68 104 68 H52 L30 88 V68 H20 Q10 68 10 58 V24 Q10 14 20 14 Z" fill="#A5DAF2"/>
+<path d="M62 52 C50 44 42 38 42 30 C42 24 47 21 52 21 C56 21 60 24 62 28 C64 24 68 21 72 21 C77 21 82 24 82 30 C82 38 74 44 62 52 Z" fill="#FFA9C2"/>
+<path d="M118 8 L124 2 M120 18 L128 16 M108 4 L109 -2" fill="none"/>
+<circle cx="24" cy="30" r="3" fill="#E2FF32"/><circle cx="98" cy="54" r="3" fill="#E2FF32"/></g></svg></span></div>
+    <p class="th-note" id="bzNote"></p>
+    <div class="bz-list" id="buzzBody"></div>
+  </div>
+
   <p class="foot" id="foot"></p>
 </div>
 
@@ -767,6 +832,7 @@ html.calm .mv-sheet{animation:none}
   </div>
   <div class="confetti" id="confetti" aria-hidden="true"></div>
 </div>
+<button class="totop" id="toTop" type="button" aria-label="ページのいちばん上へ" title="いちばん上へ" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
 <button class="sticker" id="pickBtn" type="button" aria-label="条件に合う作品からおまかせで1本えらぶ">
   <svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="ring" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"/></defs>
     <text><textPath href="#ring" textLength="292" lengthAdjust="spacing">PICK ONE FOR TONIGHT ● PICK ONE FOR TONIGHT ●</textPath></text></svg>
@@ -802,7 +868,7 @@ const WHERE_OPTS = [
   {id:"theater", label:"映画館で上映中"},
   {id:"all", label:"すべて"},
 ];
-const DEFAULTS = {kinds:[], pool:"clip", where:"home", services:["U-NEXT","Prime Video"], svodOnly:false, runtime:"all", start:"", genres:[], country:"", minScore:0, q:"", sort:"runtime-asc"};
+const DEFAULTS = {kinds:[], pool:"clip", where:"home", services:["U-NEXT","Prime Video"], svodOnly:false, dubOnly:false, runtime:"all", start:"", genres:[], country:"", minScore:0, q:"", sort:"runtime-asc"};
 let DATA = null, MOVIES = [], SERVICES = [], GENRES = [];
 let THEATER_N = new Map();  // 観たい作品ID -> 近くで上映している館数
 let tstate = {date: null, view: "theater", fav: false, movie: null};
@@ -839,6 +905,7 @@ function vodMatches(m){
   let v = m.vod;
   if(state.services.length) v = v.filter(x => state.services.includes(x.name));
   if(state.svodOnly) v = v.filter(isSvod);
+  if(state.dubOnly) v = v.filter(x => x.dub === true);
   return v.length > 0;
 }
 /** skip: 件数を数えるとき、その条件だけ外して数えるためのキー */
@@ -916,10 +983,11 @@ function renderControls(){
   const home = state.where === "home";
   $("svcRow").style.opacity = home ? "" : ".5";
   $("services").innerHTML = SERVICES.map(([name]) => {
-    const n = MOVIES.filter(m => passes(m, "where") && m.vod.some(v => v.name === name && (!state.svodOnly || isSvod(v)))).length;
+    const n = MOVIES.filter(m => passes(m, "where") && m.vod.some(v => v.name === name && (!state.svodOnly || isSvod(v)) && (!state.dubOnly || v.dub === true))).length;
     return chip(name, state.services.includes(name), `data-svc="${esc(name)}"`, n, !home);
   }).join("");
   $("svodOnly").checked = state.svodOnly; $("svodOnly").disabled = !home;
+  $("dubOnly").checked = state.dubOnly; $("dubOnly").disabled = !home;
   $("svcHint").textContent = state.services.length
     ? `${state.services.join("・")}で観られる作品だけ表示中。選んだサービスは次回も覚えています`
     : "何も選ばなければ、どこかで配信している作品をすべて表示します";
@@ -948,7 +1016,7 @@ function renderControls(){
   const rtNow = RUNTIME_OPTS.find(o => o.id === state.runtime);
   const whereNow = WHERE_OPTS.find(o => o.id === state.where);
   $("fsNow").textContent = [POOL_OPTS.find(o => o.id === state.pool).label,
-    state.where === "home" ? `家で${state.services.length ? "：" + state.services.join("・") : ""}${state.svodOnly ? "（見放題）" : ""}` : whereNow.label,
+    state.where === "home" ? `家で${state.services.length ? "：" + state.services.join("・") : ""}${state.svodOnly ? "（見放題）" : ""}${state.dubOnly ? "（吹替）" : ""}` : whereNow.label,
     rtNow.id === "all" ? "" : rtNow.label, state.genres.length ? `ジャンル${state.genres.length}つ` : "",
     state.minScore ? `★${state.minScore}以上` : "", state.q ? `「${state.q}」` : ""].filter(Boolean).join(" ／ ");
   if($("q").value !== state.q) $("q").value = state.q;
@@ -998,7 +1066,7 @@ function vodChips(m){
   const rest = vods.length - shown.length;
   shown.forEach(v => {
     const cls = ["v", isSvod(v) ? "svod" : "", mine.has(v.name) && (!state.svodOnly || isSvod(v)) ? "mine" : ""].join(" ");
-    out.push(`<a class="${cls}" href="${esc(v.href)}" target="_blank" rel="noopener nofollow">${esc(v.name)} ${esc(v.kinds.join("・"))}</a>`);
+    out.push(`<a class="${cls}" href="${esc(v.href)}" target="_blank" rel="noopener nofollow">${esc(v.name)} ${esc(v.kinds.join("・"))}${v.dub ? `<i class="dub">吹替</i>` : ""}</a>`);
   });
   if(rest) out.push(`<a class="v none" href="${esc(m.url)}/vod" target="_blank" rel="noopener">ほか${rest}社</a>`);
   if(!m.vod.length && !inTheater(m) && !upcoming(m)) out.push(`<span class="v none">配信なし</span>`);
@@ -1068,7 +1136,7 @@ function render(){
   } else {
     $("list").innerHTML = `<div class="grid">${list.map((m,i)=>card(m,start,i+1)).join("")}</div>`;
   }
-  $("foot").textContent = `データ：Filmarks（${fmtStamp(DATA.fetched_at)} 時点）。配信状況と評価は取得時点のもので、最新の状況は各サービスでご確認ください。${DATA.failed.length ? `取得できなかった観たい作品：${DATA.failed.length}本。` : ""}`;
+  $("foot").textContent = `データ：Filmarks（${fmtStamp(DATA.fetched_at)} 時点）。配信状況・吹替・評価は取得時点のもので、最新の状況は各サービスでご確認ください。${DATA.failed.length ? `取得できなかった観たい作品：${DATA.failed.length}本。` : ""}`;
   save();
   observeReveal();
   return all;
@@ -1095,6 +1163,7 @@ document.addEventListener("click", e => {
   render();
 });
 $("svodOnly").addEventListener("change", e => { limit = STEP; state.svodOnly = e.target.checked; render(); });
+$("dubOnly").addEventListener("change", e => { limit = STEP; state.dubOnly = e.target.checked; render(); });
 $("start").addEventListener("change", e => { limit = STEP; state.start = e.target.value; render(); });
 $("country").addEventListener("change", e => { limit = STEP; state.country = e.target.value; render(); });
 $("minScore").addEventListener("change", e => { limit = STEP; state.minScore = Number(e.target.value); render(); });
@@ -1228,7 +1297,7 @@ addEventListener("resize", moveTabInd);
 
 
 /* ---------- タブ ---------- */
-const TABS = ["movies", "theaters", "coming", "events"];
+const TABS = ["movies", "theaters", "coming", "events", "buzz"];
 function showTab(tab, keepScroll){
   if(!TABS.includes(tab)) tab = "movies";
   state.tab = tab; save();
@@ -1237,10 +1306,12 @@ function showTab(tab, keepScroll){
     document.querySelector(`[data-tab="${t}"]`).setAttribute("aria-selected", String(t === tab));
   });
   $("pickBtn").hidden = tab !== "movies";
+  $("toTop").classList.toggle("solo", tab !== "movies");
   moveTabInd();
   if(tab === "theaters") renderTheaters();
   if(tab === "events") renderEvents();
   if(tab === "coming") renderComing();
+  if(tab === "buzz") renderBuzz();
   try{ history.replaceState(null, "", tab === "movies" ? location.pathname + location.search : "#" + tab); }catch(e){}
   if(!keepScroll){  // 切り替えたら、そのタブの中身の先頭へ（画面の外にあっても見えるように）
     const y = $("panel-" + tab).getBoundingClientRect().top + scrollY - 16;
@@ -1447,6 +1518,59 @@ document.addEventListener("click", e => {
 });
 
 
+/* ---------- Xで話題 ---------- */
+const BUZZ = () => (DATA.buzz && DATA.buzz.items || []).filter(it => MOVIES.some(m => m.id === it.movie));
+const postDate = t => { const d = new Date(t * 1000); return `${d.getMonth()+1}月${d.getDate()}日`; };
+function postHtml(p){  // まずは自前のカードを出し、X の公式の埋め込みが読めたら差し替える（読めなくても空白にしない）
+  return `<div class="xp" data-tid="${esc(p.id)}"><div class="xp-card"><p class="xp-text">${esc(p.text)}</p>
+    <p class="xp-meta"><span><b>${esc(p.name)}</b> @${esc(p.user)}</span><span>${postDate(p.time)}</span><span>♥ ${p.likes.toLocaleString()}</span><span>リポスト ${p.rt.toLocaleString()}</span></p>
+    <a class="xp-link" href="${esc(p.url)}" target="_blank" rel="noopener">Xで見る ↗</a></div><div class="xp-embed"></div></div>`;
+}
+let twAsked = false;
+function loadEmbeds(root){
+  const run = r => r.querySelectorAll(".xp:not([data-done])").forEach(x => {
+    x.dataset.done = "1";
+    twttr.widgets.createTweet(x.dataset.tid, x.querySelector(".xp-embed"), {dnt: true, lang: "ja", conversation: "none"})
+      .then(el => { if(el) x.classList.add("embedded"); }).catch(() => {});
+  });
+  if(window.twttr && twttr.widgets) return run(root);
+  if(twAsked) return;
+  twAsked = true;
+  const sc = document.createElement("script");
+  sc.src = "https://platform.twitter.com/widgets.js"; sc.async = true; sc.charset = "utf-8";
+  sc.onload = () => { if(window.twttr && twttr.ready) twttr.ready(() => run(document)); };
+  document.head.appendChild(sc);
+}
+const rtUrl = m => `https://search.yahoo.co.jp/realtime/search?p=${encodeURIComponent(`"${m.title}"`)}`;
+function renderBuzz(){
+  setTimeout(observeReveal, 0);
+  const items = BUZZ();
+  const byId = new Map(MOVIES.map(m => [m.id, m]));
+  $("bzNote").textContent = items.length
+    ? `観たいに入れた上映中・公開間近の作品と、Filmarksの今話題の上位について、7日以内に反応の多かったXのポストを集めています（${fmtStamp(DATA.buzz.fetched_at)} 時点・Yahoo!リアルタイム検索より）。「ネタバレ」と書かれたポストは除いています。数字は上位5件のいいね＋リポストの合計です。`
+    : "";
+  if(!items.length){ $("buzzBody").innerHTML = `<p class="empty">いまXで話題になっている作品は見つかりませんでした。毎朝の更新で取り直します。</p>`; return; }
+  $("buzzBody").innerHTML = items.map((it, i) => {
+    const m = byId.get(it.movie);
+    const tags = [m.source === "clip" ? `<span class="b clip">観たい</span>` : "",
+      THEATER_N.get(m.id) || inTheater(m) ? `<span class="b rank">上映中</span>` : upcoming(m) ? `<span class="b rank">${esc(m.release.slice(5).replace("-","/"))} 公開</span>` : ""].join("");
+    return `<article class="bz-card">
+      <div class="bz-side">
+        <span class="bz-no">${String(i+1).padStart(2,"0")}</span>
+        <a class="bz-poster" href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${m.poster ? `<img src="${m.poster}" alt="" loading="lazy" decoding="async">` : `<span class="ph">${esc(m.title.slice(0,8))}</span>`}</a>
+        <div class="bz-info">
+          ${tags ? `<div class="badges">${tags}</div>` : ""}
+          <h3><a href="${esc(m.url)}" data-open="${m.id}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
+          <span class="bz-score"><b>${it.score.toLocaleString()}</b>いいね＋リポスト</span>
+        </div>
+        <div class="bz-btns"><button type="button" class="btn lime" data-open="${m.id}">くわしく</button><a class="btn" href="${esc(rtUrl(m))}" target="_blank" rel="noopener">ほかのポストを見る ↗</a></div>
+      </div>
+      <div class="bz-posts">${it.posts.map(postHtml).join("")}</div>
+    </article>`;
+  }).join("");
+  loadEmbeds($("buzzBody"));
+}
+
 /* ---------- くわしく（作品を押すと開く） ---------- */
 let mvOpener = null;
 function openMovie(id){
@@ -1458,6 +1582,7 @@ function openMovie(id){
   const vods = [...m.vod].sort((a,b) => (mine.has(b.name) - mine.has(a.name)) || (isSvod(b) - isSvod(a)));
   const names = list => list.map(n => `<button type="button" class="name" data-person="${esc(n)}">${esc(n)}</button>`).join("、");
   const nearN = THEATER_N.get(m.id);
+  const buzzOf = BUZZ().find(it => it.movie === m.id);
   const facts = [m.year && `${m.year}年`, ...m.countries.slice(0, 3), ...m.genres.slice(0, 3)].filter(Boolean);
   const theater = nearN ? `<button type="button" class="btn lime" data-tmovie="${m.id}">近くの${nearN}館で上映中　上映時刻を見る ▶</button>`
     : inTheater(m) ? `<a class="btn" href="${esc(m.url)}/theaters" target="_blank" rel="noopener">映画館で上映中（Filmarksで探す）↗</a>`
@@ -1480,8 +1605,11 @@ function openMovie(id){
       ${m.synopsis ? `<section class="mv-sec"><h4>STORY<span>あらすじ（Filmarksより${m.synopsis.endsWith("…") ? "・冒頭" : ""}）</span></h4><p class="mv-syn">${esc(m.synopsis)}</p></section>` : ""}
       <section class="mv-sec"><h4>WATCH<span>観られるところ</span></h4>
         <div class="mv-where">${theater}</div>
-        <div class="vod">${vods.length ? vods.map(v => `<a class="v ${isSvod(v) ? "svod" : ""} ${mine.has(v.name) ? "mine" : ""}" href="${esc(v.href)}" target="_blank" rel="noopener nofollow">${esc(v.name)} ${esc(v.kinds.join("・"))}</a>`).join("") : `<span class="v none">配信なし</span>`}</div>
+        <div class="vod">${vods.length ? vods.map(v => `<a class="v ${isSvod(v) ? "svod" : ""} ${mine.has(v.name) ? "mine" : ""}" href="${esc(v.href)}" target="_blank" rel="noopener nofollow">${esc(v.name)} ${esc(v.kinds.join("・"))}${v.dub === true ? `<i class="dub">吹替あり</i>` : v.dub === false ? `<i class="nodub">吹替なし</i>` : ""}</a>`).join("") : `<span class="v none">配信なし</span>`}</div>
+        ${vods.some(v => v.dub != null) ? `<p class="dub-note">吹替の有無は U-NEXT と Prime Video だけ調べています（${esc(fmtStamp(DATA.fetched_at))} 時点）。</p>` : ""}
       </section>
+      ${buzzOf ? `<section class="mv-sec"><h4>ON X<span>Xで話題のポスト</span></h4><div class="mv-x-post">${postHtml(buzzOf.posts[0])}</div>
+        <p class="dub-note"><a href="${esc(rtUrl(m))}" target="_blank" rel="noopener">ほかのポストを見る ↗</a></p></section>` : ""}
       ${m.directors.length || m.cast.length ? `<section class="mv-sec"><h4>CAST<span>監督・出演（押すとその人の作品に絞り込み）</span></h4>
         ${m.directors.length ? `<p class="mv-people"><b>監督</b>${names(m.directors)}</p>` : ""}
         ${m.cast.length ? `<p class="mv-people"><b>出演</b>${names(m.cast.slice(0, 8))}</p>` : ""}</section>` : ""}
@@ -1496,6 +1624,7 @@ function openMovie(id){
   $("mvSheet").scrollTop = 0;
   $("mvClose").addEventListener("click", closeMovie);
   $("mvClose").focus();
+  if(buzzOf) loadEmbeds($("mvSheet"));
 }
 function closeMovie(){
   if($("mvOv").hidden) return;
@@ -1510,6 +1639,11 @@ document.addEventListener("click", e => {
   e.preventDefault();
   openMovie(o.dataset.open);
 });
+
+/* ---------- ページのいちばん上へ ---------- */
+function syncTop(){ const on = scrollY > 900; if($("toTop").hidden === on) $("toTop").hidden = !on; }
+addEventListener("scroll", syncTop, {passive: true});
+$("toTop").addEventListener("click", () => scrollTo({top: 0, behavior: motionOn() ? "smooth" : "auto"}));
 
 /* ---------- boot ---------- */
 $("list").innerHTML = `<div class="grid" aria-label="作品データを読み込んでいます">${Array.from({length: 8}, () => `<div class="card sk"><div class="card-top"><span class="skl" style="width:3em"></span></div><div class="poster"></div><div class="card-body"><span class="skl"></span><span class="skl" style="width:60%"></span></div></div>`).join("")}</div>`;
@@ -1537,6 +1671,8 @@ fetch("data.json", {cache: "no-cache"})
     if(nEv){ $("tabEventN").hidden = false; $("tabEventN").textContent = nEv; }
     const nCo = comingList().filter(m => m.source === "clip").length;
     if(nCo){ $("tabComingN").hidden = false; $("tabComingN").textContent = nCo; }
+    const nBz = BUZZ().filter(it => MOVIES.find(m => m.id === it.movie).source === "clip").length;
+    if(nBz){ $("tabBuzzN").hidden = false; $("tabBuzzN").textContent = nBz; }
     renderNews();
     render();
     const hashTab = location.hash.replace("#", "");
