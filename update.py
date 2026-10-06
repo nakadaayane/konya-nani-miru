@@ -10,7 +10,9 @@
 Filmarks の公開ページ（ログイン不要）を1秒間隔で読むだけなので、アカウントには触れない。
 観た作品（Mark済み）はおすすめから外す。
 
-公開版は誰でも見られるので、ポスターは複製せず Filmarks の画像を直接表示し、あらすじは載せない。
+公開版は誰でも見られるので、ポスターは複製せず Filmarks の画像を直接表示し、あらすじは冒頭だけ載せる。
+配信の吹替の有無は U-NEXT（作品ページが裏で読むデータ）と JustWatch（Prime Video の音声言語）、
+Xで話題のポストは Yahoo!リアルタイム検索から取る。
 """
 import base64
 import io
@@ -19,7 +21,7 @@ import re
 import shutil
 import sys
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
@@ -628,6 +630,201 @@ def compute_changes(prev, data):
 
 
 # ---------- 出力 ----------
+# ---------- 配信の吹替（U-NEXT・Prime Video） ----------
+CACHE = ROOT / "cache"  # リポジトリに入れて、毎日の更新で引き継ぐ（毎回は調べ直さない）
+DUB_CACHE = CACHE / "dub.json"
+DUB_RECHECK = {True: 60, False: 21, None: 14}  # 前回の結果ごとに、何日たったら調べ直すか
+DUB_MAX = 300  # 1回の更新で調べる上限（初回のあとは、ほぼ新しく入った作品だけ）
+UNEXT_API = "https://cc.unext.jp/"
+UNEXT_TITLE_HASH = "0295df1eacb9e942a2c96cb4f1e5f47c3ac96f2bc50589d167e4708b6b701bbd"  # 作品ページが使う問い合わせ（cosmo_getVideoTitle）
+JW_API = "https://apis.justwatch.com/graphql"
+JW_QUERY = """query S($country: Country!, $language: Language!, $first: Int!, $filter: TitleFilter) {
+  popularTitles(country: $country, first: $first, filter: $filter) { edges { node { objectType
+    content(country: $country, language: $language) { title originalReleaseYear }
+    offers(country: $country, platform: WEB) { audioLanguages package { clearName } } } } } }"""
+
+
+def norm_title(x):
+    return re.sub(r"[\s・･:：!！?？、,.。\-‐―—~〜&＆'’\"“”/／]", "", x or "").lower()
+
+
+def unext_client():
+    """U-NEXT のサイトが名乗っているクライアント名と版（版はサイトの更新で変わるので毎回読む）"""
+    r = get("https://video.unext.jp/")
+    m = r and re.search(r'src="([^"]*/pages/_app-[^"]+\.js)"', r.text)
+    js = m and get(requests.compat.urljoin("https://video.unext.jp/", m.group(1)))
+    v = js and re.search(r'clientAwareness:\{name:"([^"]+)",version:"([^"]+)"\}', js.text)
+    return (v.group(1), v.group(2)) if v else None
+
+
+def unext_dub(sid, client):
+    """U-NEXT の作品の吹替の有無。True / False、取れなければ None"""
+    try:
+        r = session.get(UNEXT_API, timeout=30, params={
+            "operationName": "cosmo_getVideoTitle",
+            "variables": json.dumps({"code": sid}, separators=(",", ":")),
+            "extensions": json.dumps({"persistedQuery": {"version": 1, "sha256Hash": UNEXT_TITLE_HASH}}, separators=(",", ":")),
+        }, headers={"Origin": "https://video.unext.jp", "Referer": "https://video.unext.jp/", "Content-Type": "application/json",
+                    "apollo-require-preflight": "true", "apollographql-client-name": client[0], "apollographql-client-version": client[1]})
+        st = (r.json().get("data") or {}).get("webfront_title_stage")
+        if st is None:
+            print(f"  U-NEXT 取れず {sid}: {r.text[:120]}")
+            return None
+        return bool(st.get("hasDub") or st.get("hasDubTrack"))
+    except (requests.RequestException, ValueError) as e:
+        print(f"  U-NEXT error {sid}: {e}")
+        return None
+
+
+def prime_dub(d):
+    """JustWatch の Prime Video（Amazon）の音声言語に日本語があるか。True / False、わからなければ None"""
+    try:
+        r = requests.post(JW_API, timeout=30, headers={"User-Agent": session.headers["User-Agent"]}, json={
+            "query": JW_QUERY, "variables": {"country": "JP", "language": "ja", "first": 5, "filter": {"searchQuery": d["title"]}}})
+        edges = r.json()["data"]["popularTitles"]["edges"]
+    except (requests.RequestException, ValueError, KeyError, TypeError) as e:
+        print(f"  JustWatch error {d['title']}: {e}")
+        return None
+    want, y = norm_title(d["title"]), d.get("year")
+    for e in edges:
+        n = e["node"]
+        c = n.get("content") or {}
+        ny = c.get("originalReleaseYear")
+        if n.get("objectType") != "MOVIE" or norm_title(c.get("title")) != want or (y and ny and abs(ny - y) > 1):
+            continue
+        langs = [o.get("audioLanguages") or [] for o in n.get("offers") or []
+                 if "Amazon" in ((o.get("package") or {}).get("clearName") or "")]
+        langs = [x for x in langs if x]  # 音声言語が空のものは「わからない」
+        if not langs:
+            return None
+        return any("ja" in x for x in langs)
+    return None
+
+
+def fetch_dubs(movies):
+    """日本以外の作品の U-NEXT・Prime Video の配信に「吹替があるか」をつける（vod の各項目に dub: True/False）"""
+    CACHE.mkdir(exist_ok=True)
+    try:
+        cache = json.loads(DUB_CACHE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        cache = {}
+    today = datetime.now(JST).date()
+
+    def stale(key):
+        c = cache.get(key)
+        try:
+            return (today - date.fromisoformat(c["checked"])).days >= DUB_RECHECK[c.get("dub")]
+        except (TypeError, KeyError, ValueError):
+            return True
+
+    def save():
+        DUB_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=0, sort_keys=True), encoding="utf-8")
+
+    foreign = [d for d in movies if d.get("countries") and "日本" not in d["countries"]]
+    jobs = []  # (キャッシュのキー, 作品, サービス名, U-NEXTの作品コード)
+    for d in sorted(foreign, key=lambda d: (d["source"] != "clip", d["order"])):
+        for v in d["vod"]:
+            if v["name"] == "U-NEXT":
+                m = re.search(r"SID\d+", v.get("href") or "")
+                if m and stale(m.group(0)):
+                    jobs.append((m.group(0), d, "U-NEXT", m.group(0)))
+            elif v["name"] == "Prime Video" and stale(f"prime:{d['id']}"):
+                jobs.append((f"prime:{d['id']}", d, "Prime Video", None))
+    jobs = jobs[:DUB_MAX]
+    client = unext_client() if any(j[2] == "U-NEXT" for j in jobs) else None
+    if jobs and any(j[2] == "U-NEXT" for j in jobs) and not client:
+        print("  U-NEXT のクライアント情報が読めないので、今回は U-NEXT の吹替を調べません")
+    unext_fail = 0  # U-NEXT の仕組みが変わって読めないときに、何百回も試さないため
+    for n, (key, d, svc, sid) in enumerate(jobs, 1):
+        if svc == "U-NEXT" and (not client or unext_fail >= 8):
+            continue
+        time.sleep(WAIT)
+        dub = unext_dub(sid, client) if svc == "U-NEXT" else prime_dub(d)
+        if svc == "U-NEXT":
+            unext_fail = unext_fail + 1 if dub is None else 0
+            if unext_fail == 8:
+                print("  U-NEXT が続けて読めないので、今回はここで U-NEXT をやめます")
+        if dub is None and key in cache:  # 取れなかったときは前回の結果を残す
+            continue
+        cache[key] = {"dub": dub, "checked": today.isoformat()}
+        if n % 50 == 0 or n == len(jobs):
+            print(f"[吹替 {n}/{len(jobs)}]")
+            save()
+    save()
+    found = 0
+    for d in foreign:
+        for v in d["vod"]:
+            m = re.search(r"SID\d+", v.get("href") or "") if v["name"] == "U-NEXT" else None
+            key = m.group(0) if m else f"prime:{d['id']}" if v["name"] == "Prime Video" else None
+            c = cache.get(key) if key else None
+            if c and c.get("dub") is not None:
+                v["dub"] = c["dub"]
+        found += any(v.get("dub") for v in d["vod"])
+    print(f"配信で吹替あり {found}本／日本以外 {len(foreign)}本（今回調べた {len(jobs)}件）")
+
+
+# ---------- Xで話題（Yahoo!リアルタイム検索） ----------
+X_SEARCH = "https://search.yahoo.co.jp/realtime/search"
+BUZZ_TOP = 16        # 何作品まで載せるか
+BUZZ_SCAN = 40       # 今話題ランキングの上位何本を調べるか
+BUZZ_MIN_LIKES = 30  # これより「いいね」が少ないポストは載せない
+BUZZ_DAYS = 7        # 何日以内のポストか
+
+
+def x_posts(query):
+    try:
+        r = session.get(X_SEARCH, params={"p": query, "md": "h"}, timeout=30, headers={"Accept-Language": "ja"})
+        m = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', r.text, re.S)
+        return json.loads(m.group(1))["props"]["pageProps"]["pageData"]["timeline"]["entry"] or []
+    except Exception as e:
+        print(f"  Xの検索エラー {query}: {e}")
+        return []
+
+
+def clean_post(x):
+    x = (x or "").replace("\tSTART\t", "").replace("\tEND\t", "")
+    x = re.sub(r"https?://t\.co/\S+", "", x)
+    return re.sub(r"\s+", " ", x).strip()
+
+
+def fetch_buzz(movies, trend):
+    """観たい×上映中・公開間近の作品と、今話題の上位について、Xで反応の多いポストを拾い、話題の大きい順に並べる"""
+    now = time.time()
+    today = datetime.now(JST).date().isoformat()
+    soon = (datetime.now(JST).date() + timedelta(days=14)).isoformat()
+    by_id = {d["id"]: d for d in movies}
+    cands = [d for d in movies if d["source"] == "clip" and (
+        d.get("status") == "上映中" or d.get("theaters") or (d.get("release") and today <= d["release"] <= soon))]
+    cands += [by_id[mid] for mid, _ in sorted(trend.items(), key=lambda x: x[1][0])[:BUZZ_SCAN] if mid in by_id]
+    cands = list({d["id"]: d for d in cands}.values())
+    items, seen = [], set()
+    for n, d in enumerate(cands, 1):
+        time.sleep(1.5)
+        want = norm_title(d["title"])
+        if len(want) < 2:
+            continue
+        posts = []
+        for e in x_posts(f'"{d["title"]}"' + (" 映画" if len(want) <= 4 else "")):
+            text = clean_post(e.get("displayTextBody") or e.get("displayText"))
+            likes, rt = int(e.get("likesCount") or 0), int(e.get("rtCount") or 0)
+            if (likes < BUZZ_MIN_LIKES or e.get("possiblySensitive") or e.get("inReplyTo")
+                    or now - int(e.get("createdAt") or 0) > BUZZ_DAYS * 86400
+                    or want not in norm_title(text) or "ネタバレ" in text or text.count("『") > 4
+                    or not e.get("screenName") or e.get("id") in seen):
+                continue
+            seen.add(e["id"])
+            posts.append({"id": e["id"], "user": e["screenName"], "name": e.get("name") or "",
+                          "likes": likes, "rt": rt, "time": int(e.get("createdAt") or 0), "text": text[:240],
+                          "url": f"https://x.com/{e['screenName']}/status/{e['id']}"})
+        posts.sort(key=lambda x: -x["likes"])
+        if posts:
+            items.append({"movie": d["id"], "score": sum(x["likes"] + x["rt"] for x in posts[:5]), "posts": posts[:2]})
+        if n % 10 == 0 or n == len(cands):
+            print(f"[Xで話題 {n}/{len(cands)}] 話題あり {len(items)}本")
+    items.sort(key=lambda x: -x["score"])
+    return {"fetched_at": datetime.now(JST).strftime("%Y-%m-%d %H:%M"), "items": items[:BUZZ_TOP]}
+
+
 def poster_data_uri(path):
     """一覧では幅64pxで表示するので、高精細画面向けに128px幅へ縮めて埋め込む"""
     img = Image.open(path).convert("RGB")
@@ -685,6 +882,9 @@ def main():
         clips = [d for d in data["movies"] if d["source"] == "clip"]
         data["theater"] = fetch_schedules(clips)
         data["events"] = attach_clips(fetch_events(), clips)
+        fetch_dubs(data["movies"])
+        data["buzz"] = fetch_buzz(data["movies"], {d["id"]: (r["rank"], d) for d in data["movies"]
+                                                   for r in d.get("ranks", []) if r["list"] == "今話題"})
         (DATA / "clips.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
         build(public)
         return
@@ -789,6 +989,19 @@ def main():
         theater = {"origin": ORIGIN, "dates": [], "theaters": [], "shows": []}
     attach_clips(events, clips)
 
+    # 6. 配信の吹替（U-NEXT・Prime Video）と、Xで話題のポスト。取れなくても他は出す
+    try:
+        fetch_dubs(movies)
+    except Exception as e:
+        print(f"  吹替の取得エラー: {e}")
+    try:
+        buzz = fetch_buzz(movies, rankings["今話題"])
+    except Exception as e:
+        print(f"  Xの話題の取得エラー: {e}")
+        buzz = {"items": []}
+    if not buzz["items"]:  # 取れなかった日は前回分を残す
+        buzz = previous_data().get("buzz") or buzz
+
     data = {
         "user": USER_ID,
         "fetched_at": datetime.now(JST).strftime("%Y-%m-%d %H:%M"),
@@ -799,6 +1012,7 @@ def main():
         "similar_top": len(sim_top),
         "theater": theater,
         "events": events,
+        "buzz": buzz,
         "failed": failed,
         "movies": movies,
     }
