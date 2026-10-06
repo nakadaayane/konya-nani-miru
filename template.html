@@ -619,21 +619,29 @@ html.calm .mv-sheet{animation:none}
 .mq-inner{position:relative;z-index:1;display:grid;gap:10px;padding:13px 14px 11px;background:var(--ink);border-radius:12px;color:#fff}
 .mq-k{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:0;font-family:var(--display);font-size:13px;letter-spacing:.14em;color:var(--sun)}
 .mq-k span:first-child{white-space:nowrap}
+.mq-k small{margin-left:8px;font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:.12em;color:#fff}
 .mq-k span:last-child{min-width:0;font-family:var(--body);font-size:11px;letter-spacing:0;color:#CFC8C4;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mq-stage{display:grid;min-height:142px;perspective:800px}
-.mq-item{grid-area:1/1;display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:center;width:100%;padding:0;background:none;border:0;color:#fff;text-align:left;cursor:pointer;font:inherit;transform-origin:50% 50%}
+.mq-stage{display:grid;perspective:800px}
+.mq-item{grid-area:1/1;display:grid;grid-template-columns:92px minmax(0,1fr);grid-template-areas:"poster info" "syn syn" "foot foot";gap:12px 14px;align-items:center;width:100%;padding:0;background:none;border:0;color:#fff;text-align:left;cursor:pointer;font:inherit;transform-origin:50% 50%}
+.mq-poster{grid-area:poster}
+.mq-info{grid-area:info}
+.mq-facts{font-size:11.5px;color:#CFC8C4;line-height:1.5}
+.mq-syn{grid-area:syn;font-size:13px;line-height:1.8;color:#EFEAE7;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;padding-top:10px;border-top:1.5px dashed #4A4441}
+.mq-syn::before{content:"STORY";margin-right:8px;font-family:var(--display);font-size:10px;letter-spacing:.16em;color:var(--sun)}
+.mq-foot{grid-area:foot;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px}
+.mq-item:hover .mq-go,.mq-item:focus-visible .mq-go{background:var(--lime);color:var(--ink)}
 .mq-poster{display:block;aspect-ratio:5/7;border:2px solid #fff;border-radius:10px;overflow:hidden;background:#333;transition:transform .3s cubic-bezier(.3,1.4,.5,1)}
 .mq-item:hover .mq-poster,.mq-item:focus-visible .mq-poster{transform:rotate(-4deg) scale(1.05)}
 .mq-poster img{display:block;width:100%;height:100%;object-fit:cover}
 .mq-info{display:grid;gap:5px;min-width:0;justify-items:start}
 .mq-t{font-size:16px;font-weight:700;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .mq-rt{font-size:12px;color:#CFC8C4}
-.mq-rt b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1;color:var(--lime);margin-right:3px}
+.mq-rt b{font-family:var(--display);font-weight:400;font-size:20px;line-height:1;color:var(--lime);margin-right:2px}
 .mq-rt i{font-style:normal;margin-left:10px;color:var(--sun);font-weight:700}
 .mq-end{font-size:12px;color:#CFC8C4}
 .mq-end b{font-family:var(--display);font-weight:400;font-size:15px;color:#fff}
 .mq-svc{font-size:10.5px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--blue);color:#fff}
-.mq-go{font-size:11px;font-weight:700;color:var(--lime);text-decoration:underline;text-underline-offset:3px}
+.mq-go{font-size:12px;font-weight:700;padding:3px 12px;border:1.5px solid var(--lime);border-radius:999px;color:var(--lime);transition:background .15s,color .15s}
 .mq-item.in{animation:mqIn .65s cubic-bezier(.2,.9,.25,1)}
 .mq-item.out{animation:mqOut .45s ease forwards;pointer-events:none}
 @keyframes mqIn{from{opacity:0;transform:rotateX(-75deg) translateY(12px)}}
@@ -680,9 +688,7 @@ html.calm .bz-meter i{animation:none}
 
 @media (max-width:760px){
   .hero-side{gap:14px}
-  .mq-stage{min-height:128px}
-  .mq-item{grid-template-columns:82px minmax(0,1fr)}
-  .mq-rt b{font-size:26px}
+  .mq-item{grid-template-columns:78px minmax(0,1fr)}
   /* 下へ読んでいる間は、右下の丸いボタンをよける */
   .sticker,.totop{transition:transform .35s cubic-bezier(.3,1.3,.5,1),opacity .25s}
   body.fab-away .sticker,body.fab-away .totop{transform:translateY(170px) scale(.7);opacity:0;pointer-events:none}
@@ -758,11 +764,10 @@ html.calm .bz-meter i{animation:none}
       <div class="hero-meta"><span class="stamp" id="stamp"></span><button class="motion-btn" id="motionBtn" type="button" aria-pressed="true"><span class="dot"></span><span id="motionLbl">うごき ON</span></button></div>
     </div>
     <div class="hero-side">
-    <section class="marquee" id="marquee" aria-label="今夜のおすすめ" hidden>
+    <section class="marquee" id="marquee" aria-label="今日の1本" hidden>
       <div class="mq-inner">
-        <p class="mq-k"><span>NOW SHOWING</span><span id="mqWhy"></span></p>
-        <div class="mq-stage" id="mqStage" aria-live="polite"></div>
-        <div class="mq-dots" id="mqDots"></div>
+        <p class="mq-k"><span>TODAY'S PICK<small>今日の1本</small></span><span id="mqWhy"></span></p>
+        <div class="mq-stage" id="mqStage"></div>
       </div>
     </section>
     <figure class="hist" aria-label="上映時間の分布">
@@ -1832,68 +1837,50 @@ document.addEventListener("click", e => {
 });
 
 
-/* ---------- 今夜のおすすめ（看板） ---------- */
-let mqList = [], mqIdx = 0, mqTimer = 0, mqKey = "", mqHold = false;
-function seeded(seed){ let x = seed % 2147483647 || 1; return () => (x = x * 48271 % 2147483647) / 2147483647; }
-function marqueePicks(){
-  // 観たい × 契約中の配信。夜中の1時までに観終わる作品を優先し、評価の高い18本から日替わりで5本
-  const now = startMinutes();
+/* ---------- 今日の1本（看板） ---------- */
+let mqKey = "", mqShown = false;
+function hashStr(t){ let h = 2166136261; for(const c of t){ h ^= c.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function todaysPick(){
+  // 観たい × 契約中の配信（見放題を優先）から、あらすじのある評価の高い20本に絞り、日付で1本に決める（1日じゅう同じ作品）
+  const mine = state.services;
   let pool = MOVIES.filter(m => m.source === "clip" && !m.watched && m.runtime && m.poster && vodMatches(m));
-  const fit = pool.filter(m => now + m.runtime <= 25 * 60);
-  if(fit.length >= 3) pool = fit;
-  const top = pool.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 18);
-  const r = seeded(Number(localISO(new Date()).replace(/-/g, "")));
-  for(let i = top.length - 1; i > 0; i--){ const j = Math.floor(r() * (i + 1)); [top[i], top[j]] = [top[j], top[i]]; }
-  return top.slice(0, 5);
+  const withSyn = pool.filter(m => m.synopsis);
+  if(withSyn.length) pool = withSyn;
+  const svod = pool.filter(m => m.vod.some(v => isSvod(v) && (!mine.length || mine.includes(v.name))));
+  if(svod.length >= 5) pool = svod;
+  const top = pool.sort((x, y) => (y.score || 0) - (x.score || 0)).slice(0, 20);
+  if(!top.length) return null;
+  const day = localISO(new Date());
+  return top.reduce((best, m) => hashStr(day + ":" + m.id) < hashStr(day + ":" + best.id) ? m : best);
 }
-function mqItem(m){
+function pickHtml(m){
   const start = startMinutes(), mine = new Set(state.services);
-  const v = m.vod.filter(x => !mine.size || mine.has(x.name)).sort((a, b) => (isSvod(b) - isSvod(a)) || ((b.dub === true) - (a.dub === true)))[0];
-  return `<button type="button" class="mq-item" data-open="${m.id}" aria-label="${esc(m.title)}　${m.runtime}分　くわしく見る">
+  const v = m.vod.filter(x => !mine.size || mine.has(x.name)).sort((x, y) => (isSvod(y) - isSvod(x)) || ((y.dub === true) - (x.dub === true)))[0];
+  const facts = [m.year && `${m.year}年`, m.countries.slice(0, 2).join("・"), m.genres.slice(0, 2).join("・")].filter(Boolean).join(" ／ ");
+  return `<button type="button" class="mq-item" data-open="${m.id}" aria-label="今日の1本：${esc(m.title)}　くわしく見る">
     <span class="mq-poster"><img src="${m.poster}" alt="" decoding="async"></span>
     <span class="mq-info">
       <span class="mq-t">${esc(m.title)}</span>
+      ${facts ? `<span class="mq-facts">${esc(facts)}</span>` : ""}
       <span class="mq-rt"><b>${m.runtime}</b>分<i>★${m.score != null ? m.score.toFixed(1) : "—"}</i></span>
-      <span class="mq-end">今から観ると <b>${hhmm(start + m.runtime)}</b> に終わる</span>
       ${v ? `<span class="mq-svc">${esc(v.name)} ${esc(v.kinds.join("・"))}${v.dub ? "・吹替" : ""}</span>` : ""}
-    </span></button>`;
-}
-function showMq(i, instant){
-  if(!mqList.length) return;
-  mqIdx = (i + mqList.length) % mqList.length;
-  const st = $("mqStage"), html = mqItem(mqList[mqIdx]);
-  if(instant || !motionOn()) st.innerHTML = html;
-  else {
-    const old = st.querySelector(".mq-item:not(.out)");
-    if(old) old.classList.add("out");
-    st.insertAdjacentHTML("beforeend", html);
-    const nu = st.lastElementChild; nu.classList.add("in");
-    setTimeout(() => { if(old) old.remove(); nu.classList.remove("in"); }, 650);
-  }
-  document.querySelectorAll(".mq-dot").forEach((d, k) => d.setAttribute("aria-current", String(k === mqIdx)));
-}
-function scheduleMq(){
-  clearInterval(mqTimer);
-  if(!motionOn() || mqList.length < 2) return;
-  mqTimer = setInterval(() => { if(!mqHold && !document.hidden && $("mvOv").hidden) showMq(mqIdx + 1); }, 5200);
+    </span>
+    ${m.synopsis ? `<span class="mq-syn">${esc(m.synopsis)}</span>` : ""}
+    <span class="mq-foot"><span class="mq-end">今から観ると <b>${hhmm(start + m.runtime)}</b> に終わる</span><span class="mq-go">くわしく →</span></span>
+  </button>`;
 }
 function renderMarquee(){
-  const list = marqueePicks();
-  const key = list.map(m => m.id).join(",");
-  if(key === mqKey){ if(list.length && !$("mqStage").querySelector(".in,.out")) showMq(mqIdx, true); return; }  // 終わる時刻だけ更新
-  mqKey = key; mqList = list;
-  $("marquee").hidden = !list.length;
-  if(!list.length){ clearInterval(mqTimer); return; }
-  $("mqWhy").textContent = `観たい × ${state.services.length ? state.services.join("・") : "配信あり"}`;
-  $("mqDots").innerHTML = list.map((m, i) => `<button type="button" class="mq-dot" data-mq="${i}" aria-label="${i + 1}本目：${esc(m.title)}"></button>`).join("");
-  showMq(0, true);
-  scheduleMq();
+  const m = todaysPick();
+  $("marquee").hidden = !m;
+  if(!m) return;
+  const key = m.id + "|" + startMinutes();  // 同じ作品なら、終わる時刻だけ更新
+  if(key === mqKey) return;
+  mqKey = key;
+  $("mqWhy").textContent = dayLabel(localISO(new Date())).replace(/^今日 /, "");
+  $("mqStage").innerHTML = pickHtml(m);
+  if(!mqShown && motionOn()){ $("mqStage").firstElementChild.classList.add("in"); }
+  mqShown = true;
 }
-$("marquee").addEventListener("pointerenter", () => { mqHold = true; });
-$("marquee").addEventListener("pointerleave", () => { mqHold = false; });
-$("marquee").addEventListener("focusin", () => { mqHold = true; });
-$("marquee").addEventListener("focusout", () => { mqHold = false; });
-$("mqDots").addEventListener("click", e => { const d = e.target.closest("[data-mq]"); if(d){ showMq(Number(d.dataset.mq)); scheduleMq(); } });
 
 /* ---------- スマホ：下へ読んでいる間は右下の丸いボタンをよける ---------- */
 let fabY = scrollY, fabT = 0;
