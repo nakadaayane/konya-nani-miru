@@ -18,10 +18,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <script>/* うごき：端末の「動きを減らす」設定に合わせ、ページ内のスイッチでいつでも変えられる */
 try{var mv=localStorage.getItem("knm-motion"),rd=matchMedia("(prefers-reduced-motion: reduce)").matches;if(mv==="off"||(!mv&&rd))document.documentElement.classList.add("calm")}catch(e){}</script>
+<script>/* デザイン：?skin=claude で Claude風（写真・飾り・動きなし）、?skin=pop でいつもの。選んだほうを覚える */
+try{var sq=new URLSearchParams(location.search).get("skin");if(sq==="claude"||sq==="pop")localStorage.setItem("knm-skin",sq);
+if(localStorage.getItem("knm-skin")==="claude"){var hh=document.documentElement;hh.classList.add("skin-c","calm");document.title="Watchlist";
+var ic=document.querySelector('link[rel="icon"]');if(ic){ic.type="image/svg+xml";ic.href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%235E5D59'/%3E%3Cpath d='M9 11h14M9 16h14M9 21h9' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E"}
+var tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content="#F5F4EF"}}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://d2ueuvlup6lbue.cloudfront.net">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
 /* 生成りのグレーに群青とライム、上映時間の帯ごとにポップな色。明るい見た目に固定する */
 :root{
@@ -724,6 +729,84 @@ html.calm .bz-meter i{animation:none}
 /* イベント：観たい作品のお知らせに目印 */
 .ev-list li:has(.b.clip){position:relative;padding-left:16px}
 .ev-list li:has(.b.clip)::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:6px;border-radius:3px;background:var(--lime);border:1.5px solid var(--ink)}
+
+/* ================= Claude風デザイン（仕事中でも目立たない：写真・飾り・動きなし） ================= */
+.c-only{display:none}
+.skin-btn{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;font:inherit;font-size:12px;font-weight:700;background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;cursor:pointer}
+.skin-btn:hover{background:var(--lime)}
+html.skin-c{  /* 色は最低限：生成り・白・グレー・黒だけ（色はタイトル横の小さな丸ひとつ） */
+  --bg:#F5F4EF; --paper:#FFFFFF; --ink:#1F1E1D; --muted:#6B6A64; --faint:#9A988F; --hair:#E3E1D8; --soft:#EFEEE9;
+  --blue:var(--ink); --blue-soft:var(--soft); --lime:var(--soft); --accent:var(--ink);
+  --mint:var(--paper); --sun:var(--paper); --sky:var(--paper); --pink:var(--paper); --late:var(--ink);
+  --display:"Source Serif 4","Zen Kaku Gothic New","Hiragino Sans",serif;
+}
+@media (prefers-color-scheme:dark){
+  html.skin-c{color-scheme:dark;--bg:#262624; --paper:#30302E; --ink:#F2F0EA; --muted:#B4B2AA; --faint:#8E8C85; --hair:#45443F; --soft:#3A3936}
+}
+html.skin-c,html.skin-c body{background:var(--bg)}
+html.skin-c :is(.stage-deco,.filmstrip,.belt,.sticker,.illo-slot,.illo-pop,.en-label,.title,.cur,#reelOv,.motion-btn,.xp-embed){display:none!important}
+html.skin-c :is(.poster,.mq-poster,.bz-poster,.co-poster,.th-poster,.mv-poster){display:none!important}
+html.skin-c :is(.stat,.nx-card,.marquee)::before,html.skin-c :is(.stat)::after{display:none!important}
+html.skin-c *,html.skin-c *::before,html.skin-c *::after{border-width:1px!important;border-color:var(--hair)!important;box-shadow:none!important;text-shadow:none!important;animation:none!important}
+html.skin-c .c-title{display:flex}
+html.skin-c #pickBtnC{display:inline-block}
+html.skin-c .wrap{padding-top:40px!important}
+html.skin-c .c-title{flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin:0 0 6px}
+html.skin-c .c-en{font-family:var(--display);font-weight:600;font-size:clamp(34px,5vw,48px);line-height:1.1;letter-spacing:-.01em}
+html.skin-c .c-en::before{content:"";display:inline-block;width:.3em;height:.3em;margin-right:.32em;border-radius:50%;background:var(--accent);vertical-align:.2em}
+html.skin-c .c-ja{font-size:13px;color:var(--muted)}
+/* 見出し */
+html.skin-c .sec-head .en,html.skin-c .news-head .en{font-weight:600;font-size:clamp(22px,3vw,28px);background:none!important;margin-left:0;padding:0}
+html.skin-c .sec-head .ja,html.skin-c .news-head .ja{color:var(--muted);letter-spacing:.06em}
+html.skin-c .band{background:var(--paper)}
+html.skin-c .band h2{font-weight:600;font-size:18px}
+html.skin-c .fin .en{font-weight:600}
+/* 看板（今日の1本） */
+html.skin-c .marquee{padding:0;background:var(--paper);border-radius:14px}
+html.skin-c .mq-inner{background:transparent;color:var(--ink);padding:16px 18px 14px}
+html.skin-c .mq-k{color:var(--muted);font-size:12px}
+html.skin-c .mq-k small,html.skin-c .mq-k span:last-child{color:var(--muted)}
+html.skin-c .mq-item{color:var(--ink);grid-template-columns:1fr;grid-template-areas:"info" "syn" "foot"}
+html.skin-c :is(.mq-facts,.mq-rt,.mq-end){color:var(--muted)}
+html.skin-c .mq-t{-webkit-line-clamp:3}
+html.skin-c .mq-rt b{color:var(--accent)}
+html.skin-c .mq-rt i{color:var(--muted)}
+html.skin-c .mq-end b{color:var(--ink)}
+html.skin-c .mq-syn{color:var(--ink)}
+html.skin-c .mq-syn::before{color:var(--muted)}
+html.skin-c .mq-svc{background:var(--blue-soft);color:var(--accent)}
+html.skin-c .mq-go{color:var(--accent);border-color:var(--accent)!important}
+html.skin-c .mq-item:hover .mq-go,html.skin-c .mq-item:focus-visible .mq-go{background:var(--accent);color:var(--paper)}
+/* タブ・ボタン */
+html.skin-c .tab{border-radius:10px;transform:none!important}
+html.skin-c .tab[aria-selected="true"]{background:var(--ink);color:var(--bg)!important}
+html.skin-c .tab[aria-selected="true"] .tab-en{color:var(--bg);opacity:.7}
+html.skin-c .tab-ind{background:var(--ink)}
+html.skin-c .chip:hover,html.skin-c .btn:hover,html.skin-c .skin-btn:hover{background:var(--blue-soft)}
+html.skin-c .chip[aria-pressed="true"]{background:var(--accent);color:var(--paper)}
+html.skin-c .news .new{background:var(--accent);color:var(--paper)}
+html.skin-c .v.mine{background:var(--ink);color:var(--paper)}
+html.skin-c .v .dub{background:var(--paper);color:var(--ink)}
+html.skin-c .c-en::before{background:#C2613F}
+/* 作品：ポスターなしの一覧（左に番号と分数） */
+html.skin-c .grid{grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+html.skin-c .card{display:grid;grid-template-columns:72px minmax(0,1fr);border-radius:12px;transform:none!important}
+html.skin-c .card-top{flex-direction:column;justify-content:flex-start;align-items:center;gap:8px;padding:14px 6px;border-bottom:0;border-right-style:solid}
+html.skin-c .card-body{padding:12px 14px 14px}
+/* 映画館・公開予定・Xで話題・くわしく：ポスターの列をなくす */
+html.skin-c .th-movies li,html.skin-c .mv-card,html.skin-c .co-card,html.skin-c .bz-side,html.skin-c .bz-card{grid-template-columns:1fr}
+html.skin-c .nx-card:first-child{background:var(--blue-soft)}
+html.skin-c .nx-wait{background:var(--accent);color:var(--paper)}
+html.skin-c .xp.embedded .xp-card{display:block!important}
+html.skin-c .mv-sheet{grid-template-columns:1fr!important;grid-template-areas:"head" "nums" "body"!important;background:var(--paper)}
+html.skin-c .mv-ov{background:rgba(31,30,29,.45)}
+html.skin-c .bz-meter i{background:var(--muted)}
+html.skin-c .hist-bars span.on{background:var(--muted)}
+html.skin-c .hero{align-items:start}
+@media (max-width:560px){
+  html.skin-c .grid{grid-template-columns:1fr}
+  html.skin-c .card{grid-template-columns:62px minmax(0,1fr)}
+}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 
@@ -748,6 +831,7 @@ html.calm .bz-meter i{animation:none}
 <div class="wrap">
   <header class="hero">
     <div class="hero-main">
+      <div class="c-title c-only" role="heading" aria-level="1"><span class="c-en">Watchlist</span><span class="c-ja">作品リスト</span></div>
       <p class="en-label">WHAT TO WATCH TONIGHT</p>
       <h1 class="title" aria-label="今夜なに観る？"><span class="ln" aria-hidden="true"><span class="ch" style="--i:0">今</span><span class="ch" style="--i:1">夜</span><span class="illo-pop"><svg class="illo" viewBox="0 0 120 128" aria-hidden="true"><g stroke="#141414" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
 <g fill="#FFF3C4"><circle cx="18" cy="20" r="6"/><circle cx="24" cy="15" r="5"/><circle cx="101" cy="13" r="5"/><circle cx="106" cy="19" r="5"/></g>
@@ -761,7 +845,7 @@ html.calm .bz-meter i{animation:none}
 <rect x="11" y="60" width="98" height="10" rx="3" fill="#E8332E"/></g></svg></span></span><span class="ln" aria-hidden="true"><span class="ch" style="--i:2">な</span><span class="ch" style="--i:3">に</span><span class="ch" style="--i:4">観</span><span class="ch" style="--i:5">る</span><span class="ch" style="--i:6">？</span></span></h1>
       <div class="stats" id="stats"></div>
       <p class="lede" id="lede"></p>
-      <div class="hero-meta"><span class="stamp" id="stamp"></span><button class="motion-btn" id="motionBtn" type="button" aria-pressed="true"><span class="dot"></span><span id="motionLbl">うごき ON</span></button></div>
+      <div class="hero-meta"><span class="stamp" id="stamp"></span><button class="motion-btn" id="motionBtn" type="button" aria-pressed="true"><span class="dot"></span><span id="motionLbl">うごき ON</span></button><button class="skin-btn" id="skinBtn" type="button">Claude風にする</button></div>
     </div>
     <div class="hero-side">
     <section class="marquee" id="marquee" aria-label="今日の1本" hidden>
@@ -878,6 +962,7 @@ html.calm .bz-meter i{animation:none}
         <option value="order-desc">観たいに入れた古い順</option>
         <option value="title-asc">タイトル順</option>
       </select>
+      <button class="btn c-only" id="pickBtnC" type="button">おまかせで1本</button>
       <button class="btn ghost" id="resetBtn" type="button">条件をリセット</button>
     </div>
   </div>
@@ -1289,7 +1374,7 @@ document.addEventListener("click", e => {
   else if(b.id === "moreGenres"){ showAllGenres = !showAllGenres; }
   else if(b.id === "nowBtn"){ state.start = ""; }
   else if(b.id === "resetBtn"){ state = {...DEFAULTS, pool: state.pool, services: state.services}; pickedId = null; $("picked").innerHTML = ""; }
-  else if(b.id === "pickBtn"){ pick(); return; }
+  else if(b.id === "pickBtn" || b.id === "pickBtnC"){ pick(); return; }
   else if(b.id === "moreSvc"){ showAllSvc = !showAllSvc; }
   else return;
   limit = STEP;  // 条件を変えたら先頭の100本から出し直す
@@ -1314,6 +1399,7 @@ function pick(){
   const sorted = list.sort(SORTS[state.sort] || SORTS["runtime-asc"]);
   const pos = sorted.findIndex(x => x.id === m.id);
   if(pos >= limit) limit = Math.ceil((pos + 1) / STEP) * STEP;
+  if(isClaude()){ goPicked(); openMovie(m.id); return; }  // Claude風はスロットを出さずに、すぐ「くわしく」
   showReel(m, list);
 }
 function goPicked(){
@@ -1375,7 +1461,27 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------- うごき ---------- */
-function motionOn(){ return !document.documentElement.classList.contains("calm"); }
+function motionOn(){ return !document.documentElement.classList.contains("calm") && !isClaude(); }
+function isClaude(){ return document.documentElement.classList.contains("skin-c"); }
+/* デザインの切り替え（ポップ ⇄ Claude風）。中身は同じなので、どちらも毎朝の更新で新しくなる */
+const SKIN_ICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%235E5D59'/%3E%3Cpath d='M9 11h14M9 16h14M9 21h9' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E";
+function syncSkinBtn(){ $("skinBtn").textContent = isClaude() ? "ポップに戻す" : "Claude風にする"; }
+function setSkin(claude){
+  const h = document.documentElement;
+  h.classList.toggle("skin-c", claude);
+  try{ localStorage.setItem("knm-skin", claude ? "claude" : "pop"); }catch(e){}
+  let calm = claude;
+  if(!claude){ try{ const mv = localStorage.getItem("knm-motion"); calm = mv === "off" || (!mv && matchMedia("(prefers-reduced-motion: reduce)").matches); }catch(e){} }
+  h.classList.toggle("calm", calm);
+  document.title = claude ? "Watchlist" : "今夜なに観る？";
+  const ic = document.querySelector('link[rel="icon"]');
+  if(ic){ ic.type = claude ? "image/svg+xml" : "image/png"; ic.href = claude ? SKIN_ICON : "favicon.png"; }
+  const tc = document.querySelector('meta[name="theme-color"]');
+  if(tc) tc.content = claude ? "#F5F4EF" : "#E8E2DF";
+  syncSkinBtn(); syncMotionBtn();
+  if(DATA){ mqKey = ""; render(); showTab(state.tab || "movies", true); }
+}
+$("skinBtn").addEventListener("click", () => setSkin(!isClaude()));
 function syncMotionBtn(){ const on = motionOn(); $("motionBtn").setAttribute("aria-pressed", String(on)); $("motionLbl").textContent = on ? "うごき ON" : "うごき OFF"; }
 $("motionBtn").addEventListener("click", () => {
   const on = !motionOn();
@@ -1675,6 +1781,7 @@ function postHtml(p){  // まずは自前のカードを出し、X の公式の�
 }
 let twAsked = false;
 function loadEmbeds(root){
+  if(isClaude()) return;  // Claude風では写真の入る X の埋め込みを使わない
   const run = r => r.querySelectorAll(".xp:not([data-done])").forEach(x => {
     x.dataset.done = "1";
     twttr.widgets.createTweet(x.dataset.tid, x.querySelector(".xp-embed"), {dnt: true, lang: "ja", conversation: "none"})
@@ -1941,7 +2048,7 @@ $("toTop").addEventListener("click", () => scrollTo({top: 0, behavior: motionOn(
 /* ---------- boot ---------- */
 $("list").innerHTML = `<div class="grid" aria-label="作品データを読み込んでいます">${Array.from({length: 8}, () => `<div class="card sk"><div class="card-top"><span class="skl" style="width:3em"></span></div><div class="poster"></div><div class="card-body"><span class="skl"></span><span class="skl" style="width:60%"></span></div></div>`).join("")}</div>`;
 if(matchMedia("(max-width:760px)").matches) $("filters").open = false;
-syncMotionBtn();
+syncMotionBtn(); syncSkinBtn();
 fetch("data.json", {cache: "no-cache"})
   .then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
   .then(d => {
