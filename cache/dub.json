@@ -639,6 +639,10 @@
 "checked": "2026-10-24",
 "dub": false
 },
+"SID0019489": {
+"checked": "2026-10-26",
+"dub": true
+},
 "SID0019571": {
 "checked": "2026-10-14",
 "dub": true
@@ -1939,6 +1943,10 @@
 "checked": "2026-10-06",
 "dub": false
 },
+"SID0055132": {
+"checked": "2026-10-26",
+"dub": true
+},
 "SID0055204": {
 "checked": "2026-10-06",
 "dub": true
@@ -1962,6 +1970,10 @@
 "SID0055461": {
 "checked": "2026-10-11",
 "dub": false
+},
+"SID0056026": {
+"checked": "2026-10-26",
+"dub": true
 },
 "SID0056030": {
 "checked": "2026-10-06",
@@ -2319,6 +2331,10 @@
 "checked": "2026-10-06",
 "dub": false
 },
+"SID0088257": {
+"checked": "2026-10-26",
+"dub": false
+},
 "SID0088471": {
 "checked": "2026-10-13",
 "dub": false
@@ -2662,6 +2678,10 @@
 "SID0170610": {
 "checked": "2026-10-06",
 "dub": false
+},
+"SID0171306": {
+"checked": "2026-10-26",
+"dub": true
 },
 "SID0172292": {
 "checked": "2026-10-07",
@@ -3142,6 +3162,10 @@
 "prime:100622": {
 "checked": "2026-10-06",
 "dub": true
+},
+"prime:10067": {
+"checked": "2026-10-26",
+"dub": false
 },
 "prime:100794": {
 "checked": "2026-10-06",
@@ -3682,6 +3706,10 @@
 "prime:117508": {
 "checked": "2026-10-06",
 "dub": null
+},
+"prime:117693": {
+"checked": "2026-10-26",
+"dub": false
 },
 "prime:117859": {
 "checked": "2026-10-06",
@@ -4391,6 +4419,10 @@
 "checked": "2026-10-06",
 "dub": true
 },
+"prime:25102": {
+"checked": "2026-10-26",
+"dub": true
+},
 "prime:25152": {
 "checked": "2026-10-07",
 "dub": true
@@ -4815,6 +4847,10 @@
 "checked": "2026-10-09",
 "dub": null
 },
+"prime:38184": {
+"checked": "2026-10-26",
+"dub": false
+},
 "prime:38380": {
 "checked": "2026-10-06",
 "dub": false
@@ -4842,6 +4878,10 @@
 "prime:3965": {
 "checked": "2026-10-06",
 "dub": true
+},
+"prime:39998": {
+"checked": "2026-10-26",
+"dub": null
 },
 "prime:4024": {
 "checked": "2026-10-06",
@@ -5359,6 +5399,10 @@
 "checked": "2026-10-08",
 "dub": true
 },
+"prime:66490": {
+"checked": "2026-10-26",
+"dub": true
+},
 "prime:66867": {
 "checked": "2026-10-19",
 "dub": true
@@ -5691,6 +5735,10 @@
 "checked": "2026-10-08",
 "dub": false
 },
+"prime:79832": {
+"checked": "2026-10-26",
+"dub": null
+},
 "prime:79879": {
 "checked": "2026-10-23",
 "dub": true
@@ -5746,6 +5794,10 @@
 "prime:81948": {
 "checked": "2026-10-07",
 "dub": false
+},
+"prime:82051": {
+"checked": "2026-10-26",
+"dub": true
 },
 "prime:82219": {
 "checked": "2026-10-06",
@@ -5890,6 +5942,10 @@
 "prime:87388": {
 "checked": "2026-10-06",
 "dub": null
+},
+"prime:87511": {
+"checked": "2026-10-26",
+"dub": false
 },
 "prime:87647": {
 "checked": "2026-10-06",
