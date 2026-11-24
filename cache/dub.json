@@ -72,7 +72,7 @@
 "dub": false
 },
 "SID0003721": {
-"checked": "2026-10-25",
+"checked": "2026-11-24",
 "dub": false
 },
 "SID0003722": {
@@ -1471,6 +1471,10 @@
 "checked": "2026-11-04",
 "dub": true
 },
+"SID0029276": {
+"checked": "2026-11-24",
+"dub": true
+},
 "SID0029538": {
 "checked": "2026-10-13",
 "dub": true
@@ -1558,6 +1562,10 @@
 "SID0029647": {
 "checked": "2026-11-14",
 "dub": false
+},
+"SID0029773": {
+"checked": "2026-11-24",
+"dub": true
 },
 "SID0029774": {
 "checked": "2026-11-23",
@@ -1800,7 +1808,7 @@
 "dub": false
 },
 "SID0033397": {
-"checked": "2026-10-31",
+"checked": "2026-11-24",
 "dub": false
 },
 "SID0033402": {
@@ -1892,7 +1900,7 @@
 "dub": false
 },
 "SID0035399": {
-"checked": "2026-11-02",
+"checked": "2026-11-24",
 "dub": false
 },
 "SID0035460": {
@@ -1901,6 +1909,10 @@
 },
 "SID0035466": {
 "checked": "2026-10-29",
+"dub": false
+},
+"SID0035468": {
+"checked": "2026-11-24",
 "dub": false
 },
 "SID0035473": {
@@ -2299,6 +2311,10 @@
 "checked": "2026-10-06",
 "dub": true
 },
+"SID0044722": {
+"checked": "2026-11-24",
+"dub": true
+},
 "SID0044733": {
 "checked": "2026-11-17",
 "dub": false
@@ -2662,6 +2678,10 @@
 "SID0056249": {
 "checked": "2026-10-06",
 "dub": true
+},
+"SID0056579": {
+"checked": "2026-11-24",
+"dub": false
 },
 "SID0056594": {
 "checked": "2026-10-07",
@@ -3680,7 +3700,7 @@
 "dub": true
 },
 "SID0179248": {
-"checked": "2026-10-14",
+"checked": "2026-11-24",
 "dub": false
 },
 "SID0180768": {
@@ -5404,7 +5424,7 @@
 "dub": null
 },
 "prime:127140": {
-"checked": "2026-10-29",
+"checked": "2026-11-24",
 "dub": false
 },
 "prime:12727": {
@@ -7163,6 +7183,10 @@
 "checked": "2026-11-17",
 "dub": false
 },
+"prime:60420": {
+"checked": "2026-11-24",
+"dub": false
+},
 "prime:60426": {
 "checked": "2026-10-20",
 "dub": false
@@ -7184,7 +7208,7 @@
 "dub": true
 },
 "prime:60478": {
-"checked": "2026-11-02",
+"checked": "2026-11-24",
 "dub": false
 },
 "prime:60585": {
@@ -7454,6 +7478,10 @@
 "prime:69160": {
 "checked": "2026-11-01",
 "dub": true
+},
+"prime:69287": {
+"checked": "2026-11-24",
+"dub": false
 },
 "prime:69390": {
 "checked": "2026-10-06",
@@ -7768,7 +7796,7 @@
 "dub": true
 },
 "prime:79774": {
-"checked": "2026-10-08",
+"checked": "2026-11-24",
 "dub": false
 },
 "prime:79832": {
@@ -7786,6 +7814,10 @@
 "prime:80325": {
 "checked": "2026-10-06",
 "dub": null
+},
+"prime:80384": {
+"checked": "2026-11-24",
+"dub": false
 },
 "prime:80435": {
 "checked": "2026-11-17",
